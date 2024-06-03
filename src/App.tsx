@@ -1,5 +1,6 @@
-import { useActor } from "@xstate/solid";
+import { fromActorRef, useActorRef } from "@xstate/solid";
 import { For, Match, Show, Switch, createMemo, createSignal } from "solid-js";
+import { ActorRefFrom } from "xstate";
 import "./App.css";
 import { editorMachine } from "./editor";
 
@@ -7,6 +8,8 @@ type Point = [number, number];
 type Rect = [Point, Point, Point, Point];
 
 export function App() {
+  const editor = useActorRef(editorMachine);
+
   const [file, setFile] = createSignal<File>();
   const url = createMemo(() => {
     return file() ? URL.createObjectURL(file()!) : "";
@@ -23,7 +26,7 @@ export function App() {
         <Match when={file()}>
           <div class="editor">
             <Image url={url()} setImageRect={setImageRect} />
-            <Editor imageRect={imageRect()} />
+            <Editor imageRect={imageRect()} initialEditor={editor} />
           </div>
         </Match>
       </Switch>
@@ -31,20 +34,24 @@ export function App() {
   );
 }
 
-function Editor(props: { imageRect: DOMRect }) {
+function Editor(props: {
+  imageRect: DOMRect;
+  initialEditor: ActorRefFrom<typeof editorMachine>;
+}) {
+  const state = fromActorRef(props.initialEditor);
+  const send = props.initialEditor.send;
+
+  const rectangles = createMemo(() => state().context.rectangles);
+  const current = createMemo(() => state().context.current);
+
+  const points = createMemo(() => state().context.points);
+  const first = createMemo(() => points()[0]);
+  const last = createMemo(() => points()[points().length - 1]);
+
   const viewBox = createMemo(() => {
     const rect = props.imageRect;
     return [0, 0, rect.width, rect.height].join(" ");
   });
-
-  const [state, send] = useActor(editorMachine);
-
-  const rectangles = createMemo(() => state.context.rectangles);
-  const current = createMemo(() => state.context.current);
-
-  const points = createMemo(() => state.context.points);
-  const first = createMemo(() => points()[0]);
-  const last = createMemo(() => points()[points().length - 1]);
 
   function onMouseMove(e: MouseEvent) {
     const rect = props.imageRect;
