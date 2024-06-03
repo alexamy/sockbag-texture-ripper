@@ -16,8 +16,18 @@
   color: black;
 }
 
+.editor {
+  position: relative;
+}
+
 .image {
   width: 100%;
   height: auto;
   object-fit: contain;
+}
+
+.rectangles {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
