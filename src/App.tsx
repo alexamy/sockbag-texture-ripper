@@ -41,10 +41,10 @@ function Editor(props: {
   const state = fromActorRef(props.initialEditor);
   const send = props.initialEditor.send;
 
-  const rectangles = createMemo(() => state().context.rectangles);
   const current = createMemo(() => state().context.current);
-
+  const rectangles = createMemo(() => state().context.rectangles);
   const points = createMemo(() => state().context.points);
+
   const first = createMemo(() => points()[0]);
   const last = createMemo(() => points()[points().length - 1]);
 
