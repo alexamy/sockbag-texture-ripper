@@ -27,9 +27,14 @@ export function App() {
   const [imageRef, setImageRef] = createSignal<HTMLImageElement>();
   const [viewBox, setViewBox] = createSignal([0, 0, 0, 0]);
 
-  function onImageLoad() {
+  function getImage() {
     const image = imageRef();
     if (!image) throw new Error("Image not loaded");
+    return image;
+  }
+
+  function onImageLoad() {
+    const image = getImage();
     const { width, height } = image.getBoundingClientRect();
     console.log(width, height);
     setViewBox([0, 0, width, height]);
@@ -38,7 +43,10 @@ export function App() {
   const [points, setPoints] = createSignal<[number, number][]>([]);
 
   function onRectanglesClick(e: MouseEvent) {
-    const { x, y } = e;
+    const image = getImage();
+    const rect = image.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
     setPoints((points) => [...points, [x, y]]);
   }
 
