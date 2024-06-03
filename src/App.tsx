@@ -2,27 +2,8 @@ import { For, Match, Switch, createMemo, createSignal } from "solid-js";
 import "./App.css";
 
 export function App() {
-  const [file, setFile] = createSignal<File>();
+  const [file, setFile] = createSignal<File | null>(null);
   const url = createMemo(() => file() && URL.createObjectURL(file()!));
-
-  const [isDragOver, setIsDragOver] = createSignal(false);
-
-  function onDrop(e: DragEvent) {
-    e.preventDefault();
-    const file = e.dataTransfer?.files[0];
-    if (file && file.type.startsWith("image/")) {
-      setFile(file);
-    }
-  }
-
-  function onDragOver(e: DragEvent) {
-    e.preventDefault();
-    setIsDragOver(true);
-  }
-
-  function onDragLeave() {
-    setIsDragOver(false);
-  }
 
   const [imageRef, setImageRef] = createSignal<HTMLImageElement>();
   const [viewBox, setViewBox] = createSignal([0, 0, 0, 0]);
@@ -36,7 +17,6 @@ export function App() {
   function onImageLoad() {
     const image = getImage();
     const { width, height } = image.getBoundingClientRect();
-    console.log(width, height);
     setViewBox([0, 0, width, height]);
   }
 
@@ -54,22 +34,14 @@ export function App() {
     <div class="app">
       <Switch>
         <Match when={!file()}>
-          <div
-            class="image-drop"
-            classList={{ "drag-over": isDragOver() }}
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-            onDragLeave={onDragLeave}
-          >
-            Drop image here
-          </div>
+          <DropImage setFile={setFile} />
         </Match>
         <Match when={file()}>
           <div class="editor">
             <img
               ref={setImageRef}
               class="image"
-              src={url()}
+              src={url() ?? ""}
               alt="Uploaded image"
               onLoad={onImageLoad}
             />
@@ -97,6 +69,39 @@ export function App() {
           </div>
         </Match>
       </Switch>
+    </div>
+  );
+}
+
+function DropImage(props: { setFile: (file: File) => void }) {
+  const [isDragOver, setIsDragOver] = createSignal(false);
+
+  function onDrop(e: DragEvent) {
+    e.preventDefault();
+    const file = e.dataTransfer?.files[0];
+    if (file && file.type.startsWith("image/")) {
+      props.setFile(file);
+    }
+  }
+
+  function onDragOver(e: DragEvent) {
+    e.preventDefault();
+    setIsDragOver(true);
+  }
+
+  function onDragLeave() {
+    setIsDragOver(false);
+  }
+
+  return (
+    <div
+      class="image-drop"
+      classList={{ "drag-over": isDragOver() }}
+      onDrop={onDrop}
+      onDragOver={onDragOver}
+      onDragLeave={onDragLeave}
+    >
+      Drop image here
     </div>
   );
 }
