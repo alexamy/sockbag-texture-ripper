@@ -40,6 +40,8 @@ function Editor(props: { imageRect: DOMRect }) {
   const points = createMemo(() => state.context.points);
   const last = createMemo(() => points()[points().length - 1]);
 
+  const rectangles = createMemo(() => state.context.rectangles);
+
   function onMouseMove(e: MouseEvent) {
     const rect = props.imageRect;
     const x = e.clientX - rect.left;
@@ -58,6 +60,17 @@ function Editor(props: { imageRect: DOMRect }) {
       onClick={onClick}
       onMouseMove={onMouseMove}
     >
+      <For each={rectangles()}>
+        {(rect) => (
+          <polygon
+            points={rect.map((point) => point.join(",")).join(" ")}
+            fill="white"
+            fill-opacity={0.3}
+            stroke="white"
+            stroke-width="2"
+          />
+        )}
+      </For>
       <For each={points()}>
         {(point, i) => (
           <>

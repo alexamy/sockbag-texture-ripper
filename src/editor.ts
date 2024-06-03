@@ -14,6 +14,16 @@ export const editorMachine = setup({
     context: {} as Context,
     events: {} as { type: "move"; point: Point } | { type: "click" },
   },
+  actions: {
+    addNewRectangle: assign(({ context }) => {
+      const [p1, p2, p3, p4] = context.points;
+      const rectangle: Rect = [p1, p2, p3, p4];
+      return {
+        rectangles: [...context.rectangles, rectangle],
+        points: [],
+      };
+    }),
+  },
 }).createMachine({
   id: "editor",
   initial: "clicking",
@@ -26,7 +36,7 @@ export const editorMachine = setup({
     move: [
       {
         guard: ({ context }) => context.points.length === 4,
-        target: ".addRect",
+        actions: "addNewRectangle",
       },
       {
         actions: [assign(({ event }) => ({ current: event.point }))],
@@ -43,23 +53,6 @@ export const editorMachine = setup({
             })),
           ],
         },
-      },
-    },
-    addRect: {
-      always: {
-        target: "clicking",
-        actions: assign(({ context }) => ({
-          rectangles: [
-            ...context.rectangles,
-            [
-              context.points[0],
-              context.points[1],
-              context.points[2],
-              context.points[3],
-            ],
-          ],
-          points: [],
-        })),
       },
     },
   },
