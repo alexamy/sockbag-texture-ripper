@@ -1,4 +1,4 @@
-import { Match, Switch, createMemo, createSignal } from "solid-js";
+import { For, Match, Switch, createMemo, createSignal } from "solid-js";
 import "./App.css";
 
 export function App() {
@@ -35,6 +35,13 @@ export function App() {
     setViewBox([0, 0, width, height]);
   }
 
+  const [points, setPoints] = createSignal<[number, number][]>([]);
+
+  function onRectanglesClick(e: MouseEvent) {
+    const { x, y } = e;
+    setPoints((points) => [...points, [x, y]]);
+  }
+
   return (
     <div class="app">
       <Switch>
@@ -58,7 +65,27 @@ export function App() {
               alt="Uploaded image"
               onLoad={onImageLoad}
             />
-            <svg class="rectangles" viewBox={viewBox().join(" ")}></svg>
+            <svg
+              class="rectangles"
+              viewBox={viewBox().join(" ")}
+              onClick={onRectanglesClick}
+            >
+              <For each={points()}>
+                {(point, i) => (
+                  <>
+                    <circle cx={point[0]} cy={point[1]} r="4" fill="white" />
+                    <line
+                      x1={point[0]}
+                      y1={point[1]}
+                      x2={points()[i() + 1]?.[0] ?? point[0]}
+                      y2={points()[i() + 1]?.[1] ?? point[1]}
+                      stroke="white"
+                      stroke-width="2"
+                    />
+                  </>
+                )}
+              </For>
+            </svg>
           </div>
         </Match>
       </Switch>
