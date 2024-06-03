@@ -15,6 +15,11 @@ export const editorMachine = setup({
     events: {} as { type: "move"; point: Point } | { type: "click" },
   },
   actions: {
+    addNewPoint: assign(({ context }) => {
+      return {
+        points: [...context.points, context.current],
+      };
+    }),
     addNewRectangle: assign(({ context }) => {
       const [p1, p2, p3, p4] = context.points;
       const rectangle: Rect = [p1, p2, p3, p4];
@@ -47,11 +52,7 @@ export const editorMachine = setup({
     clicking: {
       on: {
         click: {
-          actions: [
-            assign(({ context }) => ({
-              points: [...context.points, context.current],
-            })),
-          ],
+          actions: ["addNewPoint"],
         },
       },
     },
