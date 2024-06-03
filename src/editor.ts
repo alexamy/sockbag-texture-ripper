@@ -2,13 +2,13 @@ import { assign, setup } from "xstate";
 
 type Point = [number, number];
 
-export const rectanglesMachine = setup({
+export const editorMachine = setup({
   types: {
     context: {} as { current: Point; points: Point[] },
     events: {} as { type: "move"; point: Point } | { type: "click" },
   },
 }).createMachine({
-  id: "rectangles",
+  id: "editor",
   initial: "initial",
   context: {
     points: [],

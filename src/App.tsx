@@ -1,7 +1,7 @@
 import { useActor } from "@xstate/solid";
 import { For, Match, Show, Switch, createMemo, createSignal } from "solid-js";
 import "./App.css";
-import { rectanglesMachine } from "./rectangles";
+import { editorMachine } from "./editor";
 
 export function App() {
   const [file, setFile] = createSignal<File>();
@@ -34,7 +34,7 @@ function Editor(props: { imageRect: DOMRect }) {
     return [0, 0, rect.width, rect.height].join(" ");
   });
 
-  const [state, send] = useActor(rectanglesMachine);
+  const [state, send] = useActor(editorMachine);
 
   const point = createMemo(() => state.context.current);
   const points = createMemo(() => state.context.points);
