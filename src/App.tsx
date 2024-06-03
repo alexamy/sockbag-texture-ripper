@@ -64,51 +64,20 @@ function Editor(props: { imageRect: DOMRect }) {
       onClick={onClick}
       onMouseMove={onMouseMove}
     >
-      <For each={rectangles()}>
-        {(rect) => (
-          <polygon
-            points={rect.map((point) => point.join(",")).join(" ")}
-            fill="white"
-            fill-opacity={0.3}
-            stroke="white"
-            stroke-width="2"
-          />
-        )}
-      </For>
+      <For each={rectangles()}>{(rect) => <Rect rect={rect} />}</For>
       <For each={points()}>
         {(point, i) => (
           <>
-            <circle cx={point[0]} cy={point[1]} r="4" fill="white" />
-            <line
-              x1={point[0]}
-              y1={point[1]}
-              x2={points()[i() + 1]?.[0] ?? point[0]}
-              y2={points()[i() + 1]?.[1] ?? point[1]}
-              stroke="white"
-              stroke-width="2"
-            />
+            <Circle p={point} />
+            <Line p1={point} p2={points()[i() + 1] ?? point} />
           </>
         )}
       </For>
       <Show when={points().length >= 1}>
-        <line
-          x1={last()[0]}
-          y1={last()[1]}
-          x2={current()[0]}
-          y2={current()[1]}
-          stroke="white"
-          stroke-width="2"
-        />
+        <Line p1={last()} p2={current()} />
       </Show>
       <Show when={points().length >= 2}>
-        <line
-          x1={first()[0]}
-          y1={first()[1]}
-          x2={current()[0]}
-          y2={current()[1]}
-          stroke="white"
-          stroke-width="2"
-        />
+        <Line p1={first()} p2={current()} />
       </Show>
     </svg>
   );
