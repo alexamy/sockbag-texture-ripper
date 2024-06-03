@@ -2,29 +2,21 @@ import { For, Match, Switch, createMemo, createSignal } from "solid-js";
 import "./App.css";
 
 export function App() {
-  const [file, setFile] = createSignal<File | null>(null);
-  const url = createMemo(() => file() && URL.createObjectURL(file()!));
+  const [file, setFile] = createSignal<File>();
+  const url = createMemo(() => {
+    return file() ? URL.createObjectURL(file()!) : "";
+  });
 
-  const [imageRef, setImageRef] = createSignal<HTMLImageElement>();
-  const [viewBox, setViewBox] = createSignal([0, 0, 0, 0]);
-
-  function getImage() {
-    const image = imageRef();
-    if (!image) throw new Error("Image not loaded");
-    return image;
-  }
-
-  function onImageLoad() {
-    const image = getImage();
-    const { width, height } = image.getBoundingClientRect();
-    setViewBox([0, 0, width, height]);
-  }
+  const [imageRect, setImageRect] = createSignal<DOMRect>(new DOMRect());
+  const viewBox = createMemo(() => {
+    const rect = imageRect();
+    return rect ? [0, 0, rect.width, rect.height] : [0, 0, 0, 0];
+  });
 
   const [points, setPoints] = createSignal<[number, number][]>([]);
 
   function onRectanglesClick(e: MouseEvent) {
-    const image = getImage();
-    const rect = image.getBoundingClientRect();
+    const rect = imageRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     setPoints((points) => [...points, [x, y]]);
@@ -38,13 +30,7 @@ export function App() {
         </Match>
         <Match when={file()}>
           <div class="editor">
-            <img
-              ref={setImageRef}
-              class="image"
-              src={url() ?? ""}
-              alt="Uploaded image"
-              onLoad={onImageLoad}
-            />
+            <Image url={url()} setImageRect={setImageRect} />
             <svg
               class="rectangles"
               viewBox={viewBox().join(" ")}
@@ -70,6 +56,22 @@ export function App() {
         </Match>
       </Switch>
     </div>
+  );
+}
+
+function Image(props: { url: string; setImageRect: (rect: DOMRect) => void }) {
+  function onImageLoad(e: Event) {
+    const image = e.target as HTMLImageElement;
+    props.setImageRect(image.getBoundingClientRect());
+  }
+
+  return (
+    <img
+      class="image"
+      src={props.url}
+      alt="Uploaded image"
+      onLoad={onImageLoad}
+    />
   );
 }
 
