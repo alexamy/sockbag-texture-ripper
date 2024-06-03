@@ -1,4 +1,4 @@
-import { For, Match, Switch, createMemo, createSignal } from "solid-js";
+import { For, Match, Show, Switch, createMemo, createSignal } from "solid-js";
 import "./App.css";
 
 export function App() {
@@ -33,17 +33,31 @@ function Editor(props: { imageRect: DOMRect }) {
   });
 
   const [points, setPoints] = createSignal<[number, number][]>([]);
+  const [currentPoint, setCurrentPoint] = createSignal<[number, number]>([
+    0, 0,
+  ]);
 
-  function onClick(e: MouseEvent) {
+  const allPoints = createMemo(() => [...points(), currentPoint()]);
+
+  function onClick() {
+    setPoints((points) => [...points, [...currentPoint()]]);
+  }
+
+  function onMouseMove(e: MouseEvent) {
     const rect = props.imageRect;
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    setPoints((points) => [...points, [x, y]]);
+    setCurrentPoint([x, y]);
   }
 
   return (
-    <svg class="svg-canvas" viewBox={viewBox().join(" ")} onClick={onClick}>
-      <For each={points()}>
+    <svg
+      class="svg-canvas"
+      viewBox={viewBox().join(" ")}
+      onClick={onClick}
+      onMouseMove={onMouseMove}
+    >
+      <For each={allPoints()}>
         {(point, i) => (
           <>
             <circle cx={point[0]} cy={point[1]} r="4" fill="white" />
@@ -58,6 +72,16 @@ function Editor(props: { imageRect: DOMRect }) {
           </>
         )}
       </For>
+      <Show when={points().length}>
+        <line
+          x1={points()[points().length - 1][0]}
+          y1={points()[points().length - 1][1]}
+          x2={currentPoint()[0]}
+          y2={currentPoint()[1]}
+          stroke="white"
+          stroke-width="2"
+        />
+      </Show>
     </svg>
   );
 }
