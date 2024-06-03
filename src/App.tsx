@@ -34,7 +34,7 @@ function Editor(props: { imageRect: DOMRect }) {
 
   const [points, setPoints] = createSignal<[number, number][]>([]);
 
-  function onRectanglesClick(e: MouseEvent) {
+  function onClick(e: MouseEvent) {
     const rect = props.imageRect;
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -42,11 +42,7 @@ function Editor(props: { imageRect: DOMRect }) {
   }
 
   return (
-    <svg
-      class="rectangles"
-      viewBox={viewBox().join(" ")}
-      onClick={onRectanglesClick}
-    >
+    <svg class="svg-canvas" viewBox={viewBox().join(" ")} onClick={onClick}>
       <For each={points()}>
         {(point, i) => (
           <>
@@ -67,18 +63,13 @@ function Editor(props: { imageRect: DOMRect }) {
 }
 
 function Image(props: { url: string; setImageRect: (rect: DOMRect) => void }) {
-  function onImageLoad(e: Event) {
+  function onLoad(e: Event) {
     const image = e.target as HTMLImageElement;
     props.setImageRect(image.getBoundingClientRect());
   }
 
   return (
-    <img
-      class="image"
-      src={props.url}
-      alt="Uploaded image"
-      onLoad={onImageLoad}
-    />
+    <img class="image" src={props.url} alt="Uploaded image" onLoad={onLoad} />
   );
 }
 
