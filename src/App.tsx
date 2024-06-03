@@ -36,11 +36,12 @@ function Editor(props: { imageRect: DOMRect }) {
 
   const [state, send] = useActor(editorMachine);
 
-  const point = createMemo(() => state.context.current);
-  const points = createMemo(() => state.context.points);
-  const last = createMemo(() => points()[points().length - 1]);
-
   const rectangles = createMemo(() => state.context.rectangles);
+  const current = createMemo(() => state.context.current);
+
+  const points = createMemo(() => state.context.points);
+  const first = createMemo(() => points()[0]);
+  const last = createMemo(() => points()[points().length - 1]);
 
   function onMouseMove(e: MouseEvent) {
     const rect = props.imageRect;
@@ -86,12 +87,22 @@ function Editor(props: { imageRect: DOMRect }) {
           </>
         )}
       </For>
-      <Show when={last()}>
+      <Show when={points().length >= 1}>
         <line
           x1={last()[0]}
           y1={last()[1]}
-          x2={point()[0]}
-          y2={point()[1]}
+          x2={current()[0]}
+          y2={current()[1]}
+          stroke="white"
+          stroke-width="2"
+        />
+      </Show>
+      <Show when={points().length >= 2}>
+        <line
+          x1={first()[0]}
+          y1={first()[1]}
+          x2={current()[0]}
+          y2={current()[1]}
           stroke="white"
           stroke-width="2"
         />
