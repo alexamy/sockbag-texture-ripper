@@ -9,7 +9,7 @@ export const rectanglesMachine = setup({
   },
 }).createMachine({
   id: "rectangles",
-  initial: "idle",
+  initial: "initial",
   context: {
     points: [],
     current: [0, 0],
@@ -27,6 +27,6 @@ export const rectanglesMachine = setup({
     },
   },
   states: {
-    idle: {},
+    initial: {},
   },
 });
