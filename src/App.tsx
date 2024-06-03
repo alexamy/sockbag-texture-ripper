@@ -29,7 +29,7 @@ export function App() {
 function Editor(props: { imageRect: DOMRect }) {
   const viewBox = createMemo(() => {
     const rect = props.imageRect;
-    return rect ? [0, 0, rect.width, rect.height] : [0, 0, 0, 0];
+    return [0, 0, rect.width, rect.height].join(" ");
   });
 
   const [points, setPoints] = createSignal<[number, number][]>([]);
@@ -53,7 +53,7 @@ function Editor(props: { imageRect: DOMRect }) {
   return (
     <svg
       class="svg-canvas"
-      viewBox={viewBox().join(" ")}
+      viewBox={viewBox()}
       onClick={onClick}
       onMouseMove={onMouseMove}
     >
