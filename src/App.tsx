@@ -1,5 +1,5 @@
-import { createSignal } from 'solid-js';
-import './App.css';
+import { Match, Switch, createSignal } from "solid-js";
+import "./App.css";
 
 export function App() {
   const [file, setFile] = createSignal<File>();
@@ -24,15 +24,26 @@ export function App() {
 
   return (
     <div class="app">
-      <div
-        class="image"
-        classList={{ 'drag-over': isDragOver() }}
-        onDrop={onDrop}
-        onDragOver={onDragOver}
-        onDragLeave={onDragLeave}
-      >
-        Drop image here
-      </div>
+      <Switch>
+        <Match when={!file()}>
+          <div
+            class="image-drop"
+            classList={{ "drag-over": isDragOver() }}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+            onDragLeave={onDragLeave}
+          >
+            Drop image here
+          </div>
+        </Match>
+        <Match when={file()}>
+          <img
+            class="image"
+            src={URL.createObjectURL(file()!)}
+            alt="Uploaded image"
+          />
+        </Match>
+      </Switch>
     </div>
-  )
+  );
 }
