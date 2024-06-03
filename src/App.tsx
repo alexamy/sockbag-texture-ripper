@@ -3,6 +3,9 @@ import { For, Match, Show, Switch, createMemo, createSignal } from "solid-js";
 import "./App.css";
 import { editorMachine } from "./editor";
 
+type Point = [number, number];
+type Rect = [Point, Point, Point, Point];
+
 export function App() {
   const [file, setFile] = createSignal<File>();
   const url = createMemo(() => {
@@ -108,6 +111,35 @@ function Editor(props: { imageRect: DOMRect }) {
         />
       </Show>
     </svg>
+  );
+}
+
+function Circle(props: { p: Point }) {
+  return <circle cx={props.p[0]} cy={props.p[1]} r="4" fill="white" />;
+}
+
+function Line(props: { p1: Point; p2: Point }) {
+  return (
+    <line
+      x1={props.p1[0]}
+      y1={props.p1[1]}
+      x2={props.p2[0]}
+      y2={props.p2[1]}
+      stroke="white"
+      stroke-width="2"
+    />
+  );
+}
+
+function Rect(props: { rect: Rect }) {
+  return (
+    <polygon
+      points={props.rect.map((point) => point.join(",")).join(" ")}
+      fill="white"
+      fill-opacity={0.3}
+      stroke="white"
+      stroke-width="2"
+    />
   );
 }
 
