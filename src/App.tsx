@@ -65,10 +65,11 @@ function Editor(props: { imageRect: DOMRect }) {
       onMouseMove={onMouseMove}
     >
       <For each={rectangles()}>{(rect) => <Rect rect={rect} />}</For>
+      <Point p={current()} />
       <For each={points()}>
         {(point, i) => (
           <>
-            <Circle p={point} />
+            <Point p={point} />
             <Line p1={point} p2={points()[i() + 1] ?? point} />
           </>
         )}
@@ -83,7 +84,7 @@ function Editor(props: { imageRect: DOMRect }) {
   );
 }
 
-function Circle(props: { p: Point }) {
+function Point(props: { p: Point }) {
   return <circle cx={props.p[0]} cy={props.p[1]} r="4" fill="white" />;
 }
 
@@ -102,13 +103,16 @@ function Line(props: { p1: Point; p2: Point }) {
 
 function Rect(props: { rect: Rect }) {
   return (
-    <polygon
-      points={props.rect.map((point) => point.join(",")).join(" ")}
-      fill="white"
-      fill-opacity={0.3}
-      stroke="white"
-      stroke-width="2"
-    />
+    <>
+      <polygon
+        points={props.rect.map((point) => point.join(",")).join(" ")}
+        fill="white"
+        fill-opacity={0.3}
+        stroke="white"
+        stroke-width="2"
+      />
+      <For each={props.rect}>{(point) => <Point p={point} />}</For>
+    </>
   );
 }
 
