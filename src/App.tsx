@@ -1,5 +1,7 @@
+import { useActor } from "@xstate/solid";
 import { For, Match, Show, Switch, createMemo, createSignal } from "solid-js";
 import "./App.css";
+import { rectanglesMachine } from "./rectangles";
 
 export function App() {
   const [file, setFile] = createSignal<File>();
@@ -32,22 +34,25 @@ function Editor(props: { imageRect: DOMRect }) {
     return [0, 0, rect.width, rect.height].join(" ");
   });
 
-  const [points, setPoints] = createSignal<[number, number][]>([]);
-  const [currentPoint, setCurrentPoint] = createSignal<[number, number]>([
-    0, 0,
+  const [state, send] = useActor(rectanglesMachine);
+
+  const point = createMemo(() => state.context.current);
+  const points = createMemo(() => state.context.points);
+
+  const allPoints = createMemo(() => [
+    ...state.context.points,
+    state.context.current,
   ]);
-
-  const allPoints = createMemo(() => [...points(), currentPoint()]);
-
-  function onClick() {
-    setPoints((points) => [...points, [...currentPoint()]]);
-  }
 
   function onMouseMove(e: MouseEvent) {
     const rect = props.imageRect;
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    setCurrentPoint([x, y]);
+    send({ type: "move", point: [x, y] });
+  }
+
+  function onClick() {
+    send({ type: "click" });
   }
 
   return (
@@ -76,8 +81,8 @@ function Editor(props: { imageRect: DOMRect }) {
         <line
           x1={points()[points().length - 1][0]}
           y1={points()[points().length - 1][1]}
-          x2={currentPoint()[0]}
-          y2={currentPoint()[1]}
+          x2={point()[0]}
+          y2={point()[1]}
           stroke="white"
           stroke-width="2"
         />
