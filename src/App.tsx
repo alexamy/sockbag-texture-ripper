@@ -8,7 +8,7 @@ export function App() {
   function onDrop(e: DragEvent) {
     e.preventDefault();
     const file = e.dataTransfer?.files[0];
-    if (file) {
+    if (file && file.type.startsWith("image/")) {
       setFile(file);
     }
   }
