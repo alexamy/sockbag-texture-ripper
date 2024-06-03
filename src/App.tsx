@@ -10,12 +10,12 @@ type Rect = [Point, Point, Point, Point];
 export function App() {
   const editor = useActorRef(editorMachine);
 
+  const [imageRect, setImageRect] = createSignal<DOMRect>(new DOMRect());
+
   const [file, setFile] = createSignal<File>();
   const url = createMemo(() => {
     return file() ? URL.createObjectURL(file()!) : "";
   });
-
-  const [imageRect, setImageRect] = createSignal<DOMRect>(new DOMRect());
 
   return (
     <div class="app">
