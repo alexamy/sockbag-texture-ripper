@@ -38,11 +38,7 @@ function Editor(props: { imageRect: DOMRect }) {
 
   const point = createMemo(() => state.context.current);
   const points = createMemo(() => state.context.points);
-
-  const allPoints = createMemo(() => [
-    ...state.context.points,
-    state.context.current,
-  ]);
+  const last = createMemo(() => points()[points().length - 1]);
 
   function onMouseMove(e: MouseEvent) {
     const rect = props.imageRect;
@@ -62,7 +58,7 @@ function Editor(props: { imageRect: DOMRect }) {
       onClick={onClick}
       onMouseMove={onMouseMove}
     >
-      <For each={allPoints()}>
+      <For each={points()}>
         {(point, i) => (
           <>
             <circle cx={point[0]} cy={point[1]} r="4" fill="white" />
@@ -77,10 +73,10 @@ function Editor(props: { imageRect: DOMRect }) {
           </>
         )}
       </For>
-      <Show when={points().length}>
+      <Show when={last()}>
         <line
-          x1={points()[points().length - 1][0]}
-          y1={points()[points().length - 1][1]}
+          x1={last()[0]}
+          y1={last()[1]}
           x2={point()[0]}
           y2={point()[1]}
           stroke="white"
