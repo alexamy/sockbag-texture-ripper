@@ -40,19 +40,19 @@ export const editorMachine = setup({
   on: {
     move: [
       {
-        guard: ({ context }) => context.points.length === 4,
-        actions: "addNewRectangle",
-      },
-      {
         actions: [assign(({ event }) => ({ current: event.point }))],
       },
     ],
   },
   states: {
     clicking: {
+      always: {
+        guard: ({ context }) => context.points.length === 4,
+        actions: "addNewRectangle",
+      },
       on: {
         click: {
-          actions: ["addNewPoint"],
+          actions: "addNewPoint",
         },
       },
     },
