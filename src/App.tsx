@@ -8,19 +8,6 @@ export function App() {
   });
 
   const [imageRect, setImageRect] = createSignal<DOMRect>(new DOMRect());
-  const viewBox = createMemo(() => {
-    const rect = imageRect();
-    return rect ? [0, 0, rect.width, rect.height] : [0, 0, 0, 0];
-  });
-
-  const [points, setPoints] = createSignal<[number, number][]>([]);
-
-  function onRectanglesClick(e: MouseEvent) {
-    const rect = imageRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    setPoints((points) => [...points, [x, y]]);
-  }
 
   return (
     <div class="app">
@@ -31,31 +18,51 @@ export function App() {
         <Match when={file()}>
           <div class="editor">
             <Image url={url()} setImageRect={setImageRect} />
-            <svg
-              class="rectangles"
-              viewBox={viewBox().join(" ")}
-              onClick={onRectanglesClick}
-            >
-              <For each={points()}>
-                {(point, i) => (
-                  <>
-                    <circle cx={point[0]} cy={point[1]} r="4" fill="white" />
-                    <line
-                      x1={point[0]}
-                      y1={point[1]}
-                      x2={points()[i() + 1]?.[0] ?? point[0]}
-                      y2={points()[i() + 1]?.[1] ?? point[1]}
-                      stroke="white"
-                      stroke-width="2"
-                    />
-                  </>
-                )}
-              </For>
-            </svg>
+            <Editor imageRect={imageRect()} />
           </div>
         </Match>
       </Switch>
     </div>
+  );
+}
+
+function Editor(props: { imageRect: DOMRect }) {
+  const viewBox = createMemo(() => {
+    const rect = props.imageRect;
+    return rect ? [0, 0, rect.width, rect.height] : [0, 0, 0, 0];
+  });
+
+  const [points, setPoints] = createSignal<[number, number][]>([]);
+
+  function onRectanglesClick(e: MouseEvent) {
+    const rect = props.imageRect;
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    setPoints((points) => [...points, [x, y]]);
+  }
+
+  return (
+    <svg
+      class="rectangles"
+      viewBox={viewBox().join(" ")}
+      onClick={onRectanglesClick}
+    >
+      <For each={points()}>
+        {(point, i) => (
+          <>
+            <circle cx={point[0]} cy={point[1]} r="4" fill="white" />
+            <line
+              x1={point[0]}
+              y1={point[1]}
+              x2={points()[i() + 1]?.[0] ?? point[0]}
+              y2={points()[i() + 1]?.[1] ?? point[1]}
+              stroke="white"
+              stroke-width="2"
+            />
+          </>
+        )}
+      </For>
+    </svg>
   );
 }
 
