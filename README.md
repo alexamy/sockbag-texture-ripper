@@ -2,7 +2,7 @@
 
 Successor of the Shoebox Texture Ripper.
 
-Built with 💕 using [SolidJS](https://docs.solidjs.com), [OpenCV](https://github.com/TechStark/opencv-js) and [Typescript](https://www.typescriptlang.org/).
+Built with 💕 using [SolidJS](https://docs.solidjs.com), [OpenCV](https://github.com/TechStark/opencv-js), [XState](https://stately.ai/docs) and [Typescript](https://www.typescriptlang.org/).
 
 ## Usage
 Upload an image, draw rectangles, view the result, and download the texture.
