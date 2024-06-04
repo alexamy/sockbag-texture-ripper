@@ -1,5 +1,4 @@
 import * as cv from "@techstark/opencv-js";
-import { fromActorRef, useActorRef } from "@xstate/solid";
 import {
   For,
   Match,
@@ -11,11 +10,13 @@ import {
 import "./App.css";
 import { Editor } from "./Editor";
 import { Quad, editorMachine } from "./editorMachine";
+import { createActor, createActorState } from "./hooks";
 
 export function App() {
-  const editor = useActorRef(editorMachine);
-  const state = fromActorRef(editor);
-  const quads = createMemo(() => state().context.quads);
+  const editor = createActor(editorMachine);
+  const state = createActorState(editor);
+  const quads = createMemo(() => state.context.quads);
+  createEffect(() => console.log(quads()));
 
   const [imageRef, setImageRef] = createSignal<HTMLImageElement>();
   const imageRect = createMemo(() =>
@@ -74,6 +75,7 @@ export function App() {
 }
 
 async function projectRectangles(file: File, quads: Quad[]) {
+  console.log("projectRectangles");
   const image = new Image();
   image.src = URL.createObjectURL(file);
   await new Promise((resolve) => (image.onload = resolve));

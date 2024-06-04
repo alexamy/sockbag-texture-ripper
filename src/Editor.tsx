@@ -1,18 +1,18 @@
-import { fromActorRef } from "@xstate/solid";
 import { createMemo, For, Show } from "solid-js";
-import { ActorRefFrom } from "xstate";
+import { Actor } from "xstate";
 import { editorMachine, type Point, type Quad } from "./editorMachine";
+import { createActorState } from "./hooks";
 
 export function Editor(props: {
   imageRect: DOMRect;
-  initialEditor: ActorRefFrom<typeof editorMachine>;
+  initialEditor: Actor<typeof editorMachine>;
 }) {
-  const state = fromActorRef(props.initialEditor);
+  const state = createActorState(props.initialEditor);
   const send = props.initialEditor.send;
 
-  const current = createMemo(() => state().context.current);
-  const quads = createMemo(() => state().context.quads);
-  const points = createMemo(() => state().context.points);
+  const current = createMemo(() => state.context.current);
+  const quads = createMemo(() => state.context.quads);
+  const points = createMemo(() => state.context.points);
 
   const first = createMemo(() => points()[0]);
   const last = createMemo(() => points()[points().length - 1]);
