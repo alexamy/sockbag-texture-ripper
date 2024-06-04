@@ -66,6 +66,10 @@ export function App() {
           <div class="editor">
             <Image url={url()} setImageRef={setImageRef} />
             <Editor imageRect={imageRect()} initialEditor={editor} />
+            <div>
+              Image size: {imageRef()?.naturalWidth} x{" "}
+              {imageRef()?.naturalHeight}
+            </div>
           </div>
         </Match>
       </Switch>
