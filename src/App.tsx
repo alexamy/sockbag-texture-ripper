@@ -1,6 +1,7 @@
 import * as cv from "@techstark/opencv-js";
 import { useActorRef } from "@xstate/solid";
 import {
+  For,
   Match,
   Switch,
   createEffect,
@@ -32,15 +33,15 @@ export function App() {
     setFile(file);
   })();
 
-  const [projected, setProjected] = createSignal<Blob>();
+  const [projected, setProjected] = createSignal<Blob[]>([]);
   createEffect(() => {
     if (file()) {
       projectRectangles(file()!, []).then(setProjected);
     }
   });
 
-  const projectedUrl = createMemo(() => {
-    return projected() ? URL.createObjectURL(projected()!) : "";
+  const projectedUrls = createMemo(() => {
+    return projected().map((blob) => URL.createObjectURL(blob));
   });
 
   return (
@@ -59,7 +60,9 @@ export function App() {
             </div>
 
             <div class="texture">
-              <img class="image" src={projectedUrl()} alt="Projected image" />
+              <For each={projectedUrls()}>
+                {(url) => <img class="image" src={url} />}
+              </For>
             </div>
           </div>
         </Match>
@@ -72,18 +75,42 @@ async function projectRectangles(file: File, rectangles: Quad[]) {
   const image = new Image();
   image.src = URL.createObjectURL(file);
   await new Promise((resolve) => (image.onload = resolve));
-
   const src = cv.imread(image);
-  const dst = src;
 
-  const canvas = document.createElement("canvas");
-  cv.imshow(canvas, dst);
+  const blobs: Blob[] = [];
+  for (const rectangle of rectangles) {
+    const [p1, p2, p3, p4] = rectangle;
+    const points = [p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y];
+    const srcTri = cv.matFromArray(4, 1, cv.CV_32FC2, points);
 
-  const blob = await new Promise((resolve) =>
-    canvas.toBlob((blob) => resolve(blob))
-  );
+    const W = 100;
+    const H = 100;
+    const dst = new cv.Mat();
+    const dstTri = cv.matFromArray(4, 1, cv.CV_32FC2, [0, 0, W, 0, W, H, 0, H]);
 
-  return blob;
+    const transform = cv.getPerspectiveTransform(srcTri, dstTri);
+    const dsize = new cv.Size(W, H);
+    cv.warpPerspective(
+      src,
+      dst,
+      transform,
+      dsize,
+      cv.INTER_LINEAR,
+      cv.BORDER_CONSTANT
+    );
+
+    const canvas = document.createElement("canvas");
+    cv.imshow(canvas, dst);
+
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve)
+    );
+    if (!blob) throw new Error("Failed to extract image rectangle.");
+
+    blobs.push(blob);
+  }
+
+  return blobs;
 }
 
 function ImageBackground(props: {
