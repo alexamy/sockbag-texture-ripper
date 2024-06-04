@@ -55,8 +55,12 @@ export function project(a: Vector, b: Vector): Vector {
   return scale(b, dot(a, b) / dot(b, b));
 }
 
-export function reflect(a: Vector, b: Vector): Vector {
-  return subtract(a, scale(b, (2 * dot(a, b)) / dot(b, b)));
+export function normal(a: Vector): Vector {
+  return { x: -a.y, y: a.x };
+}
+
+export function reflect(a: Vector, normal: Vector): Vector {
+  return subtract(a, scale(normal, (2 * dot(a, normal)) / dot(normal, normal)));
 }
 
 export function lerp(a: Vector, b: Vector, t: number): Vector {
