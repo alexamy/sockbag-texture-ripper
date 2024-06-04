@@ -9,7 +9,7 @@ import {
 } from "solid-js";
 import "./App.css";
 import { Editor } from "./Editor";
-import { Rect, editorMachine } from "./editorMachine";
+import { Quad, editorMachine } from "./editorMachine";
 
 export function App() {
   const editor = useActorRef(editorMachine);
@@ -68,7 +68,7 @@ export function App() {
   );
 }
 
-async function projectRectangles(file: File, rectangles: Rect[]) {
+async function projectRectangles(file: File, rectangles: Quad[]) {
   const image = new Image();
   image.src = URL.createObjectURL(file);
   await new Promise((resolve) => (image.onload = resolve));

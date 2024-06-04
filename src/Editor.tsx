@@ -1,7 +1,7 @@
 import { fromActorRef } from "@xstate/solid";
 import { createMemo, For, Show } from "solid-js";
 import { ActorRefFrom } from "xstate";
-import { editorMachine, type Point, type Rect } from "./editorMachine";
+import { editorMachine, type Point, type Quad } from "./editorMachine";
 
 export function Editor(props: {
   imageRect: DOMRect;
@@ -11,7 +11,7 @@ export function Editor(props: {
   const send = props.initialEditor.send;
 
   const current = createMemo(() => state().context.current);
-  const rectangles = createMemo(() => state().context.rectangles);
+  const quadrilaterals = createMemo(() => state().context.quadrilaterals);
   const points = createMemo(() => state().context.points);
 
   const first = createMemo(() => points()[0]);
@@ -40,7 +40,7 @@ export function Editor(props: {
       onClick={onClick}
       onMouseMove={onMouseMove}
     >
-      <For each={rectangles()}>{(rect) => <Rect rect={rect} />}</For>
+      <For each={quadrilaterals()}>{(quad) => <Quad quad={quad} />}</For>
       <Point p={current()} />
       <For each={points()}>
         {(point, i) => (
@@ -77,17 +77,17 @@ function Line(props: { p1: Point; p2: Point }) {
   );
 }
 
-function Rect(props: { rect: Rect }) {
+function Quad(props: { quad: Quad }) {
   return (
     <>
       <polygon
-        points={props.rect.map((point) => `${point.x},${point.y}`).join(" ")}
+        points={props.quad.map((point) => `${point.x},${point.y}`).join(" ")}
         fill="white"
         fill-opacity={0.3}
         stroke="white"
         stroke-width="2"
       />
-      <For each={props.rect}>{(point) => <Point p={point} />}</For>
+      <For each={props.quad}>{(point) => <Point p={point} />}</For>
     </>
   );
 }
