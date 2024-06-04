@@ -20,6 +20,9 @@ export function App() {
   );
 
   const [file, setFile] = createSignal<File>();
+  const url = createMemo(() => {
+    return file() ? URL.createObjectURL(file()!) : "";
+  });
 
   // debug
   (async function debugLoadFile() {
@@ -29,15 +32,15 @@ export function App() {
     setFile(file);
   })();
 
-  const [projected, setProjected] = createSignal<string>();
+  const [projected, setProjected] = createSignal<Blob>();
   createEffect(() => {
     if (file()) {
       projectRectangles(file()!, []).then(setProjected);
     }
   });
 
-  const url = createMemo(() => {
-    return file() ? URL.createObjectURL(file()!) : "";
+  const projectedUrl = createMemo(() => {
+    return projected() ? URL.createObjectURL(projected()!) : "";
   });
 
   return (
@@ -56,7 +59,7 @@ export function App() {
             </div>
 
             <div class="texture">
-              <img class="image" src={projected()} alt="Projected image" />
+              <img class="image" src={projectedUrl()} alt="Projected image" />
             </div>
           </div>
         </Match>
@@ -76,8 +79,11 @@ async function projectRectangles(file: File, rectangles: Rect[]) {
   const canvas = document.createElement("canvas");
   cv.imshow(canvas, dst);
 
-  const url = canvas.toDataURL("image/png");
-  return url;
+  const blob = await new Promise((resolve) =>
+    canvas.toBlob((blob) => resolve(blob))
+  );
+
+  return blob;
 }
 
 function ImageBackground(props: {
