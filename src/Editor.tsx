@@ -1,7 +1,7 @@
 import { fromActorRef } from "@xstate/solid";
 import { createMemo, For, Show } from "solid-js";
 import { ActorRefFrom } from "xstate";
-import { editorMachine, type Point, type Rect } from "./editor";
+import { editorMachine, type Point, type Rect } from "./editorMachine";
 
 export function Editor(props: {
   imageRect: DOMRect;

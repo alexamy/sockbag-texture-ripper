@@ -8,8 +8,8 @@ import {
   createSignal,
 } from "solid-js";
 import "./App.css";
-import { Editor } from "./EditorComponent";
-import { editorMachine } from "./editor";
+import { Editor } from "./Editor";
+import { editorMachine } from "./editorMachine";
 
 export function App() {
   const editor = useActorRef(editorMachine);
@@ -49,7 +49,6 @@ export function App() {
     canvas.height = dstData.height;
     ctx.putImageData(dstData, 0, 0);
     const url = canvas.toDataURL("image/jpeg");
-    console.log(url);
   });
 
   const url = createMemo(() => {
