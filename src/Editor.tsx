@@ -11,7 +11,7 @@ export function Editor(props: {
   const send = props.initialEditor.send;
 
   const current = createMemo(() => state().context.current);
-  const quadrilaterals = createMemo(() => state().context.quadrilaterals);
+  const quads = createMemo(() => state().context.quads);
   const points = createMemo(() => state().context.points);
 
   const first = createMemo(() => points()[0]);
@@ -40,7 +40,7 @@ export function Editor(props: {
       onClick={onClick}
       onMouseMove={onMouseMove}
     >
-      <For each={quadrilaterals()}>{(quad) => <Quad quad={quad} />}</For>
+      <For each={quads()}>{(quad) => <Quad quad={quad} />}</For>
       <Point p={current()} />
       <For each={points()}>
         {(point, i) => (

@@ -6,7 +6,7 @@ export type Quad = [Point, Point, Point, Point];
 type Context = {
   current: Point;
   points: Point[];
-  quadrilaterals: Quad[];
+  quads: Quad[];
 };
 
 export const editorMachine = setup({
@@ -15,7 +15,7 @@ export const editorMachine = setup({
     events: {} as { type: "move"; point: Point } | { type: "click" },
   },
   guards: {
-    canAddQuadrilateral: ({ context }) => context.points.length === 4,
+    canAddQuad: ({ context }) => context.points.length === 4,
   },
   actions: {
     addNewPoint: assign(({ context }) => {
@@ -23,11 +23,11 @@ export const editorMachine = setup({
         points: [...context.points, context.current],
       };
     }),
-    addNewQuadrilateral: assign(({ context }) => {
+    addNewQuad: assign(({ context }) => {
       const [p1, p2, p3, p4] = context.points;
       const quad: Quad = [p1, p2, p3, p4];
       return {
-        quadrilaterals: [...context.quadrilaterals, quad],
+        quads: [...context.quads, quad],
         points: [],
       };
     }),
@@ -38,7 +38,7 @@ export const editorMachine = setup({
   context: {
     current: { x: 0, y: 0 },
     points: [],
-    quadrilaterals: [],
+    quads: [],
   },
   on: {
     move: [
@@ -50,8 +50,8 @@ export const editorMachine = setup({
   states: {
     clicking: {
       always: {
-        guard: "canAddQuadrilateral",
-        actions: "addNewQuadrilateral",
+        guard: "canAddQuad",
+        actions: "addNewQuad",
       },
       on: {
         click: {
