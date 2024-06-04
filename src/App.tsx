@@ -48,7 +48,8 @@ export function App() {
     canvas.width = dstData.width;
     canvas.height = dstData.height;
     ctx.putImageData(dstData, 0, 0);
-    const url = canvas.toDataURL("image/jpeg");
+    const url = canvas.toDataURL("image/png");
+    console.log("image data", url.length);
   });
 
   const url = createMemo(() => {
