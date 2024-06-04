@@ -75,7 +75,6 @@ function projectRectangles(image: HTMLImageElement, rectangles: Rect[]) {
   canvas.height = dstData.height;
   ctx.putImageData(dstData, 0, 0);
   const url = canvas.toDataURL("image/png");
-  console.log("image data", url.length);
 
   return url;
 }
