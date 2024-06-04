@@ -96,8 +96,7 @@ function Quad(props: { quad: Quad }) {
         stroke="white"
         stroke-width="2"
       />
-      <Line p1={top()} p2={center()} stroke="red" />
-      <Tip p={top()} n={center()} />
+      <Line p1={center()} p2={top()} withTip={true} stroke="red" />
       <For each={props.quad}>{(point) => <Point p={point} />}</For>
     </>
   );
@@ -125,16 +124,26 @@ function Tip(props: { p: Point; n: Point }) {
   return <polygon points={points()} fill="red" />;
 }
 
-function Line(props: { p1: Point; p2: Point; stroke?: string }) {
+function Line(props: {
+  p1: Point;
+  p2: Point;
+  stroke?: string;
+  withTip?: boolean;
+}) {
   return (
-    <line
-      x1={props.p1.x}
-      y1={props.p1.y}
-      x2={props.p2.x}
-      y2={props.p2.y}
-      stroke={props.stroke ?? "white"}
-      stroke-width="2"
-    />
+    <>
+      <line
+        x1={props.p1.x}
+        y1={props.p1.y}
+        x2={props.p2.x}
+        y2={props.p2.y}
+        stroke={props.stroke ?? "white"}
+        stroke-width="2"
+      />
+      <Show when={props.withTip}>
+        <Tip p={props.p2} n={props.p1} />
+      </Show>
+    </>
   );
 }
 
