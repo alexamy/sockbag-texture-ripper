@@ -1,5 +1,5 @@
 import * as cv from "@techstark/opencv-js";
-import { useActorRef } from "@xstate/solid";
+import { fromActorRef, useActorRef } from "@xstate/solid";
 import {
   For,
   Match,
@@ -14,6 +14,8 @@ import { Quad, editorMachine } from "./editorMachine";
 
 export function App() {
   const editor = useActorRef(editorMachine);
+  const state = fromActorRef(editor);
+  const quads = createMemo(() => state().context.quads);
 
   const [imageRef, setImageRef] = createSignal<HTMLImageElement>();
   const imageRect = createMemo(() =>
@@ -35,8 +37,8 @@ export function App() {
 
   const [projected, setProjected] = createSignal<Blob[]>([]);
   createEffect(() => {
-    if (file()) {
-      projectRectangles(file()!, []).then(setProjected);
+    if (file() && quads()) {
+      projectRectangles(file()!, quads()).then(setProjected);
     }
   });
 
@@ -71,14 +73,14 @@ export function App() {
   );
 }
 
-async function projectRectangles(file: File, rectangles: Quad[]) {
+async function projectRectangles(file: File, quads: Quad[]) {
   const image = new Image();
   image.src = URL.createObjectURL(file);
   await new Promise((resolve) => (image.onload = resolve));
   const src = cv.imread(image);
 
   const blobs: Blob[] = [];
-  for (const rectangle of rectangles) {
+  for (const rectangle of quads) {
     const [p1, p2, p3, p4] = rectangle;
     const points = [p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y];
     const srcTri = cv.matFromArray(4, 1, cv.CV_32FC2, points);
