@@ -105,10 +105,11 @@ function Quad(props: { quad: Quad }) {
 
 function Tip(props: { p: Point; n: Point }) {
   const vec = () => v.fromTo(props.n, props.p);
-  const dist = () => v.scale(v.normalize(vec()), 10);
+  const norm = () => v.normalize(vec());
 
-  const left = () => v.rotate(dist(), Math.PI / 2);
-  const right = () => v.rotate(dist(), -Math.PI / 2);
+  const dist = () => v.scale(norm(), 10);
+  const left = () => v.normal(dist());
+  const right = () => v.negate(left());
 
   const pairs = () => [
     props.p,
