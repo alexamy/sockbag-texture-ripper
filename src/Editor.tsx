@@ -17,6 +17,16 @@ export function Editor(props: {
   const first = createMemo(() => points()[0]);
   const last = createMemo(() => points()[points().length - 1]);
 
+  const style = createMemo(() => {
+    const rect = props.imageRect;
+    return {
+      left: `${rect.x}px`,
+      top: `${rect.y}px`,
+      width: `${rect.width}px`,
+      height: `${rect.height}px`,
+    };
+  });
+
   const viewBox = createMemo(() => {
     const rect = props.imageRect;
     return [0, 0, rect.width, rect.height].join(" ");
@@ -37,6 +47,7 @@ export function Editor(props: {
     <svg
       class="svg-canvas"
       viewBox={viewBox()}
+      style={style()}
       onClick={onClick}
       onMouseMove={onMouseMove}
     >
