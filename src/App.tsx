@@ -1,13 +1,5 @@
 import { fromActorRef, useActorRef } from "@xstate/solid";
-import {
-  For,
-  Match,
-  Show,
-  Switch,
-  createMemo,
-  createResource,
-  createSignal,
-} from "solid-js";
+import { For, Match, Show, Switch, createMemo, createSignal } from "solid-js";
 import { ActorRefFrom } from "xstate";
 import "./App.css";
 import { editorMachine } from "./editor";
@@ -20,14 +12,15 @@ export function App() {
 
   const [imageRect, setImageRect] = createSignal<DOMRect>(new DOMRect());
 
-  const [_file, setFile] = createSignal<File>();
+  const [file, setFile] = createSignal<File>();
 
   // debug
-  const [file] = createResource(async () => {
+  (async function debugLoadFile() {
     const image = await fetch("http://alexamy.me/pub/river.jpg");
     const blob = await image.blob();
-    return new File([blob], "river.jpg", { type: "image/jpeg" });
-  });
+    const file = new File([blob], "river.jpg", { type: "image/jpeg" });
+    setFile(file);
+  })();
 
   const url = createMemo(() => {
     return file() ? URL.createObjectURL(file()!) : "";
