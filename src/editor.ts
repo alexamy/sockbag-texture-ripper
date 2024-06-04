@@ -14,6 +14,9 @@ export const editorMachine = setup({
     context: {} as Context,
     events: {} as { type: "move"; point: Point } | { type: "click" },
   },
+  guards: {
+    canAddRectangle: ({ context }) => context.points.length === 4,
+  },
   actions: {
     addNewPoint: assign(({ context }) => {
       return {
@@ -33,9 +36,9 @@ export const editorMachine = setup({
   id: "editor",
   initial: "clicking",
   context: {
-    rectangles: [],
+    current: { x: 0, y: 0 },
     points: [],
-    current: [0, 0],
+    rectangles: [],
   },
   on: {
     move: [
@@ -47,7 +50,7 @@ export const editorMachine = setup({
   states: {
     clicking: {
       always: {
-        guard: ({ context }) => context.points.length === 4,
+        guard: "canAddRectangle",
         actions: "addNewRectangle",
       },
       on: {
