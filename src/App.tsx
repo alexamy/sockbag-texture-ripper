@@ -11,10 +11,7 @@ import {
 } from "solid-js";
 import { ActorRefFrom } from "xstate";
 import "./App.css";
-import { editorMachine } from "./editor";
-
-type Point = [number, number];
-type Rect = [Point, Point, Point, Point];
+import { editorMachine, type Point, type Rect } from "./editor";
 
 export function App() {
   const editor = useActorRef(editorMachine);
@@ -91,7 +88,7 @@ function Editor(props: {
     const rect = props.imageRect;
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    send({ type: "move", point: [x, y] });
+    send({ type: "move", point: { x, y } });
   }
 
   function onClick() {
@@ -126,16 +123,16 @@ function Editor(props: {
 }
 
 function Point(props: { p: Point }) {
-  return <circle cx={props.p[0]} cy={props.p[1]} r="4" fill="white" />;
+  return <circle cx={props.p.x} cy={props.p.y} r="4" fill="white" />;
 }
 
 function Line(props: { p1: Point; p2: Point }) {
   return (
     <line
-      x1={props.p1[0]}
-      y1={props.p1[1]}
-      x2={props.p2[0]}
-      y2={props.p2[1]}
+      x1={props.p1.x}
+      y1={props.p1.y}
+      x2={props.p2.x}
+      y2={props.p2.y}
       stroke="white"
       stroke-width="2"
     />
@@ -146,7 +143,7 @@ function Rect(props: { rect: Rect }) {
   return (
     <>
       <polygon
-        points={props.rect.map((point) => point.join(",")).join(" ")}
+        points={props.rect.map((point) => `${point.x},${point.y}`).join(" ")}
         fill="white"
         fill-opacity={0.3}
         stroke="white"

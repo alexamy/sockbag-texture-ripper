@@ -1,7 +1,7 @@
 import { assign, setup } from "xstate";
 
-type Point = [number, number];
-type Rect = [Point, Point, Point, Point];
+export type Point = { x: number; y: number };
+export type Rect = [Point, Point, Point, Point];
 
 type Context = {
   current: Point;
