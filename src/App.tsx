@@ -1,5 +1,14 @@
+import * as cv from "@techstark/opencv-js";
 import { fromActorRef, useActorRef } from "@xstate/solid";
-import { For, Match, Show, Switch, createMemo, createSignal } from "solid-js";
+import {
+  For,
+  Match,
+  Show,
+  Switch,
+  createEffect,
+  createMemo,
+  createSignal,
+} from "solid-js";
 import { ActorRefFrom } from "xstate";
 import "./App.css";
 import { editorMachine } from "./editor";
@@ -10,7 +19,10 @@ type Rect = [Point, Point, Point, Point];
 export function App() {
   const editor = useActorRef(editorMachine);
 
-  const [imageRect, setImageRect] = createSignal<DOMRect>(new DOMRect());
+  const [imageRef, setImageRef] = createSignal<HTMLImageElement>();
+  const imageRect = createMemo(() =>
+    imageRef() ? imageRef()!.getBoundingClientRect() : new DOMRect()
+  );
 
   const [file, setFile] = createSignal<File>();
 
@@ -21,6 +33,19 @@ export function App() {
     const file = new File([blob], "river.jpg", { type: "image/jpeg" });
     setFile(file);
   })();
+
+  // debug cv
+  createEffect(() => {
+    if (!imageRef()) return;
+    const src = cv.imread(imageRef()!);
+    const dst = src;
+    const dstData = new ImageData(
+      new Uint8ClampedArray(dst.data),
+      dst.cols,
+      dst.rows
+    );
+    console.log(dstData);
+  });
 
   const url = createMemo(() => {
     return file() ? URL.createObjectURL(file()!) : "";
@@ -34,7 +59,7 @@ export function App() {
         </Match>
         <Match when={file()}>
           <div class="editor">
-            <Image url={url()} setImageRect={setImageRect} />
+            <Image url={url()} setImageRef={setImageRef} />
             <Editor imageRect={imageRect()} initialEditor={editor} />
           </div>
         </Match>
@@ -132,10 +157,13 @@ function Rect(props: { rect: Rect }) {
   );
 }
 
-function Image(props: { url: string; setImageRect: (rect: DOMRect) => void }) {
+function Image(props: {
+  url: string;
+  setImageRef: (ref: HTMLImageElement) => void;
+}) {
   function onLoad(e: Event) {
     const image = e.target as HTMLImageElement;
-    props.setImageRect(image.getBoundingClientRect());
+    props.setImageRef(image);
   }
 
   return (
