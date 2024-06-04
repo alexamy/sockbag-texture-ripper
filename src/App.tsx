@@ -1,12 +1,6 @@
 import * as cv from "@techstark/opencv-js";
 import { useActorRef } from "@xstate/solid";
-import {
-  Match,
-  Switch,
-  createEffect,
-  createMemo,
-  createSignal,
-} from "solid-js";
+import { Match, Switch, createMemo, createSignal } from "solid-js";
 import "./App.css";
 import { Editor } from "./Editor";
 import { Rect, editorMachine } from "./editorMachine";
@@ -29,9 +23,10 @@ export function App() {
     setFile(file);
   })();
 
-  // debug cv
-  createEffect(() => {
-    imageRef() && projectRectangles(imageRef()!, []);
+  const projected = createMemo(() => {
+    if (imageRef()) {
+      return projectRectangles(imageRef()!, []);
+    }
   });
 
   const url = createMemo(() => {
@@ -52,24 +47,14 @@ export function App() {
               Image size: {imageRef()?.naturalWidth} x{" "}
               {imageRef()?.naturalHeight}
             </div>
+
+            <div class="texture">
+              <img src={projected()} alt="Projected image" />
+            </div>
           </div>
         </Match>
       </Switch>
     </div>
-  );
-}
-
-function Image(props: {
-  url: string;
-  setImageRef: (ref: HTMLImageElement) => void;
-}) {
-  function onLoad(e: Event) {
-    const image = e.target as HTMLImageElement;
-    props.setImageRef(image);
-  }
-
-  return (
-    <img class="image" src={props.url} alt="Uploaded image" onLoad={onLoad} />
   );
 }
 
@@ -93,6 +78,20 @@ function projectRectangles(image: HTMLImageElement, rectangles: Rect[]) {
   console.log("image data", url.length);
 
   return url;
+}
+
+function Image(props: {
+  url: string;
+  setImageRef: (ref: HTMLImageElement) => void;
+}) {
+  function onLoad(e: Event) {
+    const image = e.target as HTMLImageElement;
+    props.setImageRef(image);
+  }
+
+  return (
+    <img class="image" src={props.url} alt="Uploaded image" onLoad={onLoad} />
+  );
 }
 
 function DropImage(props: { setFile: (file: File) => void }) {
