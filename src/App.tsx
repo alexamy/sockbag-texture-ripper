@@ -63,12 +63,13 @@ export function App() {
         </Match>
         <Match when={file()}>
           <div class="editor">
-            <ImageBackground url={url()} setImageRef={setImageRef} />
-            <Editor imageRect={imageRect()} initialEditor={editor} />
             <div>
               Image size: {imageRef()?.naturalWidth} x{" "}
               {imageRef()?.naturalHeight}
             </div>
+
+            <ImageBackground url={url()} setImageRef={setImageRef} />
+            <Editor imageRect={imageRect()} initialEditor={editor} />
 
             <div class="texture">
               <For each={projectedUrls()}>{(url) => <img src={url} />}</For>

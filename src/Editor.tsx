@@ -1,4 +1,4 @@
-import { createMemo, For, Show } from "solid-js";
+import { createMemo, createSignal, For, Show } from "solid-js";
 import { Actor } from "xstate";
 import { editorMachine, type Point, type Quad } from "./editorMachine";
 import { createActorState } from "./hooks";
@@ -7,10 +7,10 @@ export function Editor(props: {
   imageRect: DOMRect;
   initialEditor: Actor<typeof editorMachine>;
 }) {
+  const [current, setCurrent] = createSignal({ x: 0, y: 0 });
+
   const state = createActorState(props.initialEditor);
   const send = props.initialEditor.send;
-
-  const current = createMemo(() => state.context.current);
   const quads = createMemo(() => state.context.quads);
   const points = createMemo(() => state.context.points);
 
@@ -26,11 +26,11 @@ export function Editor(props: {
     const rect = props.imageRect;
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    send({ type: "move", point: { x, y } });
+    setCurrent({ x, y });
   }
 
   function onClick() {
-    send({ type: "click" });
+    send({ type: "click", point: current() });
   }
 
   return (
