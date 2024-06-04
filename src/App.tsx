@@ -1,4 +1,4 @@
-import * as cv from "@techstark/opencv-js";
+import cv from "@techstark/opencv-js";
 import {
   For,
   Match,
@@ -6,6 +6,7 @@ import {
   createEffect,
   createMemo,
   createSignal,
+  on,
 } from "solid-js";
 import "./App.css";
 import { Editor } from "./Editor";
@@ -16,7 +17,6 @@ export function App() {
   const editor = createActor(editorMachine);
   const state = createActorState(editor);
   const quads = createMemo(() => state.context.quads);
-  createEffect(() => console.log(quads()));
 
   const [imageRef, setImageRef] = createSignal<HTMLImageElement>();
   const imageRect = createMemo(() =>
@@ -37,11 +37,16 @@ export function App() {
   })();
 
   const [projected, setProjected] = createSignal<Blob[]>([]);
-  createEffect(() => {
-    if (file() && quads()) {
-      projectRectangles(file()!, quads()).then(setProjected);
-    }
-  });
+  createEffect(
+    on(
+      () => quads().length,
+      () => {
+        if (file()) {
+          projectRectangles(file()!, quads()).then(setProjected);
+        }
+      }
+    )
+  );
 
   const projectedUrls = createMemo(() => {
     return projected().map((blob) => URL.createObjectURL(blob));
@@ -75,7 +80,6 @@ export function App() {
 }
 
 async function projectRectangles(file: File, quads: Quad[]) {
-  console.log("projectRectangles");
   const image = new Image();
   image.src = URL.createObjectURL(file);
   await new Promise((resolve) => (image.onload = resolve));
