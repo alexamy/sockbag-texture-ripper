@@ -34,8 +34,8 @@ export function Editor(props: {
 
   function onMouseMove(e: MouseEvent) {
     const rect = props.imageRect;
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const x = e.clientX - rect.left + window.scrollX;
+    const y = e.clientY - rect.top + window.scrollY;
     setCurrent({ x, y });
   }
 
