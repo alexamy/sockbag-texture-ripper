@@ -9,11 +9,15 @@ export function subtract(a: Vector, b: Vector): Vector {
 }
 
 export function fromTo(b: Vector, a: Vector): Vector {
-  return { x: a.x - b.x, y: a.y - b.y };
+  return subtract(a, b);
 }
 
 export function scale(a: Vector, b: number): Vector {
   return { x: a.x * b, y: a.y * b };
+}
+
+export function negate(a: Vector): Vector {
+  return scale(a, -1);
 }
 
 export function dot(a: Vector, b: Vector): number {

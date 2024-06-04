@@ -2,6 +2,7 @@ import { createMemo, createSignal, For, Show } from "solid-js";
 import { Actor } from "xstate";
 import { editorMachine, type Point, type Quad } from "./editorMachine";
 import { createActorState } from "./hooks";
+import * as v from "./vector";
 
 export function Editor(props: {
   imageRect: DOMRect;
@@ -96,9 +97,31 @@ function Quad(props: { quad: Quad }) {
         stroke-width="2"
       />
       <Line p1={top()} p2={center()} stroke="red" />
+      <Tip p={top()} n={center()} />
       <For each={props.quad}>{(point) => <Point p={point} />}</For>
     </>
   );
+}
+
+function Tip(props: { p: Point; n: Point }) {
+  const vec = () => v.fromTo(props.n, props.p);
+  const dist = () => v.scale(v.normalize(vec()), 10);
+
+  const left = () => v.rotate(dist(), Math.PI / 2);
+  const right = () => v.rotate(dist(), -Math.PI / 2);
+
+  const pairs = () => [
+    props.p,
+    v.add(v.subtract(props.p, dist()), left()),
+    v.add(v.subtract(props.p, dist()), right()),
+  ];
+
+  const points = () =>
+    pairs()
+      .map((p) => `${p.x},${p.y}`)
+      .join(" ");
+
+  return <polygon points={points()} fill="red" />;
 }
 
 function Line(props: { p1: Point; p2: Point; stroke?: string }) {
