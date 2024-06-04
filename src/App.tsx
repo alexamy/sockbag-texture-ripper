@@ -9,7 +9,7 @@ import {
 } from "solid-js";
 import "./App.css";
 import { Editor } from "./Editor";
-import { editorMachine } from "./editorMachine";
+import { Rect, editorMachine } from "./editorMachine";
 
 export function App() {
   const editor = useActorRef(editorMachine);
@@ -31,25 +31,7 @@ export function App() {
 
   // debug cv
   createEffect(() => {
-    if (!imageRef()) return;
-
-    // create a new image
-    const src = cv.imread(imageRef()!);
-    const dst = src;
-    const dstData = new ImageData(
-      new Uint8ClampedArray(dst.data),
-      dst.cols,
-      dst.rows
-    );
-
-    // get data blob
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d")!;
-    canvas.width = dstData.width;
-    canvas.height = dstData.height;
-    ctx.putImageData(dstData, 0, 0);
-    const url = canvas.toDataURL("image/png");
-    console.log("image data", url.length);
+    imageRef() && projectRectangles(imageRef()!, []);
   });
 
   const url = createMemo(() => {
@@ -89,6 +71,28 @@ function Image(props: {
   return (
     <img class="image" src={props.url} alt="Uploaded image" onLoad={onLoad} />
   );
+}
+
+function projectRectangles(image: HTMLImageElement, rectangles: Rect[]) {
+  // create a new image
+  const src = cv.imread(image);
+  const dst = src;
+  const dstData = new ImageData(
+    new Uint8ClampedArray(dst.data),
+    dst.cols,
+    dst.rows
+  );
+
+  // get data blob
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d")!;
+  canvas.width = dstData.width;
+  canvas.height = dstData.height;
+  ctx.putImageData(dstData, 0, 0);
+  const url = canvas.toDataURL("image/png");
+  console.log("image data", url.length);
+
+  return url;
 }
 
 function DropImage(props: { setFile: (file: File) => void }) {
