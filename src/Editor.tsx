@@ -9,8 +9,8 @@ export function Editor(props: {
 }) {
   const [current, setCurrent] = createSignal({ x: 0, y: 0 });
 
-  const state = createActorState(props.initialEditor);
   const send = props.initialEditor.send;
+  const state = createActorState(props.initialEditor);
   const quads = createMemo(() => state.context.quads);
   const points = createMemo(() => state.context.points);
 
