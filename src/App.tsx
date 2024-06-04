@@ -34,6 +34,8 @@ export function App() {
   // debug cv
   createEffect(() => {
     if (!imageRef()) return;
+
+    // create a new image
     const src = cv.imread(imageRef()!);
     const dst = src;
     const dstData = new ImageData(
@@ -41,7 +43,15 @@ export function App() {
       dst.cols,
       dst.rows
     );
-    console.log(dstData);
+
+    // get data blob
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d")!;
+    canvas.width = dstData.width;
+    canvas.height = dstData.height;
+    ctx.putImageData(dstData, 0, 0);
+    const url = canvas.toDataURL("image/jpeg");
+    console.log(url);
   });
 
   const url = createMemo(() => {
