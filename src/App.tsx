@@ -22,10 +22,29 @@ export function App() {
   const imageRect = createMemo(() =>
     imageRef() ? imageRef()!.getBoundingClientRect() : new DOMRect()
   );
+  const imageScale = createMemo(() =>
+    imageRef() ? imageRef()!.naturalWidth / imageRef()!.width : 1
+  );
 
   const [file, setFile] = createSignal<File>();
   const url = createMemo(() => {
     return file() ? URL.createObjectURL(file()!) : "";
+  });
+
+  const [projected, setProjected] = createSignal<Blob[]>([]);
+  createEffect(
+    on(
+      () => quads().length,
+      () => {
+        if (file()) {
+          projectRectangles(file()!, quads(), imageScale()).then(setProjected);
+        }
+      }
+    )
+  );
+
+  const projectedUrls = createMemo(() => {
+    return projected().map((blob) => URL.createObjectURL(blob));
   });
 
   // debug
@@ -35,22 +54,6 @@ export function App() {
     const file = new File([blob], "river.jpg", { type: "image/jpeg" });
     setFile(file);
   })();
-
-  const [projected, setProjected] = createSignal<Blob[]>([]);
-  createEffect(
-    on(
-      () => quads().length,
-      () => {
-        if (file()) {
-          projectRectangles(file()!, quads()).then(setProjected);
-        }
-      }
-    )
-  );
-
-  const projectedUrls = createMemo(() => {
-    return projected().map((blob) => URL.createObjectURL(blob));
-  });
 
   return (
     <div class="app">
@@ -77,23 +80,22 @@ export function App() {
   );
 }
 
-async function projectRectangles(file: File, quads: Quad[]) {
+async function projectRectangles(file: File, quads: Quad[], scale: number) {
   const image = new Image();
   image.src = URL.createObjectURL(file);
   await new Promise((resolve) => (image.onload = resolve));
 
   const src = cv.imread(image);
-  const scale = image.naturalWidth / image.width;
-
   const blobs: Blob[] = [];
-  for (const rectangle of quads) {
-    const [p1, p2, p3, p4] = rectangle;
+
+  for (const quad of quads) {
+    const [p1, p2, p3, p4] = quad;
     const points = [p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y];
     const scaled = points.map((p) => p * scale);
     const srcTri = cv.matFromArray(4, 1, cv.CV_32FC2, scaled);
 
-    const W = 100;
-    const H = 100;
+    const W = 300;
+    const H = 300;
     const dst = new cv.Mat();
     const dstTri = cv.matFromArray(4, 1, cv.CV_32FC2, [0, 0, W, 0, W, H, 0, H]);
 
