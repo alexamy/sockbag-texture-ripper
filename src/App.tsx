@@ -41,7 +41,7 @@ export function App() {
         </Match>
         <Match when={file()}>
           <div class="editor">
-            <Image url={url()} setImageRef={setImageRef} />
+            <ImageBackground url={url()} setImageRef={setImageRef} />
             <Editor imageRect={imageRect()} initialEditor={editor} />
             <div>
               Image size: {imageRef()?.naturalWidth} x{" "}
@@ -59,27 +59,17 @@ export function App() {
 }
 
 function projectRectangles(image: HTMLImageElement, rectangles: Rect[]) {
-  // create a new image
   const src = cv.imread(image);
   const dst = src;
-  const dstData = new ImageData(
-    new Uint8ClampedArray(dst.data),
-    dst.cols,
-    dst.rows
-  );
 
-  // get data blob
   const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d")!;
-  canvas.width = dstData.width;
-  canvas.height = dstData.height;
-  ctx.putImageData(dstData, 0, 0);
-  const url = canvas.toDataURL("image/png");
+  cv.imshow(canvas, dst);
 
+  const url = canvas.toDataURL("image/png");
   return url;
 }
 
-function Image(props: {
+function ImageBackground(props: {
   url: string;
   setImageRef: (ref: HTMLImageElement) => void;
 }) {
