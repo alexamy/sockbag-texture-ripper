@@ -71,23 +71,6 @@ export function Editor(props: {
   );
 }
 
-function Point(props: { p: Point }) {
-  return <circle cx={props.p.x} cy={props.p.y} r="4" fill="white" />;
-}
-
-function Line(props: { p1: Point; p2: Point; stroke?: string }) {
-  return (
-    <line
-      x1={props.p1.x}
-      y1={props.p1.y}
-      x2={props.p2.x}
-      y2={props.p2.y}
-      stroke={props.stroke ?? "white"}
-      stroke-width="2"
-    />
-  );
-}
-
 function Quad(props: { quad: Quad }) {
   const top = createMemo(() => {
     const quad = props.quad;
@@ -116,4 +99,21 @@ function Quad(props: { quad: Quad }) {
       <For each={props.quad}>{(point) => <Point p={point} />}</For>
     </>
   );
+}
+
+function Line(props: { p1: Point; p2: Point; stroke?: string }) {
+  return (
+    <line
+      x1={props.p1.x}
+      y1={props.p1.y}
+      x2={props.p2.x}
+      y2={props.p2.y}
+      stroke={props.stroke ?? "white"}
+      stroke-width="2"
+    />
+  );
+}
+
+function Point(props: { p: Point }) {
+  return <circle cx={props.p.x} cy={props.p.y} r="4" fill="white" />;
 }
