@@ -64,20 +64,34 @@ function Point(props: { p: Point }) {
   return <circle cx={props.p.x} cy={props.p.y} r="4" fill="white" />;
 }
 
-function Line(props: { p1: Point; p2: Point }) {
+function Line(props: { p1: Point; p2: Point; stroke?: string }) {
   return (
     <line
       x1={props.p1.x}
       y1={props.p1.y}
       x2={props.p2.x}
       y2={props.p2.y}
-      stroke="white"
+      stroke={props.stroke ?? "white"}
       stroke-width="2"
     />
   );
 }
 
 function Quad(props: { quad: Quad }) {
+  const top = createMemo(() => {
+    const quad = props.quad;
+    const x = (quad[0].x + quad[1].x) / 2;
+    const y = (quad[0].y + quad[1].y) / 2;
+    return { x, y };
+  });
+
+  const center = createMemo(() => {
+    const quad = props.quad;
+    const x = (quad[0].x + quad[1].x + quad[2].x + quad[3].x) / 4;
+    const y = (quad[0].y + quad[1].y + quad[2].y + quad[3].y) / 4;
+    return { x, y };
+  });
+
   return (
     <>
       <polygon
@@ -87,6 +101,7 @@ function Quad(props: { quad: Quad }) {
         stroke="white"
         stroke-width="2"
       />
+      <Line p1={top()} p2={center()} stroke="red" />
       <For each={props.quad}>{(point) => <Point p={point} />}</For>
     </>
   );
