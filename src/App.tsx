@@ -68,9 +68,7 @@ export function App() {
             </div>
 
             <div class="texture">
-              <For each={projectedUrls()}>
-                {(url) => <img class="image" src={url} />}
-              </For>
+              <For each={projectedUrls()}>{(url) => <img src={url} />}</For>
             </div>
           </div>
         </Match>
@@ -83,13 +81,16 @@ async function projectRectangles(file: File, quads: Quad[]) {
   const image = new Image();
   image.src = URL.createObjectURL(file);
   await new Promise((resolve) => (image.onload = resolve));
+
   const src = cv.imread(image);
+  const scale = image.naturalWidth / image.width;
 
   const blobs: Blob[] = [];
   for (const rectangle of quads) {
     const [p1, p2, p3, p4] = rectangle;
     const points = [p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y];
-    const srcTri = cv.matFromArray(4, 1, cv.CV_32FC2, points);
+    const scaled = points.map((p) => p * scale);
+    const srcTri = cv.matFromArray(4, 1, cv.CV_32FC2, scaled);
 
     const W = 100;
     const H = 100;
