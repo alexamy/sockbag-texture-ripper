@@ -1,6 +1,12 @@
 import * as cv from "@techstark/opencv-js";
 import { useActorRef } from "@xstate/solid";
-import { Match, Switch, createMemo, createSignal } from "solid-js";
+import {
+  Match,
+  Switch,
+  createEffect,
+  createMemo,
+  createSignal,
+} from "solid-js";
 import "./App.css";
 import { Editor } from "./Editor";
 import { Rect, editorMachine } from "./editorMachine";
@@ -23,9 +29,10 @@ export function App() {
     setFile(file);
   })();
 
-  const projected = createMemo(() => {
-    if (imageRef()) {
-      return projectRectangles(imageRef()!, []);
+  const [projected, setProjected] = createSignal<string>();
+  createEffect(() => {
+    if (file()) {
+      projectRectangles(file()!, []).then(setProjected);
     }
   });
 
@@ -49,7 +56,7 @@ export function App() {
             </div>
 
             <div class="texture">
-              <img src={projected()} alt="Projected image" />
+              <img class="image" src={projected()} alt="Projected image" />
             </div>
           </div>
         </Match>
@@ -58,7 +65,11 @@ export function App() {
   );
 }
 
-function projectRectangles(image: HTMLImageElement, rectangles: Rect[]) {
+async function projectRectangles(file: File, rectangles: Rect[]) {
+  const image = new Image();
+  image.src = URL.createObjectURL(file);
+  await new Promise((resolve) => (image.onload = resolve));
+
   const src = cv.imread(image);
   const dst = src;
 
