@@ -44,14 +44,8 @@ export function App() {
     )
   );
 
-  // debug
-  (async function debugLoadFile() {
-    // textrip.jpg, river.jpg, houses.png
-    const image = await fetch("http://alexamy.me/pub/houses.png");
-    const blob = await image.blob();
-    const file = new File([blob], "source");
-    setFile(file);
-  })();
+  // DEBUG
+  debugLoadFile().then(setFile);
 
   return (
     <div class="app">
@@ -79,6 +73,14 @@ export function App() {
       </Switch>
     </div>
   );
+}
+
+async function debugLoadFile() {
+  // textrip.jpg, river.jpg, houses.png
+  const image = await fetch("http://alexamy.me/pub/houses.png");
+  const blob = await image.blob();
+  const file = new File([blob], "source");
+  return file
 }
 
 function ImageBackground(props: {
