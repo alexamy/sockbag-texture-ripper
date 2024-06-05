@@ -70,7 +70,7 @@ export function Editor(props: {
         <Line p1={last()} p2={current()} />
       </Show>
       <Show when={points().length >= 2}>
-        <Line p1={center()} p2={top()} withTip={true} stroke="red" />
+        <LineTip from={center()} to={top()} maxLength={50} />
         <Line p1={first()} p2={current()} />
       </Show>
     </svg>
@@ -90,52 +90,52 @@ function Quad(props: { quad: Quad }) {
         stroke="white"
         stroke-width="2"
       />
-      <Line p1={center()} p2={top()} withTip={true} stroke="red" />
+      <LineTip from={center()} to={top()} maxLength={50} />
       <For each={props.quad}>{(point) => <Point p={point} />}</For>
     </>
   );
 }
 
-function Tip(props: { p: Point; n: Point }) {
-  const vec = () => v.normalize(v.fromTo(props.n, props.p));
+function LineTip(props: { from: Point; to: Point; maxLength?: number }) {
+  const vec = () => v.normalize(v.fromTo(props.from, props.to));
   const dist = () => v.scale(vec(), 10);
   const left = () => v.scale(v.normal(vec()), 5);
   const right = () => v.negate(left());
 
   const pairs = () => [
-    props.p,
-    v.add(v.subtract(props.p, v.scale(dist(), 1.5)), left()),
-    v.add(v.subtract(props.p, v.scale(dist(), 1.5)), right()),
+    props.to,
+    v.add(v.subtract(props.to, v.scale(dist(), 1.5)), left()),
+    v.add(v.subtract(props.to, v.scale(dist(), 1.5)), right()),
   ];
 
-  const points = () =>
+  const tip = () =>
     pairs()
       .map((p) => `${p.x},${p.y}`)
       .join(" ");
 
-  return <polygon points={points()} fill="red" />;
-}
+  const from = () =>
+    props.maxLength
+      ? v.add(props.to, v.scale(vec(), -props.maxLength))
+      : props.from;
 
-function Line(props: {
-  p1: Point;
-  p2: Point;
-  stroke?: string;
-  withTip?: boolean;
-}) {
   return (
     <>
-      <line
-        x1={props.p1.x}
-        y1={props.p1.y}
-        x2={props.p2.x}
-        y2={props.p2.y}
-        stroke={props.stroke ?? "white"}
-        stroke-width="2"
-      />
-      <Show when={props.withTip}>
-        <Tip p={props.p2} n={props.p1} />
-      </Show>
+      <polygon points={tip()} fill="red" />
+      <Line p1={from()} p2={props.to} stroke="red" />
     </>
+  );
+}
+
+function Line(props: { p1: Point; p2: Point; stroke?: string }) {
+  return (
+    <line
+      x1={props.p1.x}
+      y1={props.p1.y}
+      x2={props.p2.x}
+      y2={props.p2.y}
+      stroke={props.stroke ?? "white"}
+      stroke-width="2"
+    />
   );
 }
 
