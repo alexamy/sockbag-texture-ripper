@@ -12,6 +12,7 @@ import "./App.css";
 import { Editor } from "./Editor";
 import { Quad, editorMachine } from "./editorMachine";
 import { createActor, createActorState } from "./hooks";
+import { v } from "./vector";
 
 export function App() {
   const editor = createActor(editorMachine);
@@ -95,8 +96,16 @@ async function projectRectangles(file: File, quads: Quad[], scale: number) {
     const scaled = points.map((p) => p * scale);
     const srcTri = cv.matFromArray(4, 1, cv.CV_32FC2, scaled);
 
-    const W = 300;
-    const H = 300;
+    const top = [quad[0], quad[1]];
+    const left = [quad[0], quad[3]];
+    const right = [quad[1], quad[2]];
+
+    const W = v.magnitude(v.fromTo(top[0], top[1]));
+    const H = Math.min(
+      v.magnitude(v.fromTo(left[0], left[1])),
+      v.magnitude(v.fromTo(right[0], right[1]))
+    );
+
     const dst = new cv.Mat();
     const dstTri = cv.matFromArray(4, 1, cv.CV_32FC2, [0, 0, W, 0, W, H, 0, H]);
 
