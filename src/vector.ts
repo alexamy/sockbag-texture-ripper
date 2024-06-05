@@ -52,10 +52,12 @@ function negate(a: Vector): Vector {
   return scale(a, -1);
 }
 
+// 0 => same direction, 0.5 => orthogonal, 1 => opposite direction
 function dot(a: Vector, b: Vector): number {
   return a.x * b.x + a.y * b.y;
 }
 
+// > 0 => a is clockwise from b, < 0 => a is counterclockwise from b
 function cross(a: Vector, b: Vector): number {
   return a.x * b.y - a.y * b.x;
 }
