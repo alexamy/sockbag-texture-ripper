@@ -50,24 +50,24 @@ export function App() {
 
   return (
     <div class="app">
+      <h1>🧦👜</h1>
       <Switch>
         <Match when={!file()}>
           <DropImage setFile={setFile} />
         </Match>
         <Match when={file()}>
           <div class="editor">
-            <h2>🧦👜</h2>
-            <Region>Hello!</Region>
-
             <div>
               Image size: {imageRef()?.naturalWidth} x{" "}
               {imageRef()?.naturalHeight}
             </div>
 
-            <div class="editor-canvas">
-              <ImageBackground url={url()} setImageRef={setImageRef} />
-              <Editor imageRect={imageRect()} initialEditor={editor} />
-            </div>
+            <Region>
+              <div class="editor-canvas">
+                <ImageBackground url={url()} setImageRef={setImageRef} />
+                <Editor imageRect={imageRect()} initialEditor={editor} />
+              </div>
+            </Region>
 
             <Show when={projected().length}>
               <Texture blobs={projected()} />
