@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal } from "solid-js";
+import { createEffect, createMemo, createSignal, onMount } from "solid-js";
 
 type Transform = { x: number; y: number; scale: number };
 
@@ -17,6 +17,13 @@ export function Region(props: {
   const transform = createMemo(
     () => `translate(${x()}px, ${y()}px) scale(${scale()})`
   );
+
+  const [parent, setParent] = createSignal<HTMLElement>();
+  const [size, setSize] = createSignal({ width: 0, height: 0 });
+  onMount(() => {
+    const size = parent()!.getBoundingClientRect();
+    setSize(size);
+  });
 
   const [startPoint, setStartPoint] = createSignal({ x: 0, y: 0 });
 
@@ -54,6 +61,7 @@ export function Region(props: {
   return (
     <div
       class="region"
+      ref={setParent}
       onMouseUp={onMouseUp}
       onMouseDown={onMouseDown}
       onMouseMove={onMouseMove}
@@ -61,28 +69,48 @@ export function Region(props: {
       onWheel={onMouseWheel}
       onScroll={onScroll}
     >
-      <div class="region-content" style={{ transform: transform() }}>
-        <svg
-          class="transparent-background"
-          width="40"
-          height="40"
-          xmlns="http://www.w3.org/2000/svg"
-          style={{ transform: "" }}
-        >
-          <rect width="100%" height="100%" fill="url(#checkerboard)" />
-          <pattern
-            id="checkerboard"
-            width="20"
-            height="20"
-            patternUnits="userSpaceOnUse"
-          >
-            <rect width="10" height="10" fill="#eeeeee" />
-            <rect x="10" width="10" height="10" fill="#ffffff" />
-            <rect y="10" width="10" height="10" fill="#ffffff" />
-            <rect x="10" y="10" width="10" height="10" fill="#eeeeee" />
-          </pattern>
-        </svg>
-      </div>
+      <GridBackground parentSize={size()} scale={scale()} />
+      <div class="region-content" style={{ transform: transform() }} />
     </div>
+  );
+}
+
+function GridBackground(props: {
+  parentSize: { width: number; height: number };
+  scale: number;
+}) {
+  const size = createMemo(() => {
+    const { width, height } = props.parentSize;
+    const factor = 1 / props.scale;
+    return {
+      width: width * factor,
+      height: height * factor,
+    };
+  });
+
+  return (
+    <svg
+      class="transparent-background"
+      xmlns="http://www.w3.org/2000/svg"
+      style={{
+        "transform-origin": "0 0",
+        transform: `scale(${props.scale})`,
+        width: `${size().width}px`,
+        height: `${size().height}px`,
+      }}
+    >
+      <rect width="100%" height="100%" fill="url(#checkerboard)" />
+      <pattern
+        id="checkerboard"
+        width="20"
+        height="20"
+        patternUnits="userSpaceOnUse"
+      >
+        <rect width="10" height="10" fill="#eeeeee" />
+        <rect x="10" width="10" height="10" fill="#ffffff" />
+        <rect y="10" width="10" height="10" fill="#ffffff" />
+        <rect x="10" y="10" width="10" height="10" fill="#eeeeee" />
+      </pattern>
+    </svg>
   );
 }
