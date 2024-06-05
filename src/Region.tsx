@@ -1,10 +1,19 @@
-import { createMemo, createSignal } from "solid-js";
+import { createEffect, createMemo, createSignal } from "solid-js";
 
-export function Region() {
+type Transform = { x: number; y: number; scale: number };
+
+export function Region(props: {
+  setTransform?: (transform: Transform) => void;
+}) {
   const [x, setX] = createSignal(0);
   const [y, setY] = createSignal(0);
   const [scale, setScale] = createSignal(1);
-  const transform = createMemo(
+  createEffect(() => {
+    if (!props.setTransform) return;
+    props.setTransform({ x: x(), y: y(), scale: scale() });
+  });
+
+  const transformStyle = createMemo(
     () => `translate(${x()}px, ${y()}px) scale(${scale()})`
   );
 
@@ -50,7 +59,7 @@ export function Region() {
       onWheel={onMouseWheel}
       onScroll={onScroll}
     >
-      <div class="region-content" style={{ transform: transform() }}>
+      <div class="region-content" style={{ transform: transformStyle() }}>
         <Background />
       </div>
     </div>
