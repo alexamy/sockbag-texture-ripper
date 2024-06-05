@@ -46,17 +46,3 @@
   top: 0;
   left: 0;
 }
-
-.region {
-  position: relative;
-  width: 800px;
-  height: 600px;
-  border: 1px solid grey;
-  overflow: hidden;
-}
-
-.grid-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-}

@@ -6,6 +6,7 @@ import {
   createSignal,
   onMount,
 } from "solid-js";
+import "./Region.css";
 
 type Transform = { x: number; y: number; scale: number };
 
