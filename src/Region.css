@@ -4,9 +4,11 @@
   height: 600px;
   border: 1px solid grey;
   overflow: hidden;
+  color: black;
+  user-select: none;
 }
 
-.grid-background {
+.region-content {
   position: absolute;
   top: 0;
   left: 0;
