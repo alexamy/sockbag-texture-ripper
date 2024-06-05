@@ -54,6 +54,7 @@ export function Texture(props: { blobs: Blob[] }) {
     canvas.height = packResult()?.h ?? root.height;
 
     for (const ref of refs) {
+      // TODO handle case with transform properly
       let { x, y } = ref.getBoundingClientRect();
       x = x - root.x + transform().x;
       y = y - root.y + transform().y;
