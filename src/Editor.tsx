@@ -2,7 +2,7 @@ import { createMemo, createSignal, For, Show } from "solid-js";
 import { Actor } from "xstate";
 import { editorMachine, type Point, type Quad } from "./editorMachine";
 import { createActorState } from "./hooks";
-import * as v from "./vector";
+import { v } from "./vector";
 
 export function Editor(props: {
   imageRect: DOMRect;
