@@ -24,8 +24,6 @@ export function Editor(props: {
   const style = createMemo(() => {
     const rect = props.imageRect;
     return {
-      left: `${rect.x}px`,
-      top: `${rect.y}px`,
       width: `${rect.width}px`,
       height: `${rect.height}px`,
     };
