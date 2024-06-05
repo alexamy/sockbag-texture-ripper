@@ -39,8 +39,9 @@ export function Region(props: {
     event.preventDefault();
     event.stopPropagation();
 
-    const delta = Math.round(event.deltaY / 100);
-    const newScale = scale() * (1 - delta / 10);
+    const delta =
+      Math.sign(event.deltaY) * Math.min(80, Math.abs(event.deltaY));
+    const newScale = scale() * (1 - delta / 800);
     setScale(newScale);
   }
 
