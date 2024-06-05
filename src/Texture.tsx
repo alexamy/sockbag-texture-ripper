@@ -7,6 +7,7 @@ export function Texture(props: { blobs: Blob[] }) {
     return props.blobs.map((blob) => URL.createObjectURL(blob));
   });
 
+  const [parent, setParent] = createSignal<HTMLDivElement>();
   const refs: HTMLImageElement[] = [];
 
   const [packResult, setPackResult] = createSignal<ReturnType<typeof potpack>>([]);
@@ -40,15 +41,18 @@ export function Texture(props: { blobs: Blob[] }) {
     setPositions(sizes);
   }
 
+  // TODO case when packResult is empty (autopack is not clicked)
   function onDownload() {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d")!;
     canvas.width = packResult().w;
     canvas.height = packResult().h;
 
+    const root = parent()!.getBoundingClientRect();
+
     for(const ref of refs) {
       const { x, y } = ref.getBoundingClientRect();
-      ctx.drawImage(ref, x, y);
+      ctx.drawImage(ref, x - root.x, y - root.y);
     }
 
     canvas.toBlob((blob) => {
@@ -66,7 +70,7 @@ export function Texture(props: { blobs: Blob[] }) {
     <div>
       <button onClick={onAutoPack}>Autopack</button>
       <button onClick={onDownload}>Download</button>
-      <div class="texture">
+      <div ref={setParent} class="texture">
         <For each={urls()}>
           {(url, i) => (
             <img
