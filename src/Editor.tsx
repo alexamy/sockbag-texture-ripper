@@ -77,7 +77,7 @@ export function Editor(props: {
       onMouseMove={onMouseMove}
     >
       <For each={quads()}>{(quad) => <Quad quad={quad} />}</For>
-      <Point p={current()} />
+      {/* <Point p={current()} /> */}
       <For each={points()}>
         {(point, i) => (
           <>
