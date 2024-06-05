@@ -87,11 +87,21 @@ function Texture(props: { blobs: Blob[] }) {
 
   function onDownload() {}
 
+  // TODO set proper positions without overlapping
+
   return (
     <div>
       <button onClick={onDownload}>Download</button>
       <div class="texture">
-        <For each={urls()}>{(url) => <img src={url} />}</For>
+        <For each={urls()}>
+          {(url, i) => (
+            <img
+              class="texture-rect"
+              style={{ transform: `translateX(${i() * 120}px)` }}
+              src={url}
+            />
+          )}
+        </For>
       </div>
     </div>
   );
