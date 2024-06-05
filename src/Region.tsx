@@ -18,6 +18,32 @@ export function Region() {
       style={{ transform: transform() }}
       onMouseDown={onMouseDown}
       onWheel={onMouseWheel}
-    />
+    >
+      <Background />
+    </div>
+  );
+}
+
+function Background() {
+  return (
+    <svg
+      class="transparent-background"
+      width="40"
+      height="40"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <pattern
+        id="checkerboard"
+        width="20"
+        height="20"
+        patternUnits="userSpaceOnUse"
+      >
+        <rect width="10" height="10" fill="#eeeeee" />
+        <rect x="10" width="10" height="10" fill="#ffffff" />
+        <rect y="10" width="10" height="10" fill="#ffffff" />
+        <rect x="10" y="10" width="10" height="10" fill="#eeeeee" />
+      </pattern>
+      <rect width="100%" height="100%" fill="url(#checkerboard)" />
+    </svg>
   );
 }
