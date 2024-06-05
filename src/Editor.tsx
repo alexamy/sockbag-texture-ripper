@@ -19,7 +19,7 @@ export function Editor(props: {
   const last = createMemo(() => points()[points().length - 1]);
 
   const top = createMemo(() => v.average(points().slice(0, 2)));
-  const bottom = createMemo(() => v.average([last() ?? v.Zero, current()]));
+  const bottom = createMemo(() => v.average([last() ?? v.Zero(), current()]));
 
   const style = createMemo(() => {
     const rect = props.imageRect;
@@ -38,8 +38,19 @@ export function Editor(props: {
 
   function onMouseMove(e: MouseEvent) {
     const rect = props.imageRect;
-    const x = e.clientX - rect.left + window.scrollX;
-    const y = e.clientY - rect.top + window.scrollY;
+    let x = e.clientX - rect.left + window.scrollX;
+    let y = e.clientY - rect.top + window.scrollY;
+
+    // only straight lines with shift
+    if (e.shiftKey && last()) {
+      const vec = v.abs(v.fromTo(v.make(x, y), last()));
+      if (vec.x > vec.y) {
+        y = last().y;
+      } else {
+        x = last().x;
+      }
+    }
+
     setCurrent({ x, y });
   }
 

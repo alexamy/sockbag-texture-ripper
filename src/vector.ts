@@ -1,10 +1,10 @@
 export type Vector = { x: number; y: number };
 
-const Zero = { x: 0, y: 0 } satisfies Vector;
-const Up = { x: 0, y: -1 } satisfies Vector;
-const Down = { x: 0, y: 1 } satisfies Vector;
-const Left = { x: -1, y: 0 } satisfies Vector;
-const Right = { x: 1, y: 0 } satisfies Vector;
+const Zero = () => ({ x: 0, y: 0 } satisfies Vector);
+const Up = () => ({ x: 0, y: -1 } satisfies Vector);
+const Down = () => ({ x: 0, y: 1 } satisfies Vector);
+const Left = () => ({ x: -1, y: 0 } satisfies Vector);
+const Right = () => ({ x: 1, y: 0 } satisfies Vector);
 
 export const v = {
   Zero,
@@ -18,6 +18,7 @@ export const v = {
   fromTo,
   scale,
   negate,
+  abs,
   dot,
   cross,
   length,
@@ -33,7 +34,7 @@ export const v = {
   average,
 };
 
-function make(x: number, y: number): Vector {
+function make(x: number = 0, y: number = 0): Vector {
   return { x, y };
 }
 
@@ -55,6 +56,10 @@ function scale(a: Vector, b: number): Vector {
 
 function negate(a: Vector): Vector {
   return scale(a, -1);
+}
+
+function abs(a: Vector): Vector {
+  return { x: Math.abs(a.x), y: Math.abs(a.y) };
 }
 
 // 0 => same direction, 0.5 => orthogonal, 1 => opposite direction
@@ -114,5 +119,7 @@ function clamp(a: Vector, min: Vector, max: Vector): Vector {
 }
 
 function average(ps: Vector[]): Vector {
-  return ps.length === 0 ? Zero : scale(ps.reduce(add, Zero), 1 / ps.length);
+  return ps.length === 0
+    ? Zero()
+    : scale(ps.reduce(add, Zero()), 1 / ps.length);
 }
