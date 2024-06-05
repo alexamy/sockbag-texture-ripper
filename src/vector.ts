@@ -19,6 +19,7 @@ export const v = {
   scale,
   negate,
   abs,
+  equals,
   dot,
   cross,
   length,
@@ -60,6 +61,10 @@ function negate(a: Vector): Vector {
 
 function abs(a: Vector): Vector {
   return { x: Math.abs(a.x), y: Math.abs(a.y) };
+}
+
+function equals(a: Vector, b: Vector): boolean {
+  return a.x === b.x && a.y === b.y;
 }
 
 // 0 => same direction, 0.5 => orthogonal, 1 => opposite direction
