@@ -48,13 +48,15 @@
 }
 
 .region {
+  position: relative;
   width: 800px;
   height: 600px;
   border: 1px solid grey;
   overflow: hidden;
 }
 
-.transparent-background {
-  width: 100%;
-  height: 100%;
+.grid-background {
+  position: absolute;
+  top: 0;
+  left: 0;
 }

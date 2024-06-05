@@ -57,7 +57,7 @@ export function App() {
         <Match when={file()}>
           <div class="editor">
             <h2>🧦👜</h2>
-            <Region />
+            <Region>Hello!</Region>
 
             <div>
               Image size: {imageRef()?.naturalWidth} x{" "}

@@ -1,8 +1,16 @@
-import { createEffect, createMemo, createSignal, onMount } from "solid-js";
+import {
+  JSXElement,
+  children,
+  createEffect,
+  createMemo,
+  createSignal,
+  onMount,
+} from "solid-js";
 
 type Transform = { x: number; y: number; scale: number };
 
 export function Region(props: {
+  children: JSXElement;
   setTransform?: (transform: Transform) => void;
 }) {
   const {
@@ -30,6 +38,8 @@ export function Region(props: {
     setSize(size);
   });
 
+  const resolved = children(() => props.children);
+
   return (
     <div
       class="region"
@@ -46,7 +56,9 @@ export function Region(props: {
         width={size().width}
         height={size().height}
       />
-      <div class="region-content" style={{ transform: transform() }} />
+      <div class="region-content" style={{ transform: transform() }}>
+        {resolved()}
+      </div>
     </div>
   );
 }
@@ -66,7 +78,7 @@ function GridBackground(props: {
 
   return (
     <svg
-      class="transparent-background"
+      class="grid-background"
       xmlns="http://www.w3.org/2000/svg"
       style={{
         "transform-origin": "0 0",
