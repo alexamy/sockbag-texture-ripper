@@ -12,6 +12,7 @@ export const v = {
   Down,
   Left,
   Right,
+  make,
   add,
   subtract,
   fromTo,
@@ -31,6 +32,10 @@ export const v = {
   clamp,
   average,
 };
+
+function make(x: number, y: number): Vector {
+  return { x, y };
+}
 
 function add(a: Vector, b: Vector): Vector {
   return { x: a.x + b.x, y: a.y + b.y };
