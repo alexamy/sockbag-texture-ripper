@@ -11,7 +11,7 @@ type Context = {
 export const editorMachine = setup({
   types: {
     context: {} as Context,
-    events: {} as { type: "click"; point: Point },
+    events: {} as { type: "addPoint"; point: Point },
   },
   guards: {
     canAddQuad: ({ context }) => context.points.length === 4,
@@ -45,7 +45,7 @@ export const editorMachine = setup({
         actions: "addNewQuad",
       },
       on: {
-        click: {
+        addPoint: {
           actions: {
             type: "addNewPoint",
             params: ({ event }) => ({ point: event.point }),

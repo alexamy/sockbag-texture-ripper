@@ -44,7 +44,7 @@ export function Editor(props: {
   }
 
   function onClick() {
-    send({ type: "click", point: current() });
+    send({ type: "addPoint", point: current() });
   }
 
   return (
