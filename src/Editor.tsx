@@ -97,17 +97,15 @@ function Quad(props: { quad: Quad }) {
 }
 
 function Tip(props: { p: Point; n: Point }) {
-  const vec = () => v.fromTo(props.n, props.p);
-  const norm = () => v.normalize(vec());
-
-  const dist = () => v.scale(norm(), 10);
-  const left = () => v.normal(dist());
+  const vec = () => v.normalize(v.fromTo(props.n, props.p));
+  const dist = () => v.scale(vec(), 10);
+  const left = () => v.scale(v.normal(vec()), 5);
   const right = () => v.negate(left());
 
   const pairs = () => [
     props.p,
-    v.add(v.subtract(props.p, dist()), left()),
-    v.add(v.subtract(props.p, dist()), right()),
+    v.add(v.subtract(props.p, v.scale(dist(), 1.5)), left()),
+    v.add(v.subtract(props.p, v.scale(dist(), 1.5)), right()),
   ];
 
   const points = () =>
