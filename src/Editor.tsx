@@ -48,7 +48,6 @@ export function Editor(props: {
     if (e.button === 0) {
       send({ type: "addPoint", point: current() });
     } else if (e.button === 2) {
-      console.log("discard");
       send({ type: "discard" });
     }
   }
