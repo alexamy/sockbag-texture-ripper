@@ -75,5 +75,7 @@ export function clamp(a: Vector, min: Vector, max: Vector): Vector {
 }
 
 export function average(ps: Vector[]): Vector {
-  return scale(ps.reduce(add, { x: 0, y: 0 }), 1 / ps.length);
+  return ps.length === 0
+    ? { x: 0, y: 0 }
+    : scale(ps.reduce(add, { x: 0, y: 0 }), 1 / ps.length);
 }

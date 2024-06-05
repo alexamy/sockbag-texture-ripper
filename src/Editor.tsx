@@ -18,6 +18,9 @@ export function Editor(props: {
   const first = createMemo(() => points()[0]);
   const last = createMemo(() => points()[points().length - 1]);
 
+  const top = createMemo(() => v.average(points().slice(0, 2)));
+  const center = createMemo(() => v.average([...points(), current()]));
+
   const style = createMemo(() => {
     const rect = props.imageRect;
     return {
@@ -62,10 +65,12 @@ export function Editor(props: {
           </>
         )}
       </For>
+
       <Show when={points().length >= 1}>
         <Line p1={last()} p2={current()} />
       </Show>
       <Show when={points().length >= 2}>
+        <Line p1={center()} p2={top()} withTip={true} stroke="red" />
         <Line p1={first()} p2={current()} />
       </Show>
     </svg>
@@ -73,19 +78,8 @@ export function Editor(props: {
 }
 
 function Quad(props: { quad: Quad }) {
-  const top = createMemo(() => {
-    const quad = props.quad;
-    const x = (quad[0].x + quad[1].x) / 2;
-    const y = (quad[0].y + quad[1].y) / 2;
-    return { x, y };
-  });
-
-  const center = createMemo(() => {
-    const quad = props.quad;
-    const x = (quad[0].x + quad[1].x + quad[2].x + quad[3].x) / 4;
-    const y = (quad[0].y + quad[1].y + quad[2].y + quad[3].y) / 4;
-    return { x, y };
-  });
+  const top = createMemo(() => v.average(props.quad.slice(0, 2)));
+  const center = createMemo(() => v.average(props.quad));
 
   return (
     <>
