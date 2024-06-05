@@ -88,12 +88,12 @@ function Texture(props: { blobs: Blob[] }) {
   function onDownload() {}
 
   return (
-    <>
+    <div>
       <button onClick={onDownload}>Download</button>
       <div class="texture">
         <For each={urls()}>{(url) => <img src={url} />}</For>
       </div>
-    </>
+    </div>
   );
 }
 
