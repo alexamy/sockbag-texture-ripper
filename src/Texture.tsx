@@ -9,6 +9,7 @@ export function Texture(props: { blobs: Blob[] }) {
 
   const refs: HTMLImageElement[] = [];
 
+  const [packResult, setPackResult] = createSignal<ReturnType<typeof potpack>>([]);
   const [positions, setPositions] = createSignal<Point[]>([]);
   const transforms = createMemo(() => {
     return positions().map(({ x, y }) => `translate(${x}px, ${y}px)`);
@@ -33,14 +34,32 @@ export function Texture(props: { blobs: Blob[] }) {
       return { i, w: width, h: height, x: 0, y: 0 };
     });
 
-    potpack(sizes);
+    setPackResult(potpack(sizes));
     sizes.sort((a, b) => a.i - b.i);
 
     setPositions(sizes);
   }
 
   function onDownload() {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d")!;
+    canvas.width = packResult().w;
+    canvas.height = packResult().h;
 
+    for(const ref of refs) {
+      const { x, y } = ref.getBoundingClientRect();
+      ctx.drawImage(ref, x, y);
+    }
+
+    canvas.toBlob((blob) => {
+      if(!blob) throw new Error("Failed to download texture.");
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "texture.png";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
   }
 
   return (
