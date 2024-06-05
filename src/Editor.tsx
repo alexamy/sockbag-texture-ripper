@@ -7,6 +7,7 @@ import { v } from "./vector";
 export function Editor(props: {
   imageRect: DOMRect;
   initialEditor: Actor<typeof editorMachine>;
+  transform: { x: number; y: number; scale: number };
 }) {
   const [current, setCurrent] = createSignal({ x: 0, y: 0 });
 
@@ -38,8 +39,10 @@ export function Editor(props: {
     const rect = props.imageRect;
     let x = e.clientX;
     let y = e.clientY;
-    x = x - rect.left + window.scrollX;
-    y = y - rect.top + window.scrollY;
+    x = x - rect.left + window.scrollX - props.transform.x;
+    y = y - rect.top + window.scrollY - props.transform.y;
+    x = x / props.transform.scale;
+    y = y / props.transform.scale;
 
     // only straight lines with shift
     if (e.shiftKey && last()) {
@@ -152,7 +155,7 @@ function Line(props: {
         x2={props.to.x}
         y2={props.to.y}
         stroke={color()}
-        stroke-width="2"
+        stroke-width="1"
       />
       <Show when={props.withTip}>
         <polygon points={tip()} fill={color()} />
@@ -162,5 +165,5 @@ function Line(props: {
 }
 
 function Point(props: { p: Point }) {
-  return <circle cx={props.p.x} cy={props.p.y} r="4" fill="white" />;
+  return <circle cx={props.p.x} cy={props.p.y} r="2" fill="black" />;
 }

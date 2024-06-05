@@ -45,6 +45,12 @@ export function App() {
     )
   );
 
+  const [editorTransform, setEditorTransform] = createSignal({
+    x: 0,
+    y: 0,
+    scale: 1,
+  });
+
   // DEBUG
   debugLoadFile().then(setFile);
 
@@ -62,10 +68,14 @@ export function App() {
               {imageRef()?.naturalHeight}
             </div>
 
-            <Region>
+            <Region setTransform={setEditorTransform}>
               <div class="editor-canvas">
                 <ImageBackground url={url()} setImageRef={setImageRef} />
-                <Editor imageRect={imageRect()} initialEditor={editor} />
+                <Editor
+                  initialEditor={editor}
+                  imageRect={imageRect()}
+                  transform={editorTransform()}
+                />
               </div>
             </Region>
 
