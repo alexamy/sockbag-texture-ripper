@@ -5,11 +5,12 @@ import {
   createEffect,
   createMemo,
   createSignal,
-  on
+  on,
 } from "solid-js";
 import "./App.css";
 import { Editor } from "./Editor";
-import { Texture } from './Texture';
+import { Region } from "./Region";
+import { Texture } from "./Texture";
 import { editorMachine } from "./editorMachine";
 import { createActor, createActorState } from "./hooks";
 import { projectRectangles } from "./projection";
@@ -55,6 +56,9 @@ export function App() {
         </Match>
         <Match when={file()}>
           <div class="editor">
+            <h2>🧦👜</h2>
+            <Region />
+
             <div>
               Image size: {imageRef()?.naturalWidth} x{" "}
               {imageRef()?.naturalHeight}
@@ -80,7 +84,7 @@ async function debugLoadFile() {
   const image = await fetch("http://alexamy.me/pub/houses.png");
   const blob = await image.blob();
   const file = new File([blob], "source");
-  return file
+  return file;
 }
 
 function ImageBackground(props: {
