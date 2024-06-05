@@ -8,15 +8,15 @@ export function Region(props: {
   const [x, setX] = createSignal(0);
   const [y, setY] = createSignal(0);
   const [scale, setScale] = createSignal(1);
+  const transform = createMemo(
+    () => `translate(${x()}px, ${y()}px) scale(${scale()})`
+  );
 
+  // provide the transform to the parent component
   createEffect(() => {
     if (!props.setTransform) return;
     props.setTransform({ x: x(), y: y(), scale: scale() });
   });
-
-  const transform = createMemo(
-    () => `translate(${x()}px, ${y()}px) scale(${scale()})`
-  );
 
   const [parent, setParent] = createSignal<HTMLElement>();
   const [size, setSize] = createSignal({ width: 0, height: 0 });
