@@ -15,14 +15,13 @@ export async function projectRectangles(
   const blobs: Blob[] = [];
 
   for (const quad of quads) {
-    const [p1, p2, p3, p4] = quad;
+    const [p1, p2, p3, p4] = quad.map(p => v.scale(p, scale));
     const points = [p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y];
-    const scaled = points.map((p) => p * scale);
-    const srcTri = cv.matFromArray(4, 1, cv.CV_32FC2, scaled);
+    const srcTri = cv.matFromArray(4, 1, cv.CV_32FC2, points);
 
-    const top = [quad[0], quad[1]];
-    const left = [quad[0], quad[3]];
-    const right = [quad[1], quad[2]];
+    const top = [p1, p2];
+    const right = [p2, p3];
+    const left = [p1, p4];
 
     const W = v.length(v.fromTo(top[0], top[1]));
     const H = Math.min(

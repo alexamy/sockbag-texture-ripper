@@ -39,7 +39,9 @@ export function Texture(props: { blobs: Blob[] }) {
     setPositions(sizes);
   }
 
-  function onDownload() {}
+  function onDownload() {
+
+  }
 
   return (
     <div>
