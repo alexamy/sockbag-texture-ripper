@@ -1,6 +1,7 @@
 import {
   For,
   Match,
+  Show,
   Switch,
   createEffect,
   createMemo,
@@ -69,7 +70,9 @@ export function App() {
               <Editor imageRect={imageRect()} initialEditor={editor} />
             </div>
 
-            <Texture blobs={projected()} />
+            <Show when={projected().length}>
+              <Texture blobs={projected()} />
+            </Show>
           </div>
         </Match>
       </Switch>
@@ -82,10 +85,15 @@ function Texture(props: { blobs: Blob[] }) {
     return props.blobs.map((blob) => URL.createObjectURL(blob));
   });
 
+  function onDownload() {}
+
   return (
-    <div class="texture">
-      <For each={urls()}>{(url) => <img src={url} />}</For>
-    </div>
+    <>
+      <button onClick={onDownload}>Download</button>
+      <div class="texture">
+        <For each={urls()}>{(url) => <img src={url} />}</For>
+      </div>
+    </>
   );
 }
 
