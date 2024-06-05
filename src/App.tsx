@@ -1,3 +1,4 @@
+import potpack from "potpack";
 import {
   For,
   Match,
@@ -10,7 +11,7 @@ import {
 } from "solid-js";
 import "./App.css";
 import { Editor } from "./Editor";
-import { editorMachine } from "./editorMachine";
+import { Point, editorMachine } from "./editorMachine";
 import { createActor, createActorState } from "./hooks";
 import { projectRectangles } from "./projection";
 
@@ -85,19 +86,44 @@ function Texture(props: { blobs: Blob[] }) {
     return props.blobs.map((blob) => URL.createObjectURL(blob));
   });
 
-  function onDownload() {}
+  const refs: HTMLImageElement[] = [];
 
-  // TODO set proper positions without overlapping
+  const [positions, setPositions] = createSignal<Point[]>([]);
+  const transforms = createMemo(() => {
+    return positions().map(({ x, y }) => `translate(${x}px, ${y}px)`);
+  });
+
+  createEffect(() => {
+    const initialPositions = props.blobs.map(() => ({ x: 0, y: 0 }));
+    setPositions(initialPositions);
+  });
+
+  function onAutoPack() {
+    const sizes = refs.map((ref, i) => {
+      const { width, height } = ref.getBoundingClientRect();
+      return { i, w: width, h: height, x: 0, y: 0 };
+    });
+
+    const result = potpack(sizes);
+    console.log("Pack result", result);
+
+    sizes.sort((a, b) => a.i - b.i);
+    setPositions(sizes);
+  }
+
+  function onDownload() {}
 
   return (
     <div>
+      <button onClick={onAutoPack}>Autopack</button>
       <button onClick={onDownload}>Download</button>
       <div class="texture">
         <For each={urls()}>
           {(url, i) => (
             <img
+              ref={refs[i()]}
               class="texture-rect"
-              style={{ transform: `translateX(${i() * 120}px)` }}
+              style={{ transform: transforms()[i()] }}
               src={url}
             />
           )}
