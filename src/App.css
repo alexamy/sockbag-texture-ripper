@@ -32,3 +32,10 @@
   top: 0;
   left: 0;
 }
+
+.texture {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
+}
