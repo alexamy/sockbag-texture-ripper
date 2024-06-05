@@ -69,22 +69,26 @@ export function Region(props: {
       onWheel={onMouseWheel}
       onScroll={onScroll}
     >
-      <GridBackground parentSize={size()} scale={scale()} />
+      <GridBackground
+        scale={scale()}
+        width={size().width}
+        height={size().height}
+      />
       <div class="region-content" style={{ transform: transform() }} />
     </div>
   );
 }
 
 function GridBackground(props: {
-  parentSize: { width: number; height: number };
+  width: number;
+  height: number;
   scale: number;
 }) {
   const size = createMemo(() => {
-    const { width, height } = props.parentSize;
     const factor = 1 / props.scale;
     return {
-      width: width * factor,
-      height: height * factor,
+      width: props.width * factor,
+      height: props.height * factor,
     };
   });
 
