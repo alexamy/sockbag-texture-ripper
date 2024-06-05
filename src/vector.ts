@@ -1,5 +1,11 @@
 export type Vector = { x: number; y: number };
 
+export const Zero = { x: 0, y: 0 };
+export const Up = { x: 0, y: -1 };
+export const Down = { x: 0, y: 1 };
+export const Left = { x: -1, y: 0 };
+export const Right = { x: 1, y: 0 };
+
 export function add(a: Vector, b: Vector): Vector {
   return { x: a.x + b.x, y: a.y + b.y };
 }
@@ -75,7 +81,5 @@ export function clamp(a: Vector, min: Vector, max: Vector): Vector {
 }
 
 export function average(ps: Vector[]): Vector {
-  return ps.length === 0
-    ? { x: 0, y: 0 }
-    : scale(ps.reduce(add, { x: 0, y: 0 }), 1 / ps.length);
+  return ps.length === 0 ? Zero : scale(ps.reduce(add, Zero), 1 / ps.length);
 }

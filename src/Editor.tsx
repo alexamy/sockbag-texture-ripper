@@ -19,7 +19,7 @@ export function Editor(props: {
   const last = createMemo(() => points()[points().length - 1]);
 
   const top = createMemo(() => v.average(points().slice(0, 2)));
-  const center = createMemo(() => v.average([...points(), current()]));
+  const bottom = createMemo(() => v.average([last() ?? v.Zero, current()]));
 
   const style = createMemo(() => {
     const rect = props.imageRect;
@@ -70,8 +70,14 @@ export function Editor(props: {
         <Line p1={last()} p2={current()} />
       </Show>
       <Show when={points().length >= 2}>
-        <LineTip from={center()} to={top()} />
         <Line p1={first()} p2={current()} />
+      </Show>
+
+      <Show when={points().length === 2}>
+        <LineTip from={current()} to={top()} />
+      </Show>
+      <Show when={points().length === 3}>
+        <LineTip from={bottom()} to={top()} />
       </Show>
     </svg>
   );
