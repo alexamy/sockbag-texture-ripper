@@ -46,9 +46,10 @@ export function App() {
 
   // debug
   (async function debugLoadFile() {
+    // textrip.jpg, river.jpg, houses.png
     const image = await fetch("http://alexamy.me/pub/houses.png");
     const blob = await image.blob();
-    const file = new File([blob], "river.jpg", { type: "image/jpeg" });
+    const file = new File([blob], "source");
     setFile(file);
   })();
 
