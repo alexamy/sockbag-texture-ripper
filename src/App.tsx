@@ -49,7 +49,7 @@ export function App() {
 
   // debug
   (async function debugLoadFile() {
-    const image = await fetch("http://alexamy.me/pub/river.jpg");
+    const image = await fetch("http://alexamy.me/pub/houses.png");
     const blob = await image.blob();
     const file = new File([blob], "river.jpg", { type: "image/jpeg" });
     setFile(file);
