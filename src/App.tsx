@@ -1,4 +1,3 @@
-import cv from "@techstark/opencv-js";
 import {
   For,
   Match,
@@ -10,9 +9,9 @@ import {
 } from "solid-js";
 import "./App.css";
 import { Editor } from "./Editor";
-import { Quad, editorMachine } from "./editorMachine";
+import { editorMachine } from "./editorMachine";
 import { createActor, createActorState } from "./hooks";
-import { v } from "./vector";
+import { projectRectangles } from "./projection";
 
 export function App() {
   const editor = createActor(editorMachine);
@@ -80,58 +79,6 @@ export function App() {
       </Switch>
     </div>
   );
-}
-
-async function projectRectangles(file: File, quads: Quad[], scale: number) {
-  const image = new Image();
-  image.src = URL.createObjectURL(file);
-  await new Promise((resolve) => (image.onload = resolve));
-
-  const src = cv.imread(image);
-  const blobs: Blob[] = [];
-
-  for (const quad of quads) {
-    const [p1, p2, p3, p4] = quad;
-    const points = [p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y];
-    const scaled = points.map((p) => p * scale);
-    const srcTri = cv.matFromArray(4, 1, cv.CV_32FC2, scaled);
-
-    const top = [quad[0], quad[1]];
-    const left = [quad[0], quad[3]];
-    const right = [quad[1], quad[2]];
-
-    const W = v.length(v.fromTo(top[0], top[1]));
-    const H = Math.min(
-      v.length(v.fromTo(left[0], left[1])),
-      v.length(v.fromTo(right[0], right[1]))
-    );
-
-    const dst = new cv.Mat();
-    const dstTri = cv.matFromArray(4, 1, cv.CV_32FC2, [0, 0, W, 0, W, H, 0, H]);
-
-    const transform = cv.getPerspectiveTransform(srcTri, dstTri);
-    const dsize = new cv.Size(W, H);
-    cv.warpPerspective(
-      src,
-      dst,
-      transform,
-      dsize,
-      cv.INTER_LINEAR,
-      cv.BORDER_CONSTANT
-    );
-
-    const canvas = document.createElement("canvas");
-    cv.imshow(canvas, dst);
-
-    const blob = await new Promise<Blob | null>((resolve) =>
-      canvas.toBlob(resolve)
-    );
-    if (!blob) throw new Error("Failed to extract image rectangle.");
-
-    blobs.push(blob);
-  }
-
-  return blobs;
 }
 
 function ImageBackground(props: {
