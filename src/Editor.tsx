@@ -43,7 +43,8 @@ export function Editor(props: {
 
     // only straight lines with shift
     if (e.shiftKey && last()) {
-      const vec = v.abs(v.fromTo(v.make(x, y), last()));
+      const current = v.make(x, y);
+      const vec = v.abs(v.fromTo(current, last()));
       if (vec.x > vec.y) {
         y = last().y;
       } else {
