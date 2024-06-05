@@ -10,7 +10,7 @@ export function Texture(props: { blobs: Blob[] }) {
   const [parent, setParent] = createSignal<HTMLDivElement>();
   const refs: HTMLImageElement[] = [];
 
-  const [packResult, setPackResult] = createSignal<ReturnType<typeof potpack>>([]);
+  const [packResult, setPackResult] = createSignal<{ w: number, h: number }>();
   const [positions, setPositions] = createSignal<Point[]>([]);
   const transforms = createMemo(() => {
     return positions().map(({ x, y }) => `translate(${x}px, ${y}px)`);
@@ -46,8 +46,8 @@ export function Texture(props: { blobs: Blob[] }) {
     const root = parent()!.getBoundingClientRect();
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d")!;
-    canvas.width = packResult().w ?? root.width;
-    canvas.height = packResult().h ?? root.height;
+    canvas.width = packResult()?.w ?? root.width;
+    canvas.height = packResult()?.h ?? root.height;
 
     for(const ref of refs) {
       const { x, y } = ref.getBoundingClientRect();
