@@ -26,7 +26,19 @@ export function Region() {
     }
   }
 
-  function onMouseWheel(event: WheelEvent) {}
+  function onMouseWheel(event: WheelEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const delta = Math.round(event.deltaY / 100);
+    const newScale = scale() * (1 - delta / 10);
+    setScale(newScale);
+  }
+
+  function onScroll(event: Event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
 
   return (
     <div
@@ -36,6 +48,7 @@ export function Region() {
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseUp}
       onWheel={onMouseWheel}
+      onScroll={onScroll}
     >
       <div class="region-content" style={{ transform: transform() }}>
         <Background />
