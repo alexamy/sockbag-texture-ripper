@@ -38,8 +38,10 @@ export function Editor(props: {
 
   function onMouseMove(e: MouseEvent) {
     const rect = props.imageRect;
-    let x = e.clientX - rect.left + window.scrollX;
-    let y = e.clientY - rect.top + window.scrollY;
+    let x = e.clientX;
+    let y = e.clientY;
+    x = x - rect.left + window.scrollX;
+    y = y - rect.top + window.scrollY;
 
     // only straight lines with shift
     if (e.shiftKey && last()) {
