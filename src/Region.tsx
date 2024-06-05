@@ -5,12 +5,17 @@ type Transform = { x: number; y: number; scale: number };
 export function Region(props: {
   setTransform?: (transform: Transform) => void;
 }) {
-  const [x, setX] = createSignal(0);
-  const [y, setY] = createSignal(0);
-  const [scale, setScale] = createSignal(1);
-  const transform = createMemo(
-    () => `translate(${x()}px, ${y()}px) scale(${scale()})`
-  );
+  const {
+    x,
+    y,
+    scale,
+    transform,
+    onMouseDown,
+    onMouseUp,
+    onMouseMove,
+    onMouseWheel,
+    onScroll,
+  } = createMovement();
 
   // provide the transform to the parent component
   createEffect(() => {
@@ -24,39 +29,6 @@ export function Region(props: {
     const size = parent()!.getBoundingClientRect();
     setSize(size);
   });
-
-  const [startPoint, setStartPoint] = createSignal({ x: 0, y: 0 });
-
-  function onMouseDown(event: MouseEvent) {
-    setStartPoint({ x: event.clientX, y: event.clientY });
-  }
-
-  function onMouseUp(event: MouseEvent) {}
-
-  function onMouseMove(event: MouseEvent) {
-    if (event.buttons === 1) {
-      const dx = event.clientX - startPoint().x;
-      const dy = event.clientY - startPoint().y;
-      setX(x() + dx);
-      setY(y() + dy);
-      setStartPoint({ x: event.clientX, y: event.clientY });
-    }
-  }
-
-  function onMouseWheel(event: WheelEvent) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    const delta =
-      Math.sign(event.deltaY) * Math.min(80, Math.abs(event.deltaY));
-    const newScale = scale() * (1 - delta / 800);
-    setScale(newScale);
-  }
-
-  function onScroll(event: Event) {
-    event.preventDefault();
-    event.stopPropagation();
-  }
 
   return (
     <div
@@ -117,4 +89,61 @@ function GridBackground(props: {
       </pattern>
     </svg>
   );
+}
+
+function createMovement() {
+  // transform
+  const [x, setX] = createSignal(0);
+  const [y, setY] = createSignal(0);
+  const [scale, setScale] = createSignal(1);
+  const transform = createMemo(
+    () => `translate(${x()}px, ${y()}px) scale(${scale()})`
+  );
+
+  // pan
+  const [startPoint, setStartPoint] = createSignal({ x: 0, y: 0 });
+
+  function onMouseDown(event: MouseEvent) {
+    setStartPoint({ x: event.clientX, y: event.clientY });
+  }
+
+  function onMouseUp(_event: MouseEvent) {}
+
+  function onMouseMove(event: MouseEvent) {
+    if (event.buttons === 1) {
+      const dx = event.clientX - startPoint().x;
+      const dy = event.clientY - startPoint().y;
+      setX(x() + dx);
+      setY(y() + dy);
+      setStartPoint({ x: event.clientX, y: event.clientY });
+    }
+  }
+
+  // zoom
+  function onScroll(event: Event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  function onMouseWheel(event: WheelEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const delta =
+      Math.sign(event.deltaY) * Math.min(80, Math.abs(event.deltaY));
+    const newScale = scale() * (1 - delta / 800);
+    setScale(newScale);
+  }
+
+  return {
+    x,
+    y,
+    scale,
+    transform,
+    onMouseDown,
+    onMouseUp,
+    onMouseMove,
+    onMouseWheel,
+    onScroll,
+  };
 }
