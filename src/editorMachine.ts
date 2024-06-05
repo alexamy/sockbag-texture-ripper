@@ -11,7 +11,7 @@ type Context = {
 export const editorMachine = setup({
   types: {
     context: {} as Context,
-    events: {} as { type: "addPoint"; point: Point },
+    events: {} as { type: "discard" } | { type: "addPoint"; point: Point },
   },
   guards: {
     canAddQuad: ({ context }) => context.points.length === 4,
@@ -28,6 +28,11 @@ export const editorMachine = setup({
       return {
         quads: [...context.quads, quad],
         points: [],
+      };
+    }),
+    deleteLastPoint: assign(({ context }) => {
+      return {
+        points: context.points.slice(0, -1),
       };
     }),
   },
@@ -50,6 +55,9 @@ export const editorMachine = setup({
             type: "addNewPoint",
             params: ({ event }) => ({ point: event.point }),
           },
+        },
+        discard: {
+          actions: "deleteLastPoint",
         },
       },
     },

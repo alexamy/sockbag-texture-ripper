@@ -68,8 +68,10 @@ export function App() {
               {imageRef()?.naturalHeight}
             </div>
 
-            <ImageBackground url={url()} setImageRef={setImageRef} />
-            <Editor imageRect={imageRect()} initialEditor={editor} />
+            <div class="editor-canvas">
+              <ImageBackground url={url()} setImageRef={setImageRef} />
+              <Editor imageRect={imageRect()} initialEditor={editor} />
+            </div>
 
             <div class="texture">
               <For each={projectedUrls()}>{(url) => <img src={url} />}</For>

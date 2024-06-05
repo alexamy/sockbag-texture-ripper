@@ -43,8 +43,14 @@ export function Editor(props: {
     setCurrent({ x, y });
   }
 
-  function onClick() {
-    send({ type: "addPoint", point: current() });
+  function onClick(e: MouseEvent) {
+    e.preventDefault();
+    if (e.button === 0) {
+      send({ type: "addPoint", point: current() });
+    } else if (e.button === 2) {
+      console.log("discard");
+      send({ type: "discard" });
+    }
   }
 
   return (
@@ -53,6 +59,7 @@ export function Editor(props: {
       viewBox={viewBox()}
       style={style()}
       onClick={onClick}
+      onContextMenu={onClick}
       onMouseMove={onMouseMove}
     >
       <For each={quads()}>{(quad) => <Quad quad={quad} />}</For>
