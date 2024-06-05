@@ -69,6 +69,7 @@ export function Region(props: {
           xmlns="http://www.w3.org/2000/svg"
           style={{ transform: "" }}
         >
+          <rect width="100%" height="100%" fill="url(#checkerboard)" />
           <pattern
             id="checkerboard"
             width="20"
@@ -80,7 +81,6 @@ export function Region(props: {
             <rect y="10" width="10" height="10" fill="#ffffff" />
             <rect x="10" y="10" width="10" height="10" fill="#eeeeee" />
           </pattern>
-          <rect width="100%" height="100%" fill="url(#checkerboard)" />
         </svg>
       </div>
     </div>
