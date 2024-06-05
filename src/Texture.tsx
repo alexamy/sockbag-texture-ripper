@@ -43,12 +43,11 @@ export function Texture(props: { blobs: Blob[] }) {
 
   // TODO case when packResult is empty (autopack is not clicked)
   function onDownload() {
+    const root = parent()!.getBoundingClientRect();
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d")!;
-    canvas.width = packResult().w;
-    canvas.height = packResult().h;
-
-    const root = parent()!.getBoundingClientRect();
+    canvas.width = packResult().w ?? root.width;
+    canvas.height = packResult().h ?? root.height;
 
     for(const ref of refs) {
       const { x, y } = ref.getBoundingClientRect();
