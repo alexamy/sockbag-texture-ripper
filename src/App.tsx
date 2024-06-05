@@ -43,10 +43,6 @@ export function App() {
     )
   );
 
-  const projectedUrls = createMemo(() => {
-    return projected().map((blob) => URL.createObjectURL(blob));
-  });
-
   // debug
   (async function debugLoadFile() {
     const image = await fetch("http://alexamy.me/pub/houses.png");
@@ -73,12 +69,22 @@ export function App() {
               <Editor imageRect={imageRect()} initialEditor={editor} />
             </div>
 
-            <div class="texture">
-              <For each={projectedUrls()}>{(url) => <img src={url} />}</For>
-            </div>
+            <Texture blobs={projected()} />
           </div>
         </Match>
       </Switch>
+    </div>
+  );
+}
+
+function Texture(props: { blobs: Blob[] }) {
+  const urls = createMemo(() => {
+    return props.blobs.map((blob) => URL.createObjectURL(blob));
+  });
+
+  return (
+    <div class="texture">
+      <For each={urls()}>{(url) => <img src={url} />}</For>
     </div>
   );
 }
