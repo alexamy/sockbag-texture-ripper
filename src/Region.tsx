@@ -8,18 +8,38 @@ export function Region() {
     () => `translate(${x()}px, ${y()}px) scale(${scale()})`
   );
 
-  function onMouseDown(event: MouseEvent) {}
+  const [startPoint, setStartPoint] = createSignal({ x: 0, y: 0 });
+
+  function onMouseDown(event: MouseEvent) {
+    setStartPoint({ x: event.clientX, y: event.clientY });
+  }
+
+  function onMouseUp(event: MouseEvent) {}
+
+  function onMouseMove(event: MouseEvent) {
+    if (event.buttons === 1) {
+      const dx = event.clientX - startPoint().x;
+      const dy = event.clientY - startPoint().y;
+      setX(x() + dx);
+      setY(y() + dy);
+      setStartPoint({ x: event.clientX, y: event.clientY });
+    }
+  }
 
   function onMouseWheel(event: WheelEvent) {}
 
   return (
     <div
       class="region"
-      style={{ transform: transform() }}
+      onMouseUp={onMouseUp}
       onMouseDown={onMouseDown}
+      onMouseMove={onMouseMove}
+      onMouseLeave={onMouseUp}
       onWheel={onMouseWheel}
     >
-      <Background />
+      <div class="region-content" style={{ transform: transform() }}>
+        <Background />
+      </div>
     </div>
   );
 }
