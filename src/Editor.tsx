@@ -70,7 +70,7 @@ export function Editor(props: {
         <Line p1={last()} p2={current()} />
       </Show>
       <Show when={points().length >= 2}>
-        <LineTip from={center()} to={top()} maxLength={50} />
+        <LineTip from={center()} to={top()} />
         <Line p1={first()} p2={current()} />
       </Show>
     </svg>
@@ -90,13 +90,13 @@ function Quad(props: { quad: Quad }) {
         stroke="white"
         stroke-width="2"
       />
-      <LineTip from={center()} to={top()} maxLength={50} />
+      <LineTip from={center()} to={top()} />
       <For each={props.quad}>{(point) => <Point p={point} />}</For>
     </>
   );
 }
 
-function LineTip(props: { from: Point; to: Point; maxLength?: number }) {
+function LineTip(props: { from: Point; to: Point }) {
   const vec = () => v.normalize(v.fromTo(props.from, props.to));
   const dist = () => v.scale(vec(), 10);
   const left = () => v.scale(v.normal(vec()), 5);
@@ -113,15 +113,10 @@ function LineTip(props: { from: Point; to: Point; maxLength?: number }) {
       .map((p) => `${p.x},${p.y}`)
       .join(" ");
 
-  const from = () =>
-    props.maxLength
-      ? v.add(props.to, v.scale(vec(), -props.maxLength))
-      : props.from;
-
   return (
     <>
       <polygon points={tip()} fill="red" />
-      <Line p1={from()} p2={props.to} stroke="red" />
+      <Line p1={props.from} p2={props.to} stroke="red" />
     </>
   );
 }
