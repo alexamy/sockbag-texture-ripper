@@ -1,4 +1,5 @@
 import { assign, setup } from "xstate";
+import { v } from "./vector";
 
 export type Point = { x: number; y: number };
 export type Quad = [Point, Point, Point, Point];
@@ -15,11 +16,16 @@ export const editorMachine = setup({
   },
   guards: {
     canAddQuad: ({ context }) => context.points.length === 4,
+    canAddPoint: ({ context }, params: { point: Point }) =>
+      context.points.every((p) => !v.equals(p, params.point)),
   },
   actions: {
     addNewPoint: assign(({ context }, params: { point: Point }) => {
+      const isEqualSome = context.points.some((p) => v.equals(p, params.point));
       return {
-        points: [...context.points, params.point],
+        points: isEqualSome
+          ? context.points
+          : [...context.points, params.point],
       };
     }),
     addNewQuad: assign(({ context }) => {
@@ -51,6 +57,10 @@ export const editorMachine = setup({
       },
       on: {
         addPoint: {
+          guard: {
+            type: "canAddPoint",
+            params: ({ event }) => ({ point: event.point }),
+          },
           actions: {
             type: "addNewPoint",
             params: ({ event }) => ({ point: event.point }),
