@@ -1,6 +1,5 @@
 import {
   Match,
-  Show,
   Switch,
   createEffect,
   createMemo,
@@ -79,9 +78,7 @@ export function App() {
               </div>
             </Region>
 
-            <Show when={projected().length}>
-              <Texture blobs={projected()} />
-            </Show>
+            <Texture blobs={projected()} />
           </div>
         </Match>
       </Switch>

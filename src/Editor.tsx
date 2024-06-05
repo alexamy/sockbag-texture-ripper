@@ -44,6 +44,8 @@ export function Editor(props: {
     x = x / props.transform.scale;
     y = y / props.transform.scale;
 
+    // TODO refresh page in scrolled state
+
     // only straight lines with shift
     if (e.shiftKey && last()) {
       const current = v.make(x, y);

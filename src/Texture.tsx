@@ -1,6 +1,7 @@
-import potpack from 'potpack';
-import { For, createEffect, createMemo, createSignal, on } from 'solid-js';
-import { Point } from './editorMachine';
+import potpack from "potpack";
+import { For, createEffect, createMemo, createSignal, on } from "solid-js";
+import { Region } from "./Region";
+import { Point } from "./editorMachine";
 
 export function Texture(props: { blobs: Blob[] }) {
   const urls = createMemo(() => {
@@ -10,11 +11,13 @@ export function Texture(props: { blobs: Blob[] }) {
   const [parent, setParent] = createSignal<HTMLDivElement>();
   const refs: HTMLImageElement[] = [];
 
-  const [packResult, setPackResult] = createSignal<{ w: number, h: number }>();
+  const [packResult, setPackResult] = createSignal<{ w: number; h: number }>();
   const [positions, setPositions] = createSignal<Point[]>([]);
   const transforms = createMemo(() => {
     return positions().map(({ x, y }) => `translate(${x}px, ${y}px)`);
   });
+
+  const [transform, setTransform] = createSignal({ x: 0, y: 0, scale: 1 });
 
   // add new rects to (0, 0)
   createEffect(
@@ -31,7 +34,8 @@ export function Texture(props: { blobs: Blob[] }) {
 
   function onAutoPack() {
     const sizes = refs.map((ref, i) => {
-      const { width, height } = ref.getBoundingClientRect();
+      const width = ref.naturalWidth;
+      const height = ref.naturalHeight;
       return { i, w: width, h: height, x: 0, y: 0 };
     });
 
@@ -49,13 +53,15 @@ export function Texture(props: { blobs: Blob[] }) {
     canvas.width = packResult()?.w ?? root.width;
     canvas.height = packResult()?.h ?? root.height;
 
-    for(const ref of refs) {
-      const { x, y } = ref.getBoundingClientRect();
-      ctx.drawImage(ref, x - root.x, y - root.y);
+    for (const ref of refs) {
+      let { x, y } = ref.getBoundingClientRect();
+      x = x - root.x + transform().x;
+      y = y - root.y + transform().y;
+      ctx.drawImage(ref, x, y);
     }
 
     canvas.toBlob((blob) => {
-      if(!blob) throw new Error("Failed to download texture.");
+      if (!blob) throw new Error("Failed to download texture.");
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -69,18 +75,21 @@ export function Texture(props: { blobs: Blob[] }) {
     <div>
       <button onClick={onAutoPack}>Autopack</button>
       <button onClick={onDownload}>Download</button>
-      <div ref={setParent} class="texture">
-        <For each={urls()}>
-          {(url, i) => (
-            <img
-              ref={refs[i()]}
-              class="texture-rect"
-              style={{ transform: transforms()[i()] }}
-              src={url}
-            />
-          )}
-        </For>
-      </div>
+      <Region setTransform={setTransform}>
+        <div ref={setParent} class="texture">
+          <For each={urls()}>
+            {(url, i) => (
+              <img
+                ref={refs[i()]}
+                class="texture-rect"
+                style={{ transform: transforms()[i()] }}
+                src={url}
+                onMouseDown={(e) => e.preventDefault()}
+              />
+            )}
+          </For>
+        </div>
+      </Region>
     </div>
   );
 }
