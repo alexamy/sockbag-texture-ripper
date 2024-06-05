@@ -93,10 +93,18 @@ function Texture(props: { blobs: Blob[] }) {
     return positions().map(({ x, y }) => `translate(${x}px, ${y}px)`);
   });
 
-  createEffect(() => {
-    const initialPositions = props.blobs.map(() => ({ x: 0, y: 0 }));
-    setPositions(initialPositions);
-  });
+  // add new rects to (0, 0)
+  createEffect(
+    on(
+      () => props.blobs.length,
+      () => {
+        const initialPositions = props.blobs
+          .map(() => ({ x: 0, y: 0 }))
+          .slice(positions().length);
+        setPositions([...positions(), ...initialPositions]);
+      }
+    )
+  );
 
   function onAutoPack() {
     const sizes = refs.map((ref, i) => {
@@ -104,10 +112,9 @@ function Texture(props: { blobs: Blob[] }) {
       return { i, w: width, h: height, x: 0, y: 0 };
     });
 
-    const result = potpack(sizes);
-    console.log("Pack result", result);
-
+    potpack(sizes);
     sizes.sort((a, b) => a.i - b.i);
+
     setPositions(sizes);
   }
 
