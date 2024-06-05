@@ -100,10 +100,10 @@ async function projectRectangles(file: File, quads: Quad[], scale: number) {
     const left = [quad[0], quad[3]];
     const right = [quad[1], quad[2]];
 
-    const W = v.magnitude(v.fromTo(top[0], top[1]));
+    const W = v.length(v.fromTo(top[0], top[1]));
     const H = Math.min(
-      v.magnitude(v.fromTo(left[0], left[1])),
-      v.magnitude(v.fromTo(right[0], right[1]))
+      v.length(v.fromTo(left[0], left[1])),
+      v.length(v.fromTo(right[0], right[1]))
     );
 
     const dst = new cv.Mat();

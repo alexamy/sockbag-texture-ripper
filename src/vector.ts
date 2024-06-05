@@ -19,7 +19,7 @@ export const v = {
   negate,
   dot,
   cross,
-  magnitude,
+  length,
   normalize,
   distance,
   angle,
@@ -60,20 +60,20 @@ function cross(a: Vector, b: Vector): number {
   return a.x * b.y - a.y * b.x;
 }
 
-function magnitude(a: Vector): number {
+function length(a: Vector): number {
   return Math.sqrt(a.x ** 2 + a.y ** 2);
 }
 
 function normalize(a: Vector): Vector {
-  return scale(a, 1 / magnitude(a));
+  return scale(a, 1 / length(a));
 }
 
 function distance(a: Vector, b: Vector): number {
-  return magnitude(subtract(a, b));
+  return length(subtract(a, b));
 }
 
 function angle(a: Vector, b: Vector): number {
-  return Math.acos(dot(a, b) / (magnitude(a) * magnitude(b)));
+  return Math.acos(dot(a, b) / (length(a) * length(b)));
 }
 
 function rotate(a: Vector, angle: number): Vector {
