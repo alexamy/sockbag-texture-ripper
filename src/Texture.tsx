@@ -1,5 +1,5 @@
 import potpack from "potpack";
-import { For, createEffect, createMemo, createSignal, on } from "solid-js";
+import { For, createEffect, createMemo, createSignal } from "solid-js";
 import { Region } from "./Region";
 import { Point } from "./editorMachine";
 
@@ -18,13 +18,20 @@ export function Texture(props: { blobs: Blob[] }) {
     return props.blobs.map((blob) => URL.createObjectURL(blob));
   });
 
-  createEffect(
-    on(
-      () => props.blobs.length,
-      // TODO handle all images on load
-      () => setTimeout(autopack, 100)
-    )
+  const [loaded, setLoaded] = createSignal<boolean[]>([]);
+  const allLoaded = createMemo(
+    () => loaded().every((l) => l) && loaded().length
   );
+
+  function markLoad(i: number, value: boolean) {
+    const newLoaded = [...loaded()];
+    newLoaded[i] = value;
+    setLoaded(newLoaded);
+  }
+
+  createEffect(() => {
+    if (allLoaded()) autopack();
+  });
 
   function autopack() {
     const sizes = refs.map((ref, i) => {
@@ -80,6 +87,8 @@ export function Texture(props: { blobs: Blob[] }) {
                 class="texture-rect"
                 style={{ transform: imgTransforms()[i()] }}
                 onMouseDown={(e) => e.preventDefault()}
+                onLoadStart={() => markLoad(i(), false)}
+                onLoad={() => markLoad(i(), true)}
               />
             )}
           </For>
