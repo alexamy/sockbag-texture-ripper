@@ -30,7 +30,10 @@ export function useRegionContext() {
   return value!;
 }
 
-export function Region(props: { children: JSXElement }) {
+export function Region(props: {
+  children: JSXElement;
+  trigger?: "click" | "move";
+}) {
   const {
     x,
     y,
@@ -44,7 +47,9 @@ export function Region(props: { children: JSXElement }) {
     onMouseLeave,
     onMouseWheel,
     onScroll,
-  } = createMovement();
+  } = createMovement({
+    trigger: props.trigger ?? "click",
+  });
 
   const [parent, setParent] = createSignal<HTMLElement>();
   const [size, setSize] = createSignal({ width: 0, height: 0 });
@@ -120,7 +125,7 @@ function GridBackground(props: {
   );
 }
 
-function createMovement() {
+function createMovement(opts: { trigger: "click" | "move" }) {
   // transform
   const [active, setActive] = createSignal(true);
   const [x, setX] = createSignal(0);
@@ -154,7 +159,7 @@ function createMovement() {
       setStartPoint({ x: event.clientX, y: event.clientY });
     }
 
-    if (event.buttons === 1) {
+    if (event.buttons === 1 || opts.trigger === "move") {
       const dx = event.clientX - startPoint()!.x;
       const dy = event.clientY - startPoint()!.y;
       setX(x() + dx);

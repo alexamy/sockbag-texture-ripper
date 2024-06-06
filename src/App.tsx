@@ -55,7 +55,7 @@ export function App() {
               {imageRef()?.naturalHeight}
             </div>
 
-            <Region>
+            <Region trigger="move">
               <div class="editor-canvas">
                 <ImageBackground url={url()} setImageRef={setImageRef} />
                 <Show when={imageRef()}>
