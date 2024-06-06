@@ -40,10 +40,8 @@ export function Editor(props: {
   // handlers
   function onMouseMove(e: MouseEvent) {
     const rect = props.imageRef.getBoundingClientRect();
-    let x = e.clientX - rect.left - props.transform.x;
-    let y = e.clientY - rect.top - props.transform.y;
-    x *= 1 / props.transform.scale;
-    y *= 1 / props.transform.scale;
+    const x = (e.clientX - rect.left) / props.transform.scale;
+    const y = (e.clientY - rect.top) / props.transform.scale;
 
     // only straight lines with shift
     if (e.shiftKey && last()) {
@@ -78,7 +76,7 @@ export function Editor(props: {
       onMouseMove={onMouseMove}
     >
       <For each={quads()}>{(quad) => <Quad quad={quad} />}</For>
-      {/* <Point p={current()} r={6} /> */}
+      <Point p={current()} r={6} />
       <For each={points()}>
         {(point, i) => (
           <>
