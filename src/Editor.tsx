@@ -1,4 +1,4 @@
-import { createMemo, createSignal, For, Show } from "solid-js";
+import { createMemo, createSignal, For, onMount, Show } from "solid-js";
 import { Actor } from "xstate";
 import { editorMachine, type Point, type Quad } from "./editorMachine";
 import { createActorState } from "./hooks";
@@ -68,14 +68,35 @@ export function Editor(props: {
     }
   }
 
+  const [svgRef, setSvgRef] = createSignal<SVGSVGElement>();
+  onMount(() => svgRef()!.focus());
+
+  function onKeyDown(e: KeyboardEvent) {
+    e.preventDefault();
+    if (e.key === " ") {
+      region.setActive(true);
+    }
+  }
+
+  function onKeyUp(e: KeyboardEvent) {
+    e.preventDefault();
+    if (e.key === " ") {
+      region.setActive(false);
+    }
+  }
+
   return (
     <svg
+      ref={setSvgRef}
       class="svg-canvas"
       viewBox={viewBox()}
       style={style()}
       onClick={onClick}
       onContextMenu={onClick}
       onMouseMove={onMouseMove}
+      onKeyDown={onKeyDown}
+      onKeyUp={onKeyUp}
+      tabindex="0"
     >
       <For each={quads()}>{(quad) => <Quad quad={quad} />}</For>
       <Point p={current()} r={4} fill="red" />

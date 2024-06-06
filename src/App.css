@@ -32,6 +32,10 @@
   border: 1px solid white;
 }
 
+.svg-canvas:focus {
+  outline: none;
+}
+
 .texture {
   position: relative;
 }

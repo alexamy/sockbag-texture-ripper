@@ -159,6 +159,7 @@ function createMovement() {
   }
 
   function onMouseWheel(event: WheelEvent) {
+    if (!active()) return;
     event.preventDefault();
     event.stopPropagation();
 
