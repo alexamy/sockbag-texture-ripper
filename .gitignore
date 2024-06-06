@@ -1,3 +1,6 @@
+*.png
+draft.*
+
 # Logs
 logs
 *.log
