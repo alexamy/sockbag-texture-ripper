@@ -5,6 +5,8 @@ import {
   createMemo,
   createSignal,
   on,
+  onCleanup,
+  onMount,
 } from "solid-js";
 import "./App.css";
 import { Editor } from "./Editor";
@@ -45,6 +47,13 @@ export function App() {
     x: 0,
     y: 0,
     scale: 1,
+  });
+
+  // BUG scroll to top on refresh so imageRect is correct
+  onMount(() => {
+    const handler = () => window.scrollTo(0, 0);
+    window.addEventListener("beforeunload", handler);
+    onCleanup(() => window.removeEventListener("beforeunload", handler));
   });
 
   // DEBUG
