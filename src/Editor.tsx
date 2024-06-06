@@ -76,7 +76,7 @@ export function Editor(props: {
       onMouseMove={onMouseMove}
     >
       <For each={quads()}>{(quad) => <Quad quad={quad} />}</For>
-      <Point p={current()} r={6} />
+      <Point p={current()} r={4} fill="red" />
       <For each={points()}>
         {(point, i) => (
           <>
@@ -163,6 +163,13 @@ function Line(props: {
   );
 }
 
-function Point(props: { p: Point; r?: number }) {
-  return <circle cx={props.p.x} cy={props.p.y} r={props.r ?? 2} fill="black" />;
+function Point(props: { p: Point; r?: number; fill?: string }) {
+  return (
+    <circle
+      cx={props.p.x}
+      cy={props.p.y}
+      r={props.r ?? 2}
+      fill={props.fill ?? "black"}
+    />
+  );
 }
