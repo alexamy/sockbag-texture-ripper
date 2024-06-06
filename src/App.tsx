@@ -1,12 +1,4 @@
-import {
-  Match,
-  Show,
-  Switch,
-  createEffect,
-  createMemo,
-  createSignal,
-  on,
-} from "solid-js";
+import { Show, createEffect, createMemo, createSignal, on } from "solid-js";
 import "./App.css";
 import { Editor } from "./Editor";
 import { Region } from "./Region";
@@ -44,30 +36,25 @@ export function App() {
   return (
     <div class="app">
       <h1>🧦👜</h1>
-      <Switch>
-        <Match when={!file()}>
-          <DropImage setFile={setFile} />
-        </Match>
-        <Match when={file()}>
-          <div class="editor">
-            <div>
-              Image size: {imageRef()?.naturalWidth} x{" "}
-              {imageRef()?.naturalHeight}
-            </div>
-
-            <Region trigger="move">
-              <div class="editor-canvas">
-                <ImageBackground url={url()} setImageRef={setImageRef} />
-                <Show when={imageRef()}>
-                  <Editor imageRef={imageRef()!} initialEditor={editor} />
-                </Show>
-              </div>
-            </Region>
-
-            <Texture blobs={projected()} />
+      <DropImage setFile={setFile} />
+      <Show when={file()}>
+        <div class="editor">
+          <div>
+            Image size: {imageRef()?.naturalWidth} x {imageRef()?.naturalHeight}
           </div>
-        </Match>
-      </Switch>
+
+          <Region trigger="move">
+            <div class="editor-canvas">
+              <ImageBackground url={url()} setImageRef={setImageRef} />
+              <Show when={imageRef()}>
+                <Editor imageRef={imageRef()!} initialEditor={editor} />
+              </Show>
+            </div>
+          </Region>
+
+          <Texture blobs={projected()} />
+        </div>
+      </Show>
     </div>
   );
 }
