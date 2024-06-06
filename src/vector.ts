@@ -123,8 +123,8 @@ function clamp(a: Vector, min: Vector, max: Vector): Vector {
   };
 }
 
-function average(ps: Vector[]): Vector {
-  return ps.length === 0
+function average(vs: Vector[]): Vector {
+  return vs.length === 0
     ? Zero()
-    : scale(ps.reduce(add, Zero()), 1 / ps.length);
+    : scale(vs.reduce(add, Zero()), 1 / vs.length);
 }

@@ -83,7 +83,7 @@ export function Editor(props: {
       <For each={points()}>
         {(point, i) => (
           <>
-            <Point p={point} />
+            {/* <Point p={point} /> */}
             <Line from={point} to={points()[i() + 1] ?? point} />
           </>
         )}
@@ -117,7 +117,7 @@ function Quad(props: { quad: Quad }) {
         fill="white"
         fill-opacity={0.3}
         stroke="white"
-        stroke-width="2"
+        stroke-width="1"
       />
       <Line from={center()} to={top()} withTip={true} color="red" />
       <For each={props.quad}>{(point) => <Point p={point} />}</For>
@@ -157,7 +157,7 @@ function Line(props: {
         x2={props.to.x}
         y2={props.to.y}
         stroke={color()}
-        stroke-width="1"
+        stroke-width="1.5"
       />
       <Show when={props.withTip}>
         <polygon points={tip()} fill={color()} />
