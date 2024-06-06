@@ -1,16 +1,24 @@
 import potpack from "potpack";
 import { For, createEffect, createMemo, createSignal } from "solid-js";
 import { Region } from "./Region";
-import { Point } from "./editorMachine";
+
+interface PackEntry {
+  i: number;
+  ref: HTMLImageElement;
+  w: number;
+  h: number;
+  x: number;
+  y: number;
+}
 
 export function Texture(props: { blobs: Blob[] }) {
   const refs: HTMLImageElement[] = [];
   const [parent, setParent] = createSignal<HTMLDivElement>();
 
   const [packResult, setPackResult] = createSignal<{ w: number; h: number }>();
-  const [positions, setPositions] = createSignal<Point[]>([]);
+  const [packs, setPacks] = createSignal<PackEntry[]>([]);
   const imgTransforms = createMemo(() => {
-    return positions().map(({ x, y }) => `translate(${x}px, ${y}px)`);
+    return packs().map(({ x, y }) => `translate(${x}px, ${y}px)`);
   });
 
   const urls = createMemo(() => {
@@ -20,18 +28,17 @@ export function Texture(props: { blobs: Blob[] }) {
   const markLoad = createLoadWatcher(autopack);
 
   function autopack() {
-    const sizes = refs.map((ref, i) => {
+    const packs = refs.map((ref, i) => {
       const width = ref.naturalWidth;
       const height = ref.naturalHeight;
-
-      return { i, w: width, h: height, x: 0, y: 0 };
+      return { i, ref, w: width, h: height, x: 0, y: 0 };
     });
 
-    const result = potpack(sizes);
+    const result = potpack(packs);
     setPackResult(result);
 
-    sizes.sort((a, b) => a.i - b.i);
-    setPositions(sizes);
+    packs.sort((a, b) => a.i - b.i);
+    setPacks(packs);
   }
 
   function onDownload() {
@@ -41,9 +48,7 @@ export function Texture(props: { blobs: Blob[] }) {
     canvas.width = packResult()?.w ?? root.width;
     canvas.height = packResult()?.h ?? root.height;
 
-    for (const ref of refs) {
-      // TODO handle case with transform properly
-      const { x, y } = ref.getBoundingClientRect();
+    for (const { ref, x, y } of packs()) {
       ctx.drawImage(ref, x, y);
     }
 
