@@ -13,7 +13,7 @@ export function Texture(props: { blobs: Blob[] }) {
 
   const [packResult, setPackResult] = createSignal<{ w: number; h: number }>();
   const [positions, setPositions] = createSignal<Point[]>([]);
-  const transforms = createMemo(() => {
+  const imgTransforms = createMemo(() => {
     return positions().map(({ x, y }) => `translate(${x}px, ${y}px)`);
   });
 
@@ -78,7 +78,7 @@ export function Texture(props: { blobs: Blob[] }) {
                 ref={refs[i()]}
                 src={url}
                 class="texture-rect"
-                style={{ transform: transforms()[i()] }}
+                style={{ transform: imgTransforms()[i()] }}
                 onMouseDown={(e) => e.preventDefault()}
               />
             )}
