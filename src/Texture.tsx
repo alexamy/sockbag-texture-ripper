@@ -6,7 +6,6 @@ import { Point } from "./editorMachine";
 export function Texture(props: { blobs: Blob[] }) {
   const refs: HTMLImageElement[] = [];
   const [parent, setParent] = createSignal<HTMLDivElement>();
-  const [transform, setTransform] = createSignal({ x: 0, y: 0, scale: 1 });
 
   const [packResult, setPackResult] = createSignal<{ w: number; h: number }>();
   const [positions, setPositions] = createSignal<Point[]>([]);
@@ -44,9 +43,7 @@ export function Texture(props: { blobs: Blob[] }) {
 
     for (const ref of refs) {
       // TODO handle case with transform properly
-      let { x, y } = ref.getBoundingClientRect();
-      x = x - root.x + transform().x;
-      y = y - root.y + transform().y;
+      const { x, y } = ref.getBoundingClientRect();
       ctx.drawImage(ref, x, y);
     }
 
@@ -64,7 +61,7 @@ export function Texture(props: { blobs: Blob[] }) {
   return (
     <div>
       <button onClick={onDownload}>Download</button>
-      <Region setTransform={setTransform}>
+      <Region>
         <div ref={setParent} class="texture">
           <For each={urls()}>
             {(url, i) => (
