@@ -25,12 +25,6 @@
   user-select: none;
 }
 
-.image {
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-}
-
 .svg-canvas {
   position: absolute;
   top: 0;

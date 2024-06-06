@@ -2,11 +2,7 @@ import cv from "@techstark/opencv-js";
 import { Quad } from "./editorMachine";
 import { v } from "./vector";
 
-export async function projectRectangles(
-  file: File,
-  quads: Quad[],
-  scale: number
-) {
+export async function projectRectangles(file: File, quads: Quad[]) {
   const image = new Image();
   image.src = URL.createObjectURL(file);
   await new Promise((resolve) => (image.onload = resolve));
@@ -15,7 +11,7 @@ export async function projectRectangles(
   const blobs: Blob[] = [];
 
   for (const quad of quads) {
-    const [p1, p2, p3, p4] = quad.map(p => v.scale(p, scale));
+    const [p1, p2, p3, p4] = quad;
     const points = [p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y];
     const srcTri = cv.matFromArray(4, 1, cv.CV_32FC2, points);
 

@@ -23,9 +23,6 @@ export function App() {
   const imageRect = createMemo(() =>
     imageRef() ? imageRef()!.getBoundingClientRect() : new DOMRect()
   );
-  const imageScale = createMemo(() =>
-    imageRef() ? imageRef()!.naturalWidth / imageRef()!.width : 1
-  );
 
   const [file, setFile] = createSignal<File>();
   const url = createMemo(() => {
@@ -38,7 +35,7 @@ export function App() {
       () => quads().length,
       () => {
         if (file()) {
-          projectRectangles(file()!, quads(), imageScale()).then(setProjected);
+          projectRectangles(file()!, quads()).then(setProjected);
         }
       }
     )
@@ -103,9 +100,7 @@ function ImageBackground(props: {
     props.setImageRef(image);
   }
 
-  return (
-    <img class="image" src={props.url} alt="Uploaded image" onLoad={onLoad} />
-  );
+  return <img src={props.url} alt="Uploaded image" onLoad={onLoad} />;
 }
 
 function DropImage(props: { setFile: (file: File) => void }) {
