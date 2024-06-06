@@ -18,20 +18,7 @@ export function Texture(props: { blobs: Blob[] }) {
     return props.blobs.map((blob) => URL.createObjectURL(blob));
   });
 
-  const [loaded, setLoaded] = createSignal<boolean[]>([]);
-  const allLoaded = createMemo(
-    () => loaded().every((l) => l) && loaded().length
-  );
-
-  function markLoad(i: number, value: boolean) {
-    const newLoaded = [...loaded()];
-    newLoaded[i] = value;
-    setLoaded(newLoaded);
-  }
-
-  createEffect(() => {
-    if (allLoaded()) autopack();
-  });
+  const markLoad = createLoadWatcher(autopack);
 
   function autopack() {
     const sizes = refs.map((ref, i) => {
@@ -96,4 +83,23 @@ export function Texture(props: { blobs: Blob[] }) {
       </Region>
     </div>
   );
+}
+
+function createLoadWatcher(f: () => void) {
+  const [loaded, setLoaded] = createSignal<boolean[]>([]);
+  const allLoaded = createMemo(
+    () => loaded().every((l) => l) && loaded().length
+  );
+
+  function markLoad(i: number, value: boolean) {
+    const newLoaded = [...loaded()];
+    newLoaded[i] = value;
+    setLoaded(newLoaded);
+  }
+
+  createEffect(() => {
+    if (allLoaded()) f();
+  });
+
+  return markLoad;
 }
