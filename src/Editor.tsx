@@ -40,8 +40,8 @@ export function Editor(props: {
   // handlers
   function onMouseMove(e: MouseEvent) {
     const rect = props.imageRef.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / props.transform.scale;
-    const y = (e.clientY - rect.top) / props.transform.scale;
+    let x = (e.clientX - rect.left) / props.transform.scale;
+    let y = (e.clientY - rect.top) / props.transform.scale;
 
     // only straight lines with shift
     if (e.shiftKey && last()) {
