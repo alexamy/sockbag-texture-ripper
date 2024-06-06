@@ -1,19 +1,29 @@
 import {
+  Accessor,
   JSXElement,
   children,
-  createEffect,
+  createContext,
   createMemo,
   createSignal,
   onMount,
 } from "solid-js";
 import "./Region.css";
 
-type Transform = { x: number; y: number; scale: number };
+interface Transform {
+  x: Accessor<number>;
+  y: Accessor<number>;
+  scale: Accessor<number>;
+  transform: Accessor<string>;
+}
 
-export function Region(props: {
-  children: JSXElement;
-  setTransform?: (transform: Transform) => void;
-}) {
+export const RegionContext = createContext<Transform>({
+  x: () => 0,
+  y: () => 0,
+  scale: () => 1,
+  transform: () => "",
+});
+
+export function Region(props: { children: JSXElement }) {
   const {
     x,
     y,
@@ -25,12 +35,6 @@ export function Region(props: {
     onMouseWheel,
     onScroll,
   } = createMovement();
-
-  // provide the transform to the parent component
-  createEffect(() => {
-    if (!props.setTransform) return;
-    props.setTransform({ x: x(), y: y(), scale: scale() });
-  });
 
   const [parent, setParent] = createSignal<HTMLElement>();
   const [size, setSize] = createSignal({ width: 0, height: 0 });
@@ -57,9 +61,11 @@ export function Region(props: {
         width={size().width}
         height={size().height}
       />
-      <div class="region-content" style={{ transform: transform() }}>
-        {resolved()}
-      </div>
+      <RegionContext.Provider value={{ x, y, scale, transform }}>
+        <div class="region-content" style={{ transform: transform() }}>
+          {resolved()}
+        </div>
+      </RegionContext.Provider>
     </div>
   );
 }

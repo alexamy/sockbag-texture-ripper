@@ -1,15 +1,16 @@
-import { createMemo, createSignal, For, Show } from "solid-js";
+import { createMemo, createSignal, For, Show, useContext } from "solid-js";
 import { Actor } from "xstate";
 import { editorMachine, type Point, type Quad } from "./editorMachine";
 import { createActorState } from "./hooks";
+import { RegionContext } from "./Region";
 import { v } from "./vector";
 
 export function Editor(props: {
   imageRef: HTMLImageElement;
   initialEditor: Actor<typeof editorMachine>;
-  transform: { x: number; y: number; scale: number };
 }) {
   const [current, setCurrent] = createSignal({ x: 0, y: 0 });
+  const region = useContext(RegionContext);
 
   const send = props.initialEditor.send;
   const state = createActorState(props.initialEditor);
@@ -40,8 +41,8 @@ export function Editor(props: {
   // handlers
   function onMouseMove(e: MouseEvent) {
     const rect = props.imageRef.getBoundingClientRect();
-    let x = (e.clientX - rect.left) / props.transform.scale;
-    let y = (e.clientY - rect.top) / props.transform.scale;
+    let x = (e.clientX - rect.left) / region.scale();
+    let y = (e.clientY - rect.top) / region.scale();
 
     // only straight lines with shift
     if (e.shiftKey && last()) {
