@@ -14,6 +14,8 @@ interface Transform {
   y: Accessor<number>;
   scale: Accessor<number>;
   transform: Accessor<string>;
+  active: Accessor<boolean>;
+  setActive: (active: boolean) => void;
 }
 
 const RegionContext = createContext<Transform>();
@@ -34,6 +36,8 @@ export function Region(props: { children: JSXElement }) {
     y,
     scale,
     transform,
+    active,
+    setActive,
     onMouseDown,
     onMouseUp,
     onMouseMove,
@@ -64,7 +68,9 @@ export function Region(props: { children: JSXElement }) {
         width={size().width}
         height={size().height}
       />
-      <RegionContext.Provider value={{ x, y, scale, transform }}>
+      <RegionContext.Provider
+        value={{ x, y, scale, transform, active, setActive }}
+      >
         <div class="region-content" style={{ transform: transform() }}>
           {props.children}
         </div>
@@ -115,6 +121,7 @@ function GridBackground(props: {
 
 function createMovement() {
   // transform
+  const [active, setActive] = createSignal(true);
   const [x, setX] = createSignal(0);
   const [y, setY] = createSignal(0);
   const [scale, setScale] = createSignal(1);
@@ -126,12 +133,16 @@ function createMovement() {
   const [startPoint, setStartPoint] = createSignal({ x: 0, y: 0 });
 
   function onMouseDown(event: MouseEvent) {
+    if (!active()) return;
     setStartPoint({ x: event.clientX, y: event.clientY });
   }
 
-  function onMouseUp(_event: MouseEvent) {}
+  function onMouseUp(_event: MouseEvent) {
+    if (!active()) return;
+  }
 
   function onMouseMove(event: MouseEvent) {
+    if (!active()) return;
     if (event.buttons === 1) {
       const dx = event.clientX - startPoint().x;
       const dy = event.clientY - startPoint().y;
@@ -162,6 +173,8 @@ function createMovement() {
     y,
     scale,
     transform,
+    active,
+    setActive,
     onMouseDown,
     onMouseUp,
     onMouseMove,

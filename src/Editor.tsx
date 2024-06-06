@@ -11,6 +11,7 @@ export function Editor(props: {
 }) {
   const [current, setCurrent] = createSignal({ x: 0, y: 0 });
   const region = useRegionContext();
+  region.setActive(false);
 
   const send = props.initialEditor.send;
   const state = createActorState(props.initialEditor);
