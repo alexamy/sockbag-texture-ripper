@@ -6,6 +6,7 @@ import {
   createMemo,
   createSignal,
   onMount,
+  useContext,
 } from "solid-js";
 import "./Region.css";
 
@@ -16,12 +17,17 @@ interface Transform {
   transform: Accessor<string>;
 }
 
-export const RegionContext = createContext<Transform>({
-  x: () => 0,
-  y: () => 0,
-  scale: () => 1,
-  transform: () => "",
-});
+const RegionContext = createContext<Transform>();
+
+export function useRegionContext() {
+  const value = useContext(RegionContext);
+
+  if (value === undefined) {
+    throw new Error("useRegionContext must be used within a Region.");
+  }
+
+  return value!;
+}
 
 export function Region(props: { children: JSXElement }) {
   const {

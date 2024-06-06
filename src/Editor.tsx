@@ -1,8 +1,8 @@
-import { createMemo, createSignal, For, Show, useContext } from "solid-js";
+import { createMemo, createSignal, For, Show } from "solid-js";
 import { Actor } from "xstate";
 import { editorMachine, type Point, type Quad } from "./editorMachine";
 import { createActorState } from "./hooks";
-import { RegionContext } from "./Region";
+import { useRegionContext } from "./Region";
 import { v } from "./vector";
 
 export function Editor(props: {
@@ -10,7 +10,7 @@ export function Editor(props: {
   initialEditor: Actor<typeof editorMachine>;
 }) {
   const [current, setCurrent] = createSignal({ x: 0, y: 0 });
-  const region = useContext(RegionContext);
+  const region = useRegionContext();
 
   const send = props.initialEditor.send;
   const state = createActorState(props.initialEditor);
