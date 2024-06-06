@@ -59,7 +59,7 @@ export function App() {
               <div class="editor-canvas">
                 <ImageBackground url={url()} setImageRef={setImageRef} />
                 <Show when={imageRef()}>
-                  <Editor initialEditor={editor} imageRef={imageRef()!} />
+                  <Editor imageRef={imageRef()!} initialEditor={editor} />
                 </Show>
               </div>
             </Region>
