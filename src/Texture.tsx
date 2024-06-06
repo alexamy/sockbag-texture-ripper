@@ -21,7 +21,8 @@ export function Texture(props: { blobs: Blob[] }) {
   createEffect(
     on(
       () => props.blobs.length,
-      () => setTimeout(autopack, 0)
+      // TODO handle all images on load
+      () => setTimeout(autopack, 100)
     )
   );
 
