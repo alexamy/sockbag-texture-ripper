@@ -4,12 +4,9 @@ import { Region } from "./Region";
 import { Point } from "./editorMachine";
 
 export function Texture(props: { blobs: Blob[] }) {
-  const urls = createMemo(() => {
-    return props.blobs.map((blob) => URL.createObjectURL(blob));
-  });
-
   const refs: HTMLImageElement[] = [];
   const [parent, setParent] = createSignal<HTMLDivElement>();
+  const [transform, setTransform] = createSignal({ x: 0, y: 0, scale: 1 });
 
   const [packResult, setPackResult] = createSignal<{ w: number; h: number }>();
   const [positions, setPositions] = createSignal<Point[]>([]);
@@ -17,7 +14,9 @@ export function Texture(props: { blobs: Blob[] }) {
     return positions().map(({ x, y }) => `translate(${x}px, ${y}px)`);
   });
 
-  const [transform, setTransform] = createSignal({ x: 0, y: 0, scale: 1 });
+  const urls = createMemo(() => {
+    return props.blobs.map((blob) => URL.createObjectURL(blob));
+  });
 
   createEffect(
     on(
