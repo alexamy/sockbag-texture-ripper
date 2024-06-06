@@ -18,6 +18,8 @@ export function App() {
     return file() ? URL.createObjectURL(file()!) : "";
   });
 
+  createEffect(on(file, () => editor.send({ type: "reset" })));
+
   const [projected, setProjected] = createSignal<Blob[]>([]);
   createEffect(
     on(

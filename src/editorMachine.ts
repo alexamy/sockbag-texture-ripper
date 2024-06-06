@@ -12,7 +12,9 @@ type Context = {
 export const editorMachine = setup({
   types: {
     context: {} as Context,
-    events: {} as { type: "discard" } | { type: "addPoint"; point: Point },
+    events: {} as
+      | { type: "discard" | "reset" }
+      | { type: "addPoint"; point: Point },
   },
   guards: {
     canAddQuad: ({ context }) => context.points.length === 4,
@@ -20,6 +22,7 @@ export const editorMachine = setup({
       context.points.every((p) => !v.equals(p, params.point)),
   },
   actions: {
+    reset: assign(() => ({ points: [], quads: [] })),
     addNewPoint: assign(({ context }, params: { point: Point }) => {
       const isEqualSome = context.points.some((p) => v.equals(p, params.point));
       return {
@@ -48,6 +51,11 @@ export const editorMachine = setup({
   context: {
     points: [],
     quads: [],
+  },
+  on: {
+    reset: {
+      actions: "reset",
+    },
   },
   states: {
     clicking: {
