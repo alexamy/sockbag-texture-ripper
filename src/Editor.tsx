@@ -99,7 +99,7 @@ export function Editor(props: {
       tabindex="0"
     >
       <For each={quads()}>{(quad) => <Quad quad={quad} />}</For>
-      <Point p={current()} r={4} fill="red" />
+      {/* <Point p={current()} r={4} fill="red" /> */}
       <For each={points()}>
         {(point, i) => (
           <>
