@@ -85,6 +85,7 @@ export function Texture(props: { blobs: Blob[] }) {
   );
 }
 
+// We need to wait for all images to load before we can measure and pack them.
 function createLoadWatcher(f: () => void) {
   const [loaded, setLoaded] = createSignal<boolean[]>([]);
   const allLoaded = createMemo(
