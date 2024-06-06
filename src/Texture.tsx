@@ -65,7 +65,9 @@ export function Texture(props: { blobs: Blob[] }) {
 
   return (
     <div>
-      <button onClick={onDownload}>Download</button>
+      <button onClick={onDownload} disabled={urls().length === 0}>
+        Download
+      </button>
       <Region>
         <div ref={setParent} class="texture">
           <For each={urls()}>
