@@ -93,8 +93,8 @@ function GridBackground(props: {
   const size = createMemo(() => {
     const factor = 1 / props.scale;
     return {
-      width: props.width * factor,
-      height: props.height * factor,
+      width: Math.round(props.width * factor),
+      height: Math.round(props.height * factor),
     };
   });
 
@@ -116,10 +116,10 @@ function GridBackground(props: {
         height="20"
         patternUnits="userSpaceOnUse"
       >
-        <rect width="10" height="10" fill="#eeeeee" />
-        <rect x="10" width="10" height="10" fill="#ffffff" />
-        <rect y="10" width="10" height="10" fill="#ffffff" />
-        <rect x="10" y="10" width="10" height="10" fill="#eeeeee" />
+        <rect width="11" height="11" fill="#eeeeee" />
+        <rect x="10" width="11" height="11" fill="#ffffff" />
+        <rect y="10" width="11" height="11" fill="#ffffff" />
+        <rect x="10" y="10" width="11" height="11" fill="#eeeeee" />
       </pattern>
     </svg>
   );
