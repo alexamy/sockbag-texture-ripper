@@ -1,7 +1,6 @@
 import {
   Accessor,
   JSXElement,
-  children,
   createContext,
   createMemo,
   createSignal,
@@ -49,8 +48,6 @@ export function Region(props: { children: JSXElement }) {
     setSize(size);
   });
 
-  const resolved = children(() => props.children);
-
   return (
     <div
       class="region"
@@ -69,7 +66,7 @@ export function Region(props: { children: JSXElement }) {
       />
       <RegionContext.Provider value={{ x, y, scale, transform }}>
         <div class="region-content" style={{ transform: transform() }}>
-          {resolved()}
+          {props.children}
         </div>
       </RegionContext.Provider>
     </div>
