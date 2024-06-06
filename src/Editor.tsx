@@ -22,19 +22,22 @@ export function Editor(props: {
   const top = createMemo(() => v.average(points().slice(0, 2)));
   const bottom = createMemo(() => v.average([last() ?? v.Zero(), current()]));
 
-  const style = createMemo(() => {
+  // style
+  const dimensions = createMemo(() => {
     const rect = props.imageRef.getBoundingClientRect();
-    return {
-      width: `${rect.width}px`,
-      height: `${rect.height}px`,
-    };
+    return { width: rect.width, height: rect.height };
   });
 
-  const viewBox = createMemo(() => {
-    const rect = props.imageRef.getBoundingClientRect();
-    return [0, 0, rect.width, rect.height].join(" ");
-  });
+  const style = createMemo(() => ({
+    width: `${dimensions().width}px`,
+    height: `${dimensions().height}px`,
+  }));
 
+  const viewBox = createMemo(() =>
+    [0, 0, dimensions().width, dimensions().height].join(" ")
+  );
+
+  // handlers
   function onMouseMove(e: MouseEvent) {
     const rect = props.imageRef.getBoundingClientRect();
     let x = e.clientX - rect.left - props.transform.x;
