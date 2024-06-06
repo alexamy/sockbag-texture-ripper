@@ -41,6 +41,7 @@ export function Region(props: { children: JSXElement }) {
     onMouseDown,
     onMouseUp,
     onMouseMove,
+    onMouseLeave,
     onMouseWheel,
     onScroll,
   } = createMovement();
@@ -59,7 +60,7 @@ export function Region(props: { children: JSXElement }) {
       onMouseUp={onMouseUp}
       onMouseDown={onMouseDown}
       onMouseMove={onMouseMove}
-      onMouseLeave={onMouseUp}
+      onMouseLeave={onMouseLeave}
       onWheel={onMouseWheel}
       onScroll={onScroll}
     >
@@ -130,7 +131,7 @@ function createMovement() {
   );
 
   // pan
-  const [startPoint, setStartPoint] = createSignal({ x: 0, y: 0 });
+  const [startPoint, setStartPoint] = createSignal<{ x: number; y: number }>();
 
   function onMouseDown(event: MouseEvent) {
     if (!active()) return;
@@ -139,13 +140,23 @@ function createMovement() {
 
   function onMouseUp(_event: MouseEvent) {
     if (!active()) return;
+    setStartPoint(undefined);
+  }
+
+  function onMouseLeave(_event: MouseEvent) {
+    if (!active()) return;
+    setStartPoint(undefined);
   }
 
   function onMouseMove(event: MouseEvent) {
     if (!active()) return;
+    if (!startPoint()) {
+      setStartPoint({ x: event.clientX, y: event.clientY });
+    }
+
     if (event.buttons === 1) {
-      const dx = event.clientX - startPoint().x;
-      const dy = event.clientY - startPoint().y;
+      const dx = event.clientX - startPoint()!.x;
+      const dy = event.clientY - startPoint()!.y;
       setX(x() + dx);
       setY(y() + dy);
       setStartPoint({ x: event.clientX, y: event.clientY });
@@ -179,6 +190,7 @@ function createMovement() {
     onMouseDown,
     onMouseUp,
     onMouseMove,
+    onMouseLeave,
     onMouseWheel,
     onScroll,
   };
