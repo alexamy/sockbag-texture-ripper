@@ -85,7 +85,7 @@ export function App() {
 
 async function debugLoadFile() {
   // textrip.jpg, river.jpg, houses.png
-  const image = await fetch("http://alexamy.me/pub/houses.png");
+  const image = await fetch("http://alexamy.me/pub/river.jpg");
   const blob = await image.blob();
   const file = new File([blob], "source");
   return file;

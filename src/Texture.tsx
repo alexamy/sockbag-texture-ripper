@@ -8,8 +8,8 @@ export function Texture(props: { blobs: Blob[] }) {
     return props.blobs.map((blob) => URL.createObjectURL(blob));
   });
 
-  const [parent, setParent] = createSignal<HTMLDivElement>();
   const refs: HTMLImageElement[] = [];
+  const [parent, setParent] = createSignal<HTMLDivElement>();
 
   const [packResult, setPackResult] = createSignal<{ w: number; h: number }>();
   const [positions, setPositions] = createSignal<Point[]>([]);
@@ -19,33 +19,28 @@ export function Texture(props: { blobs: Blob[] }) {
 
   const [transform, setTransform] = createSignal({ x: 0, y: 0, scale: 1 });
 
-  // add new rects to (0, 0)
   createEffect(
     on(
       () => props.blobs.length,
-      () => {
-        const initialPositions = props.blobs
-          .map(() => ({ x: 0, y: 0 }))
-          .slice(positions().length);
-        setPositions([...positions(), ...initialPositions]);
-      }
+      () => setTimeout(autopack, 0)
     )
   );
 
-  function onAutoPack() {
+  function autopack() {
     const sizes = refs.map((ref, i) => {
       const width = ref.naturalWidth;
       const height = ref.naturalHeight;
+
       return { i, w: width, h: height, x: 0, y: 0 };
     });
 
-    setPackResult(potpack(sizes));
-    sizes.sort((a, b) => a.i - b.i);
+    const result = potpack(sizes);
+    setPackResult(result);
 
+    sizes.sort((a, b) => a.i - b.i);
     setPositions(sizes);
   }
 
-  // TODO case when packResult is empty (autopack is not clicked)
   function onDownload() {
     const root = parent()!.getBoundingClientRect();
     const canvas = document.createElement("canvas");
@@ -74,7 +69,6 @@ export function Texture(props: { blobs: Blob[] }) {
 
   return (
     <div>
-      <button onClick={onAutoPack}>Autopack</button>
       <button onClick={onDownload}>Download</button>
       <Region setTransform={setTransform}>
         <div ref={setParent} class="texture">
@@ -82,9 +76,9 @@ export function Texture(props: { blobs: Blob[] }) {
             {(url, i) => (
               <img
                 ref={refs[i()]}
+                src={url}
                 class="texture-rect"
                 style={{ transform: transforms()[i()] }}
-                src={url}
                 onMouseDown={(e) => e.preventDefault()}
               />
             )}
