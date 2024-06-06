@@ -139,26 +139,23 @@ function createMovement(opts: { trigger: "click" | "move" }) {
   const [startPoint, setStartPoint] = createSignal<{ x: number; y: number }>();
 
   function onMouseDown(event: MouseEvent) {
-    if (!active()) return;
     setStartPoint({ x: event.clientX, y: event.clientY });
   }
 
   function onMouseUp(_event: MouseEvent) {
-    if (!active()) return;
     setStartPoint(undefined);
   }
 
   function onMouseLeave(_event: MouseEvent) {
-    if (!active()) return;
     setStartPoint(undefined);
   }
 
   function onMouseMove(event: MouseEvent) {
-    if (!active()) return;
-    if (!startPoint()) {
+    if (!startPoint() || !active()) {
       setStartPoint({ x: event.clientX, y: event.clientY });
     }
 
+    if (!active()) return;
     if (event.buttons === 1 || opts.trigger === "move") {
       const dx = event.clientX - startPoint()!.x;
       const dy = event.clientY - startPoint()!.y;
@@ -175,7 +172,6 @@ function createMovement(opts: { trigger: "click" | "move" }) {
   }
 
   function onMouseWheel(event: WheelEvent) {
-    if (!active()) return;
     event.preventDefault();
     event.stopPropagation();
 
