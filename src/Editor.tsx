@@ -5,7 +5,7 @@ import { createActorState } from "./hooks";
 import { v } from "./vector";
 
 export function Editor(props: {
-  imageRect: DOMRect;
+  imageRef: HTMLImageElement;
   initialEditor: Actor<typeof editorMachine>;
   transform: { x: number; y: number; scale: number };
 }) {
@@ -23,7 +23,7 @@ export function Editor(props: {
   const bottom = createMemo(() => v.average([last() ?? v.Zero(), current()]));
 
   const style = createMemo(() => {
-    const rect = props.imageRect;
+    const rect = props.imageRef.getBoundingClientRect();
     return {
       width: `${rect.width}px`,
       height: `${rect.height}px`,
@@ -31,18 +31,16 @@ export function Editor(props: {
   });
 
   const viewBox = createMemo(() => {
-    const rect = props.imageRect;
+    const rect = props.imageRef.getBoundingClientRect();
     return [0, 0, rect.width, rect.height].join(" ");
   });
 
   function onMouseMove(e: MouseEvent) {
-    const rect = props.imageRect;
-    let x = e.clientX;
-    let y = e.clientY;
-    x = x - rect.left + window.scrollX - props.transform.x;
-    y = y - rect.top + window.scrollY - props.transform.y;
-    x = x / props.transform.scale;
-    y = y / props.transform.scale;
+    const rect = props.imageRef.getBoundingClientRect();
+    let x = e.clientX - rect.left - props.transform.x;
+    let y = e.clientY - rect.top - props.transform.y;
+    x *= 1 / props.transform.scale;
+    y *= 1 / props.transform.scale;
 
     // only straight lines with shift
     if (e.shiftKey && last()) {
@@ -77,7 +75,7 @@ export function Editor(props: {
       onMouseMove={onMouseMove}
     >
       <For each={quads()}>{(quad) => <Quad quad={quad} />}</For>
-      {/* <Point p={current()} /> */}
+      {/* <Point p={current()} r={6} /> */}
       <For each={points()}>
         {(point, i) => (
           <>
@@ -164,6 +162,6 @@ function Line(props: {
   );
 }
 
-function Point(props: { p: Point }) {
-  return <circle cx={props.p.x} cy={props.p.y} r="2" fill="black" />;
+function Point(props: { p: Point; r?: number }) {
+  return <circle cx={props.p.x} cy={props.p.y} r={props.r ?? 2} fill="black" />;
 }

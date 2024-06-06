@@ -1,12 +1,11 @@
 import {
   Match,
+  Show,
   Switch,
   createEffect,
   createMemo,
   createSignal,
   on,
-  onCleanup,
-  onMount,
 } from "solid-js";
 import "./App.css";
 import { Editor } from "./Editor";
@@ -22,10 +21,6 @@ export function App() {
   const quads = createMemo(() => state.context.quads);
 
   const [imageRef, setImageRef] = createSignal<HTMLImageElement>();
-  const imageRect = createMemo(() =>
-    imageRef() ? imageRef()!.getBoundingClientRect() : new DOMRect()
-  );
-
   const [file, setFile] = createSignal<File>();
   const url = createMemo(() => {
     return file() ? URL.createObjectURL(file()!) : "";
@@ -49,13 +44,6 @@ export function App() {
     scale: 1,
   });
 
-  // BUG scroll to top on refresh so imageRect is correct
-  onMount(() => {
-    const handler = () => window.scrollTo(0, 0);
-    window.addEventListener("beforeunload", handler);
-    onCleanup(() => window.removeEventListener("beforeunload", handler));
-  });
-
   // DEBUG
   debugLoadFile().then(setFile);
 
@@ -76,11 +64,13 @@ export function App() {
             <Region setTransform={setEditorTransform}>
               <div class="editor-canvas">
                 <ImageBackground url={url()} setImageRef={setImageRef} />
-                <Editor
-                  initialEditor={editor}
-                  imageRect={imageRect()}
-                  transform={editorTransform()}
-                />
+                <Show when={imageRef()}>
+                  <Editor
+                    initialEditor={editor}
+                    imageRef={imageRef()!}
+                    transform={editorTransform()}
+                  />
+                </Show>
               </div>
             </Region>
 
