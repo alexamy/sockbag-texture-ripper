@@ -37,7 +37,7 @@ export function App() {
 
   return (
     <div class="app">
-      <h1>🧦👜</h1>
+      <Header />
       <DropImage setFile={setFile} />
       <Show when={file()}>
         <div class="editor">
@@ -111,5 +111,20 @@ function DropImage(props: { setFile: (file: File) => void }) {
     >
       Drop image here
     </div>
+  );
+}
+
+function Header() {
+  const [title, setTitle] = createSignal("🧦👜");
+
+  return (
+    <h1
+      class="app-title"
+      title="Sockbag Texture Ripper"
+      onMouseEnter={() => setTitle("👜🧦")}
+      onMouseLeave={() => setTitle("🧦👜")}
+    >
+      {title()}
+    </h1>
   );
 }
