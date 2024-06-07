@@ -115,16 +115,33 @@ function DropImage(props: { setFile: (file: File) => void }) {
 }
 
 function Header() {
-  const [title, setTitle] = createSignal("🧦👜");
+  const titles = [
+    { icon: "🧦👜", text: "Sockbag" },
+    { icon: "👜👜", text: "Bagbag" },
+    { icon: "🧦🧦", text: "Socksock" },
+    { icon: "👜🧦", text: "Bagsock" },
+  ];
+
+  const [title, setTitle] = createSignal(titles[0]);
+
+  function onMouseEnter() {
+    const idx = Math.floor(Math.random() * titles.length);
+    const title = titles[idx];
+    setTitle(title);
+  }
+
+  function onMouseLeave() {
+    setTitle(titles[0]);
+  }
 
   return (
     <h1
       class="app-title"
-      title="Sockbag Texture Ripper"
-      onMouseEnter={() => setTitle("👜🧦")}
-      onMouseLeave={() => setTitle("🧦👜")}
+      title={`${title().text} Texture Ripper`}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
-      {title()}
+      {title().icon}
     </h1>
   );
 }
