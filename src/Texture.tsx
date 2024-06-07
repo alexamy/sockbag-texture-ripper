@@ -107,10 +107,14 @@ function createTextureStore(
     images: [],
   });
 
+  // reset
+  createEffect(on(image, () => setStore({ rects: [], urls: [], images: [] })));
+
   // project rectangles
   createEffect(
     on([image, quads] as const, async ([image, quads]) => {
       if (image.width === 0 || quads.length === 0) return;
+
       const rects = await projectRectangles(image, quads);
       setStore({ rects });
     })
