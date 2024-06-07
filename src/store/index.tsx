@@ -1,7 +1,6 @@
 import { JSXElement, createContext, useContext } from "solid-js";
 import { Store, createAppStore } from "./app";
 
-// context
 const StoreContext = createContext<Store>(undefined as unknown as Store);
 
 export function useAppStore() {
