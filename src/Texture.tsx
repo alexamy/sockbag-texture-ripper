@@ -5,7 +5,7 @@ import { createTextureStore } from "./store/texture";
 
 export function Texture() {
   const [store] = useAppStore();
-  const [texture] = createTextureStore(
+  const [texture, setStore] = createTextureStore(
     () => store.image,
     () => store.quads
   );
@@ -32,11 +32,25 @@ export function Texture() {
     });
   }
 
+  function onGapChange(e: Event) {
+    const gap = parseInt((e.target as HTMLInputElement).value);
+    setStore({ gap });
+  }
+
   return (
     <div>
       <button onClick={onDownload} disabled={texture.urls.length === 0}>
         Download
       </button>
+      <label for="gap">Gap:</label>
+      <input
+        id="gap"
+        type="number"
+        min="0"
+        max="999"
+        value={texture.gap}
+        onChange={onGapChange}
+      />
       <Region>
         <div class="texture">
           <For each={texture.urls}>
