@@ -19,7 +19,7 @@ interface PackSize {
   h: number;
 }
 
-export interface TextureStore {
+interface StoreData {
   rects: Blob[];
   urls: string[];
   images: HTMLImageElement[];
@@ -28,11 +28,13 @@ export interface TextureStore {
   transform: string[];
 }
 
+export type TextureStore = ReturnType<typeof createTextureStore>;
+
 export function createTextureStore(
   image: () => HTMLImageElement,
   quads: () => Quad[]
 ) {
-  const [store, setStore] = createStore<TextureStore>(getDefaultStore());
+  const [store, setStore] = createStore<StoreData>(getDefaultStore());
 
   // prettier-ignore
   createEffect(
@@ -104,5 +106,5 @@ function getDefaultStore() {
     packs: [],
     transform: [],
     dimensions: { w: 0, h: 0 },
-  } satisfies TextureStore;
+  } satisfies StoreData;
 }
