@@ -3,7 +3,8 @@ import { createStore } from "solid-js/store";
 import { createImageSource } from "../helper";
 import { Point, Quad, v } from "../vector";
 
-export type Store = ReturnType<typeof createAppStore>;
+export type AppStore = ReturnType<typeof createAppStore>;
+
 interface StoreData {
   file: Blob;
   url: string;

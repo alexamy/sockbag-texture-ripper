@@ -5,6 +5,17 @@ import { createImageSource } from "../helper";
 import { projectRectangles } from "../projection";
 import { Quad } from "../vector";
 
+export type TextureStore = ReturnType<typeof createTextureStore>;
+
+interface StoreData {
+  rects: Blob[];
+  urls: string[];
+  images: HTMLImageElement[];
+  packs: PackEntry[];
+  dimensions: PackDimensions;
+  transform: string[];
+}
+
 interface PackEntry {
   image: HTMLImageElement;
   i: number;
@@ -14,21 +25,11 @@ interface PackEntry {
   y: number;
 }
 
-interface PackSize {
+interface PackDimensions {
   w: number;
   h: number;
+  fill: number;
 }
-
-interface StoreData {
-  rects: Blob[];
-  urls: string[];
-  images: HTMLImageElement[];
-  packs: PackEntry[];
-  dimensions: PackSize;
-  transform: string[];
-}
-
-export type TextureStore = ReturnType<typeof createTextureStore>;
 
 export function createTextureStore(
   image: () => HTMLImageElement,
