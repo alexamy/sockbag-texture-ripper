@@ -6,8 +6,8 @@ import {
   useContext,
 } from "solid-js";
 import { createStore } from "solid-js/store";
-import { createImageSource } from "./helper";
-import { v } from "./vector";
+import { createImageSource } from "../helper";
+import { v } from "../vector";
 
 export type Point = { x: number; y: number };
 export type Quad = [Point, Point, Point, Point];
