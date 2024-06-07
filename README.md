@@ -1,8 +1,8 @@
 # Sockbag Texture Ripper
 
-Successor of the Shoebox Texture Ripper.
-
 Built with 💕 using [SolidJS](https://docs.solidjs.com).
+
+Inspired by [Texture Ripper](https://renderhjs.net/shoebox/textureRipper.htm) by [Hendrik-Jan Schoenmaker](https://www.renderhjs.net/).
 
 ## Usage
 > [!NOTE]
