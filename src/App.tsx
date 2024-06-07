@@ -14,7 +14,6 @@ export function App() {
 }
 
 export function TextureRipper() {
-  // TODO move to inner components
   const [store, { setFile }] = useAppStore();
   debugLoadFile().then(setFile);
 
