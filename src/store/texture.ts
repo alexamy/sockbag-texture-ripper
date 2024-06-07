@@ -87,11 +87,14 @@ async function makeImages(blobs: Blob[]) {
 }
 
 function autopack(images: HTMLImageElement[]) {
-  const packs = images.map((image, i) => {
-    const width = image.naturalWidth;
-    const height = image.naturalHeight;
-    return { i, image, w: width, h: height, x: 0, y: 0 };
-  });
+  const packs = images.map((image, i) => ({
+    i,
+    image,
+    w: image.naturalWidth,
+    h: image.naturalHeight,
+    x: 0,
+    y: 0,
+  }));
 
   const dimensions = potpack(packs);
   packs.sort((a, b) => a.i - b.i);
