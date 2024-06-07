@@ -1,45 +1,31 @@
-import { Show, createEffect, createMemo, createSignal, on } from "solid-js";
+import { Show, createSignal } from "solid-js";
 import "./App.css";
 import { Editor } from "./Editor";
 import { Region } from "./Region";
 import { Texture } from "./Texture";
-import { editorMachine } from "./editorMachine";
-import { createActor, createActorState } from "./hooks";
-import { projectRectangles } from "./projection";
+import { AppStoreProvider, useAppStore } from "./store";
 
 export function App() {
-  const editor = createActor(editorMachine);
-  const state = createActorState(editor);
-  const quads = createMemo(() => state.context.quads);
-
-  const [imageRef, setImageRef] = createSignal<HTMLImageElement>();
-  const [file, setFile] = createSignal<File>();
-  const url = createMemo(() => {
-    return file() ? URL.createObjectURL(file()!) : "";
-  });
-
-  createEffect(on(file, () => editor.send({ type: "reset" })));
-
-  const [projected, setProjected] = createSignal<Blob[]>([]);
-  createEffect(
-    on(
-      () => quads().length,
-      () => {
-        if (file()) {
-          projectRectangles(file()!, quads()).then(setProjected);
-        }
-      }
-    )
+  return (
+    <AppStoreProvider>
+      <TextureRipper />
+    </AppStoreProvider>
   );
+}
 
-  // DEBUG
+export function TextureRipper() {
+  // TODO move to inner components
+  const [store, { setFile }] = useAppStore();
   debugLoadFile().then(setFile);
+
+  // TODO move to editor
+  const [imageRef, setImageRef] = createSignal<HTMLImageElement>();
 
   return (
     <div class="app">
-      <h1>🧦👜</h1>
+      <Header />
       <DropImage setFile={setFile} />
-      <Show when={file()}>
+      <Show when={store.file}>
         <div class="editor">
           <div>
             Image size: {imageRef()?.naturalWidth} x {imageRef()?.naturalHeight}
@@ -47,14 +33,14 @@ export function App() {
 
           <Region trigger="move">
             <div class="editor-canvas">
-              <ImageBackground url={url()} setImageRef={setImageRef} />
+              <ImageBackground src={store.url} onLoadRef={setImageRef} />
               <Show when={imageRef()}>
-                <Editor imageRef={imageRef()!} initialEditor={editor} />
+                <Editor imageRef={imageRef()!} />
               </Show>
             </div>
           </Region>
 
-          <Texture blobs={projected()} />
+          <Texture />
         </div>
       </Show>
     </div>
@@ -70,15 +56,15 @@ async function debugLoadFile() {
 }
 
 function ImageBackground(props: {
-  url: string;
-  setImageRef: (ref: HTMLImageElement) => void;
+  src: string;
+  onLoadRef: (ref: HTMLImageElement) => void;
 }) {
   function onLoad(e: Event) {
     const image = e.target as HTMLImageElement;
-    props.setImageRef(image);
+    props.onLoadRef(image);
   }
 
-  return <img src={props.url} alt="Uploaded image" onLoad={onLoad} />;
+  return <img src={props.src} alt="Uploaded image" onLoad={onLoad} />;
 }
 
 function DropImage(props: { setFile: (file: File) => void }) {
@@ -111,5 +97,37 @@ function DropImage(props: { setFile: (file: File) => void }) {
     >
       Drop image here
     </div>
+  );
+}
+
+function Header() {
+  const titles = [
+    { icon: "🧦👜", text: "Sockbag" },
+    { icon: "👜👜", text: "Bagbag" },
+    { icon: "🧦🧦", text: "Socksock" },
+    { icon: "👜🧦", text: "Bagsock" },
+  ];
+
+  const [title, setTitle] = createSignal(titles[0]);
+
+  function onMouseEnter() {
+    const idx = Math.floor(Math.random() * titles.length);
+    const title = titles[idx];
+    setTitle(title);
+  }
+
+  function onMouseLeave() {
+    setTitle(titles[0]);
+  }
+
+  return (
+    <h1
+      class="app-title"
+      title={`${title().text} Texture Ripper`}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
+      {title().icon}
+    </h1>
   );
 }

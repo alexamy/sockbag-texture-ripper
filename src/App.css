@@ -5,6 +5,11 @@
   border: 1px dashed grey;
 }
 
+.app-title {
+  user-select: none;
+  width: fit-content;
+}
+
 .image-drop {
   padding: 10px;
   background-color: gray;

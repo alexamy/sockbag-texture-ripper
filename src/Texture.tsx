@@ -1,55 +1,23 @@
-import potpack from "potpack";
-import { For, createEffect, createMemo, createSignal } from "solid-js";
+import { For } from "solid-js";
 import { Region } from "./Region";
+import { useAppStore } from "./store";
+import { createTextureStore } from "./store/texture";
 
-interface PackEntry {
-  i: number;
-  ref: HTMLImageElement;
-  w: number;
-  h: number;
-  x: number;
-  y: number;
-}
-
-export function Texture(props: { blobs: Blob[] }) {
-  const refs: HTMLImageElement[] = [];
-  const [parent, setParent] = createSignal<HTMLDivElement>();
-
-  const [packResult, setPackResult] = createSignal<{ w: number; h: number }>();
-  const [packs, setPacks] = createSignal<PackEntry[]>([]);
-  const imgTransforms = createMemo(() => {
-    return packs().map(({ x, y }) => `translate(${x}px, ${y}px)`);
-  });
-
-  const urls = createMemo(() => {
-    return props.blobs.map((blob) => URL.createObjectURL(blob));
-  });
-
-  const markLoad = createLoadWatcher(autopack);
-
-  function autopack() {
-    const packs = refs.map((ref, i) => {
-      const width = ref.naturalWidth;
-      const height = ref.naturalHeight;
-      return { i, ref, w: width, h: height, x: 0, y: 0 };
-    });
-
-    const result = potpack(packs);
-    setPackResult(result);
-
-    packs.sort((a, b) => a.i - b.i);
-    setPacks(packs);
-  }
+export function Texture() {
+  const [store] = useAppStore();
+  const [texture] = createTextureStore(
+    () => store.image,
+    () => store.quads
+  );
 
   function onDownload() {
-    const root = parent()!.getBoundingClientRect();
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d")!;
-    canvas.width = packResult()?.w ?? root.width;
-    canvas.height = packResult()?.h ?? root.height;
+    canvas.width = texture.dimensions.w;
+    canvas.height = texture.dimensions.h;
 
-    for (const { ref, x, y } of packs()) {
-      ctx.drawImage(ref, x, y);
+    for (const { image, x, y } of texture.packs) {
+      ctx.drawImage(image, x, y);
     }
 
     canvas.toBlob((blob) => {
@@ -65,21 +33,18 @@ export function Texture(props: { blobs: Blob[] }) {
 
   return (
     <div>
-      <button onClick={onDownload} disabled={urls().length === 0}>
+      <button onClick={onDownload} disabled={texture.urls.length === 0}>
         Download
       </button>
       <Region>
-        <div ref={setParent} class="texture">
-          <For each={urls()}>
+        <div class="texture">
+          <For each={texture.urls}>
             {(url, i) => (
               <img
-                ref={refs[i()]}
                 src={url}
                 class="texture-rect"
-                style={{ transform: imgTransforms()[i()] }}
+                style={{ transform: texture.transform[i()] }}
                 onMouseDown={(e) => e.preventDefault()}
-                onLoadStart={() => markLoad(i(), false)}
-                onLoad={() => markLoad(i(), true)}
               />
             )}
           </For>
@@ -87,24 +52,4 @@ export function Texture(props: { blobs: Blob[] }) {
       </Region>
     </div>
   );
-}
-
-// We need to wait for all images to load before we can measure and pack them.
-function createLoadWatcher(f: () => void) {
-  const [loaded, setLoaded] = createSignal<boolean[]>([]);
-  const allLoaded = createMemo(
-    () => loaded().every((l) => l) && loaded().length
-  );
-
-  function markLoad(i: number, value: boolean) {
-    const newLoaded = [...loaded()];
-    newLoaded[i] = value;
-    setLoaded(newLoaded);
-  }
-
-  createEffect(() => {
-    if (allLoaded()) f();
-  });
-
-  return markLoad;
 }

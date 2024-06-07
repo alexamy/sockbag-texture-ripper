@@ -1,12 +1,11 @@
 import cv from "@techstark/opencv-js";
-import { Quad } from "./editorMachine";
+import { Quad } from "./store";
 import { v } from "./vector";
 
-export async function projectRectangles(file: File, quads: Quad[]) {
-  const image = new Image();
-  image.src = URL.createObjectURL(file);
-  await new Promise((resolve) => (image.onload = resolve));
-
+export async function projectRectangles(
+  image: HTMLImageElement,
+  quads: Quad[]
+) {
   const src = cv.imread(image);
   const blobs: Blob[] = [];
 
