@@ -32,14 +32,7 @@ export function createTextureStore(
   image: () => HTMLImageElement,
   quads: () => Quad[]
 ) {
-  const [store, setStore] = createStore<StoreData>({
-    rects: [],
-    urls: [],
-    images: [],
-    packs: [],
-    dimensions: { w: 0, h: 0 },
-    transform: [],
-  });
+  const [store, setStore] = createStore<StoreData>(getDefaultStore());
 
   // prettier-ignore
   createEffect(
@@ -101,4 +94,15 @@ function autopack(images: HTMLImageElement[]) {
   packs.sort((a, b) => a.i - b.i);
 
   return { packs, dimensions };
+}
+
+function getDefaultStore() {
+  return {
+    rects: [],
+    urls: [],
+    images: [],
+    packs: [],
+    transform: [],
+    dimensions: { w: 0, h: 0 },
+  } satisfies StoreData;
 }
