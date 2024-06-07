@@ -98,42 +98,49 @@ function createTextureStore(
   // reset
   createEffect(on(image, () => setStore({ rects: [], urls: [], images: [] })));
 
-  // project rectangles
   createEffect(
+    // prettier-ignore
     on([image, quads] as const, async ([image, quads]) => {
       if (image.width === 0 || quads.length === 0) return;
-
       const rects = await projectRectangles(image, quads);
       setStore({ rects });
     })
   );
 
-  // create urls and images for projected rectangles
   createEffect(
-    on(
-      () => store.rects,
-      async (projected) => {
-        const urls = projected.map((blob) => URL.createObjectURL(blob));
-        const images = await Promise.all(urls.map(createImageSource));
-        setStore({ urls, images });
-      }
-    )
+    // prettier-ignore
+    on(() => store.rects, async (rects) => {
+      const { urls, images } = await makeImages(rects);
+      setStore({ urls, images });
+    })
   );
 
-  // autopack
-  createEffect(on(() => store.images, autopack));
-
-  function autopack() {
-    const packs = store.images.map((image, i) => {
-      const width = image.naturalWidth;
-      const height = image.naturalHeight;
-      return { i, image, w: width, h: height, x: 0, y: 0 };
-    });
-
-    const dimensions = potpack(packs);
-    packs.sort((a, b) => a.i - b.i);
-    setStore({ packs, dimensions });
-  }
+  createEffect(
+    // prettier-ignore
+    on(() => store.images, (images) => {
+      const { packs, dimensions } = autopack(images);
+      setStore({ packs, dimensions });
+    })
+  );
 
   return [store, setStore] as const;
+}
+
+async function makeImages(blobs: Blob[]) {
+  const urls = blobs.map((blob) => URL.createObjectURL(blob));
+  const images = await Promise.all(urls.map(createImageSource));
+  return { urls, images };
+}
+
+function autopack(images: HTMLImageElement[]) {
+  const packs = images.map((image, i) => {
+    const width = image.naturalWidth;
+    const height = image.naturalHeight;
+    return { i, image, w: width, h: height, x: 0, y: 0 };
+  });
+
+  const dimensions = potpack(packs);
+  packs.sort((a, b) => a.i - b.i);
+
+  return { packs, dimensions };
 }
