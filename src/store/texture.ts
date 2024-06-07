@@ -106,6 +106,6 @@ function getDefaultStore() {
     images: [],
     packs: [],
     transform: [],
-    dimensions: { w: 0, h: 0 },
+    dimensions: { w: 0, h: 0, fill: 0 },
   } satisfies StoreData;
 }
