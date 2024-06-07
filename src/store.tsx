@@ -3,11 +3,11 @@ import {
   createContext,
   createEffect,
   on,
-  useContext
+  useContext,
 } from "solid-js";
 import { createStore } from "solid-js/store";
-import { createImageSource } from './helper';
-import { v } from './vector';
+import { createImageSource } from "./helper";
+import { v } from "./vector";
 
 export type Point = { x: number; y: number };
 export type Quad = [Point, Point, Point, Point];
@@ -21,8 +21,6 @@ interface StoreData {
   quads: Quad[];
 }
 
-// TODO turn prettier on?
-
 // store
 function createAppStore() {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
@@ -30,12 +28,14 @@ function createAppStore() {
   // TODO extract methods
 
   // reset state when file changes
+  // prettier-ignore
   createEffect(on(
     () => store.file,
     () => setStore(store => ({ ...getDefaultStore(), file: store.file }),
   )));
 
   // load image
+  // prettier-ignore
   createEffect(on(
     () => store.file,
     async (file) => {
@@ -46,6 +46,7 @@ function createAppStore() {
   ));
 
   // add quad when has 4 points
+  // prettier-ignore
   createEffect(on(
     () => store.points,
     (points) => {
