@@ -10,6 +10,7 @@ export function Texture() {
     () => store.quads
   );
 
+  // TODO move in separate component when texture will be part of store
   function onDownload() {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d")!;
