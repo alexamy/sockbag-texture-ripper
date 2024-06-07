@@ -1,5 +1,5 @@
 import potpack from "potpack";
-import { For, createEffect, createMemo, createSignal, on } from "solid-js";
+import { For, createEffect, createMemo, on } from "solid-js";
 import { createStore } from "solid-js/store";
 import { Region } from "./Region";
 import { createImageSource } from "./helper";
@@ -7,8 +7,8 @@ import { projectRectangles } from "./projection";
 import { Quad, useAppStore } from "./store";
 
 interface PackEntry {
-  i: number;
   image: HTMLImageElement;
+  i: number;
   w: number;
   h: number;
   x: number;
@@ -20,42 +20,32 @@ interface PackSize {
   h: number;
 }
 
-// TODO extract logic to store
+interface StoreData {
+  rects: Blob[];
+  urls: string[];
+  images: HTMLImageElement[];
+  packs: PackEntry[];
+  dimensions: PackSize;
+}
+
 export function Texture() {
   const [store] = useAppStore();
   const [texture] = createTextureStore(
     () => store.image,
     () => store.quads
   );
-  const [packs, setPacks] = createSignal<PackEntry[]>([]);
-  const [packResult, setPackResult] = createSignal<PackSize>({ w: 0, h: 0 });
+
   const transforms = createMemo(() => {
-    return packs().map(({ x, y }) => `translate(${x}px, ${y}px)`);
+    return texture.packs.map(({ x, y }) => `translate(${x}px, ${y}px)`);
   });
-
-  createEffect(on(() => texture.images, autopack));
-
-  function autopack() {
-    const packs = texture.images.map((image, i) => {
-      const width = image.naturalWidth;
-      const height = image.naturalHeight;
-      return { i, image, w: width, h: height, x: 0, y: 0 };
-    });
-
-    const result = potpack(packs);
-    setPackResult(result);
-
-    packs.sort((a, b) => a.i - b.i);
-    setPacks(packs);
-  }
 
   function onDownload() {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d")!;
-    canvas.width = packResult().w;
-    canvas.height = packResult().h;
+    canvas.width = texture.dimensions.w;
+    canvas.height = texture.dimensions.h;
 
-    for (const { image, x, y } of packs()) {
+    for (const { image, x, y } of texture.packs) {
       ctx.drawImage(image, x, y);
     }
 
@@ -97,14 +87,12 @@ function createTextureStore(
   image: () => HTMLImageElement,
   quads: () => Quad[]
 ) {
-  const [store, setStore] = createStore<{
-    rects: Blob[];
-    urls: string[];
-    images: HTMLImageElement[];
-  }>({
+  const [store, setStore] = createStore<StoreData>({
     rects: [],
     urls: [],
     images: [],
+    packs: [],
+    dimensions: { w: 0, h: 0 },
   });
 
   // reset
@@ -131,6 +119,21 @@ function createTextureStore(
       }
     )
   );
+
+  // autopack
+  createEffect(on(() => store.images, autopack));
+
+  function autopack() {
+    const packs = store.images.map((image, i) => {
+      const width = image.naturalWidth;
+      const height = image.naturalHeight;
+      return { i, image, w: width, h: height, x: 0, y: 0 };
+    });
+
+    const dimensions = potpack(packs);
+    packs.sort((a, b) => a.i - b.i);
+    setStore({ packs, dimensions });
+  }
 
   return [store, setStore] as const;
 }

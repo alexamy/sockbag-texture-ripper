@@ -27,6 +27,8 @@ interface StoreData {
 function createAppStore() {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
 
+  // TODO extract methods
+
   // reset state when file changes
   createEffect(on(
     () => store.file,
