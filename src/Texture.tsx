@@ -1,4 +1,4 @@
-import { For, createMemo } from "solid-js";
+import { For } from "solid-js";
 import { Region } from "./Region";
 import { useAppStore } from "./store";
 import { createTextureStore } from "./store/texture";
@@ -9,10 +9,6 @@ export function Texture() {
     () => store.image,
     () => store.quads
   );
-
-  const transforms = createMemo(() => {
-    return texture.packs.map(({ x, y }) => `translate(${x}px, ${y}px)`);
-  });
 
   function onDownload() {
     const canvas = document.createElement("canvas");
@@ -47,7 +43,7 @@ export function Texture() {
               <img
                 src={url}
                 class="texture-rect"
-                style={{ transform: transforms()[i()] }}
+                style={{ transform: texture.transform[i()] }}
                 onMouseDown={(e) => e.preventDefault()}
               />
             )}

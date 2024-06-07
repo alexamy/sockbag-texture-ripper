@@ -25,6 +25,7 @@ interface StoreData {
   images: HTMLImageElement[];
   packs: PackEntry[];
   dimensions: PackSize;
+  transform: string[];
 }
 
 export function createTextureStore(
@@ -37,6 +38,7 @@ export function createTextureStore(
     images: [],
     packs: [],
     dimensions: { w: 0, h: 0 },
+    transform: [],
   });
 
   // prettier-ignore
@@ -68,6 +70,14 @@ export function createTextureStore(
     on(() => store.images, (images) => {
       const { packs, dimensions } = autopack(images);
       setStore({ packs, dimensions });
+    })
+  );
+
+  // prettier-ignore
+  createEffect(
+    on(() => store.packs, (packs) => {
+      const transform = packs.map(({ x, y }) => `translate(${x}px, ${y}px)`);
+      setStore({ transform });
     })
   );
 
