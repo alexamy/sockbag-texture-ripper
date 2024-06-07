@@ -95,11 +95,15 @@ function createTextureStore(
     dimensions: { w: 0, h: 0 },
   });
 
-  // reset
-  createEffect(on(image, () => setStore({ rects: [], urls: [], images: [] })));
-
+  // prettier-ignore
   createEffect(
-    // prettier-ignore
+    on(image, () => {
+      setStore({ rects: [], urls: [], images: [] })
+    })
+  );
+
+  // prettier-ignore
+  createEffect(
     on([image, quads] as const, async ([image, quads]) => {
       if (image.width === 0 || quads.length === 0) return;
       const rects = await projectRectangles(image, quads);
@@ -107,16 +111,16 @@ function createTextureStore(
     })
   );
 
+  // prettier-ignore
   createEffect(
-    // prettier-ignore
     on(() => store.rects, async (rects) => {
       const { urls, images } = await makeImages(rects);
       setStore({ urls, images });
     })
   );
 
+  // prettier-ignore
   createEffect(
-    // prettier-ignore
     on(() => store.images, (images) => {
       const { packs, dimensions } = autopack(images);
       setStore({ packs, dimensions });
