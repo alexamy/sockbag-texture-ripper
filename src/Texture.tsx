@@ -1,11 +1,14 @@
 import potpack from "potpack";
 import { For, createEffect, createMemo, createSignal, on } from "solid-js";
+import { createStore } from "solid-js/store";
 import { Region } from "./Region";
-import { useAppStore } from "./store";
+import { createImageSource } from "./helper";
+import { projectRectangles } from "./projection";
+import { Quad, useAppStore } from "./store";
 
 interface PackEntry {
   i: number;
-  ref: HTMLImageElement;
+  image: HTMLImageElement;
   w: number;
   h: number;
   x: number;
@@ -20,19 +23,23 @@ interface PackSize {
 // TODO extract logic to store
 export function Texture() {
   const [store] = useAppStore();
+  const [texture] = createTextureStore(
+    () => store.image,
+    () => store.quads
+  );
   const [packs, setPacks] = createSignal<PackEntry[]>([]);
   const [packResult, setPackResult] = createSignal<PackSize>({ w: 0, h: 0 });
   const transforms = createMemo(() => {
     return packs().map(({ x, y }) => `translate(${x}px, ${y}px)`);
   });
 
-  createEffect(on(() => store.rectImages, autopack));
+  createEffect(on(() => texture.images, autopack));
 
   function autopack() {
-    const packs = store.rectImages.map((ref, i) => {
-      const width = ref.naturalWidth;
-      const height = ref.naturalHeight;
-      return { i, ref, w: width, h: height, x: 0, y: 0 };
+    const packs = texture.images.map((image, i) => {
+      const width = image.naturalWidth;
+      const height = image.naturalHeight;
+      return { i, image, w: width, h: height, x: 0, y: 0 };
     });
 
     const result = potpack(packs);
@@ -48,8 +55,8 @@ export function Texture() {
     canvas.width = packResult().w;
     canvas.height = packResult().h;
 
-    for (const { ref, x, y } of packs()) {
-      ctx.drawImage(ref, x, y);
+    for (const { image, x, y } of packs()) {
+      ctx.drawImage(image, x, y);
     }
 
     canvas.toBlob((blob) => {
@@ -65,12 +72,12 @@ export function Texture() {
 
   return (
     <div>
-      <button onClick={onDownload} disabled={store.rectUrls.length === 0}>
+      <button onClick={onDownload} disabled={texture.urls.length === 0}>
         Download
       </button>
       <Region>
         <div class="texture">
-          <For each={store.rectUrls}>
+          <For each={texture.urls}>
             {(url, i) => (
               <img
                 src={url}
@@ -84,4 +91,42 @@ export function Texture() {
       </Region>
     </div>
   );
+}
+
+function createTextureStore(
+  image: () => HTMLImageElement,
+  quads: () => Quad[]
+) {
+  const [store, setStore] = createStore<{
+    rects: Blob[];
+    urls: string[];
+    images: HTMLImageElement[];
+  }>({
+    rects: [],
+    urls: [],
+    images: [],
+  });
+
+  // project rectangles
+  createEffect(
+    on([image, quads] as const, async ([image, quads]) => {
+      if (image.width === 0 || quads.length === 0) return;
+      const rects = await projectRectangles(image, quads);
+      setStore({ rects });
+    })
+  );
+
+  // create urls and images for projected rectangles
+  createEffect(
+    on(
+      () => store.rects,
+      async (projected) => {
+        const urls = projected.map((blob) => URL.createObjectURL(blob));
+        const images = await Promise.all(urls.map(createImageSource));
+        setStore({ urls, images });
+      }
+    )
+  );
+
+  return [store, setStore] as const;
 }

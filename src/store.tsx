@@ -6,7 +6,7 @@ import {
   useContext
 } from "solid-js";
 import { createStore } from "solid-js/store";
-import { projectRectangles } from "./projection";
+import { createImageSource } from './helper';
 import { v } from './vector';
 
 export type Point = { x: number; y: number };
@@ -19,9 +19,6 @@ interface StoreData {
   image: HTMLImageElement;
   points: Point[];
   quads: Quad[];
-  rects: Blob[];
-  rectUrls: string[];
-  rectImages: HTMLImageElement[];
 }
 
 // TODO turn prettier on?
@@ -44,26 +41,6 @@ function createAppStore() {
       const image = await createImageSource(url);
       setStore({ url, image });
     },
-  ));
-
-  // project rectangles
-  createEffect(on(
-    () => [store.image, store.quads] as const,
-    async ([image, quads]) => {
-      if(image.width === 0 || quads.length === 0) return;
-      const rects = await projectRectangles(image, quads);
-      setStore({ rects });
-    }
-  ));
-
-  // create urls and images for projected rectangles
-  createEffect(on(
-    () => store.rects,
-    async (projected) => {
-      const rectUrls = projected.map((blob) => URL.createObjectURL(blob));
-      const rectImages = await Promise.all(rectUrls.map(createImageSource));
-      setStore({ rectUrls, rectImages });
-    }
   ));
 
   // add quad when has 4 points
@@ -98,14 +75,6 @@ function createAppStore() {
   return [store, methods, setStore] as const;
 }
 
-function createImageSource(url: string) {
-  const image = new Image();
-  image.src = url;
-  return new Promise<HTMLImageElement>((resolve) => {
-    image.onload = () => resolve(image);
-  });
-}
-
 function getDefaultStore() {
   return {
     url: "",
@@ -113,9 +82,6 @@ function getDefaultStore() {
     image: new Image(),
     points: [],
     quads: [],
-    rects: [],
-    rectUrls: [],
-    rectImages: [],
   } satisfies StoreData;
 }
 
