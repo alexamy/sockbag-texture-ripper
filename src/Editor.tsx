@@ -93,11 +93,9 @@ export function Editor(props: { imageRef: HTMLImageElement }) {
       tabindex="0"
     >
       <For each={quads()}>{(quad) => <Quad quad={quad} />}</For>
-      {/* <Point p={current()} r={4} fill="red" /> */}
       <For each={points()}>
         {(point, i) => (
           <>
-            {/* <Point p={point} /> */}
             <Line from={point} to={points()[i() + 1] ?? point} />
           </>
         )}
