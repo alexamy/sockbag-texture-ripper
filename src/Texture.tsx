@@ -26,10 +26,10 @@ export function Texture() {
     return packs().map(({ x, y }) => `translate(${x}px, ${y}px)`);
   });
 
-  createEffect(on(() => store.quadImages, autopack));
+  createEffect(on(() => store.rectImages, autopack));
 
   function autopack() {
-    const packs = store.quadImages.map((ref, i) => {
+    const packs = store.rectImages.map((ref, i) => {
       const width = ref.naturalWidth;
       const height = ref.naturalHeight;
       return { i, ref, w: width, h: height, x: 0, y: 0 };
@@ -65,12 +65,12 @@ export function Texture() {
 
   return (
     <div>
-      <button onClick={onDownload} disabled={store.quadUrls.length === 0}>
+      <button onClick={onDownload} disabled={store.rectUrls.length === 0}>
         Download
       </button>
       <Region>
         <div class="texture">
-          <For each={store.quadUrls}>
+          <For each={store.rectUrls}>
             {(url, i) => (
               <img
                 src={url}

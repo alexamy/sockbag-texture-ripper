@@ -19,9 +19,9 @@ interface StoreData {
   image: HTMLImageElement;
   points: Point[];
   quads: Quad[];
-  projected: Blob[]; // TODO rename, they are rects (and below)
-  quadUrls: string[];
-  quadImages: HTMLImageElement[];
+  rects: Blob[];
+  rectUrls: string[];
+  rectImages: HTMLImageElement[];
 }
 
 // TODO turn prettier on?
@@ -51,18 +51,18 @@ function createAppStore() {
     () => [store.image, store.quads] as const,
     async ([image, quads]) => {
       if(image.width === 0 || quads.length === 0) return;
-      const projected = await projectRectangles(image, quads);
-      setStore({ projected });
+      const rects = await projectRectangles(image, quads);
+      setStore({ rects });
     }
   ));
 
   // create urls and images for projected rectangles
   createEffect(on(
-    () => store.projected,
+    () => store.rects,
     async (projected) => {
-      const quadUrls = projected.map((blob) => URL.createObjectURL(blob));
-      const quadImages = await Promise.all(quadUrls.map(createImageSource));
-      setStore({ quadUrls, quadImages });
+      const rectUrls = projected.map((blob) => URL.createObjectURL(blob));
+      const rectImages = await Promise.all(rectUrls.map(createImageSource));
+      setStore({ rectUrls, rectImages });
     }
   ));
 
@@ -113,10 +113,10 @@ function getDefaultStore() {
     image: new Image(),
     points: [],
     quads: [],
-    projected: [],
-    quadUrls: [],
-    quadImages: [],
-  };
+    rects: [],
+    rectUrls: [],
+    rectImages: [],
+  } satisfies StoreData;
 }
 
 // context
