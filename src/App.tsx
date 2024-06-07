@@ -16,9 +16,9 @@ export function App() {
 export function TextureRipper() {
   // TODO move to inner components
   const [store, { setFile }] = useAppStore();
-  debugLoadFile().then(setFile); // DEBUG
+  debugLoadFile().then(setFile);
 
-  // TODO remove?
+  // TODO move to editor
   const [imageRef, setImageRef] = createSignal<HTMLImageElement>();
 
   return (
