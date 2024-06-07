@@ -32,6 +32,7 @@ export function Texture() {
     });
   }
 
+  // TODO extract gap to separate component
   function onGapChange(e: Event) {
     const gap = parseInt((e.target as HTMLInputElement).value);
     setStore({ gap });
@@ -68,3 +69,5 @@ export function Texture() {
     </div>
   );
 }
+
+function gapInput() {}
