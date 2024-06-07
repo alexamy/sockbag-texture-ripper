@@ -32,7 +32,7 @@ export function TextureRipper() {
 
           <Region trigger="move">
             <div class="editor-canvas">
-              <img ref={setImageRef} src={store.url} alt="Uploaded image" />
+              <ImageBackground src={store.url} onLoadRef={setImageRef} />
               <Show when={imageRef()}>
                 <Editor imageRef={imageRef()!} />
               </Show>
@@ -52,6 +52,18 @@ async function debugLoadFile() {
   const blob = await image.blob();
   const file = new File([blob], "source");
   return file;
+}
+
+function ImageBackground(props: {
+  src: string;
+  onLoadRef: (ref: HTMLImageElement) => void;
+}) {
+  function onLoad(e: Event) {
+    const image = e.target as HTMLImageElement;
+    props.onLoadRef(image);
+  }
+
+  return <img src={props.src} alt="Uploaded image" onLoad={onLoad} />;
 }
 
 function DropImage(props: { setFile: (file: File) => void }) {

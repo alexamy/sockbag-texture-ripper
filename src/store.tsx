@@ -48,10 +48,10 @@ function createAppStore() {
     );
   }));
 
-  // reset editor when file changes
+  // reset state when file changes
   createEffect(on(
     () => store.file,
-    () => setStore({ quads: [], points: [] })
+    () => setStore({ quads: [], points: [], projected: [] })
   ));
 
   // add quad when has 4 points
