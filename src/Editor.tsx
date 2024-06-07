@@ -3,7 +3,33 @@ import { useRegionContext } from "./Region";
 import { useAppStore } from "./store";
 import { v, type Point, type Quad } from "./vector";
 
-export function Editor(props: { imageRef: HTMLImageElement }) {
+export function Editor() {
+  const [store] = useAppStore();
+  const [imageRef, setImageRef] = createSignal<HTMLImageElement>();
+
+  return (
+    <div class="editor-canvas">
+      <ImageBackground src={store.url} onLoadRef={setImageRef} />
+      <Show when={imageRef()}>
+        <DrawingBoard imageRef={imageRef()!} />
+      </Show>
+    </div>
+  );
+}
+
+function ImageBackground(props: {
+  src: string;
+  onLoadRef: (ref: HTMLImageElement) => void;
+}) {
+  function onLoad(e: Event) {
+    const image = e.target as HTMLImageElement;
+    props.onLoadRef(image);
+  }
+
+  return <img src={props.src} alt="Uploaded image" onLoad={onLoad} />;
+}
+
+function DrawingBoard(props: { imageRef: HTMLImageElement }) {
   const [store, { addPoint, deleteLastPoint }] = useAppStore();
   const [current, setCurrent] = createSignal({ x: 0, y: 0 });
   const region = useRegionContext();

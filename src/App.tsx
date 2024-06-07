@@ -18,9 +18,6 @@ export function TextureRipper() {
   const [store, { setFile }] = useAppStore();
   debugLoadFile().then(setFile);
 
-  // TODO move to editor
-  const [imageRef, setImageRef] = createSignal<HTMLImageElement>();
-
   return (
     <div class="app">
       <Header />
@@ -28,16 +25,11 @@ export function TextureRipper() {
       <Show when={store.file}>
         <div class="editor">
           <div>
-            Image size: {imageRef()?.naturalWidth} x {imageRef()?.naturalHeight}
+            Image size: {store.image.naturalWidth} x {store.image.naturalHeight}
           </div>
 
           <Region trigger="move">
-            <div class="editor-canvas">
-              <ImageBackground src={store.url} onLoadRef={setImageRef} />
-              <Show when={imageRef()}>
-                <Editor imageRef={imageRef()!} />
-              </Show>
-            </div>
+            <Editor />
           </Region>
 
           <Texture />
@@ -53,18 +45,6 @@ async function debugLoadFile() {
   const blob = await image.blob();
   const file = new File([blob], "source");
   return file;
-}
-
-function ImageBackground(props: {
-  src: string;
-  onLoadRef: (ref: HTMLImageElement) => void;
-}) {
-  function onLoad(e: Event) {
-    const image = e.target as HTMLImageElement;
-    props.onLoadRef(image);
-  }
-
-  return <img src={props.src} alt="Uploaded image" onLoad={onLoad} />;
 }
 
 function DropImage(props: { setFile: (file: File) => void }) {
