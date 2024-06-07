@@ -3,7 +3,7 @@ import {
   createContext,
   createEffect,
   on,
-  useContext,
+  useContext
 } from "solid-js";
 import { createStore } from "solid-js/store";
 import { projectRectangles } from "./projection";
@@ -16,7 +16,7 @@ type Store = ReturnType<typeof createAppStore>;
 interface StoreData {
   file: Blob;
   url: string;
-  source: HTMLImageElement;
+  image: HTMLImageElement;
   projected: Blob[];
   points: Point[];
   quads: Quad[];
@@ -31,15 +31,15 @@ function createAppStore() {
     () => store.file,
     (file) => {
       const url = URL.createObjectURL(file);
-      createImageSource(url).then((source) => {
-        setStore({ url, source });
+      createImageSource(url).then((image) => {
+        setStore({ url, image });
       }
     );
   }));
 
   // project rectangles
   createEffect(on(
-    () => [store.source, store.quads] as const,
+    () => [store.image, store.quads] as const,
     ([source, quads]) => {
       projectRectangles(source, quads).then((projected) => {
         setStore({ projected });
@@ -76,7 +76,11 @@ function createAppStore() {
     setStore({ points });
   }
 
-  const methods = { addPoint, deleteLastPoint };
+  function setFile(file: Blob) {
+    setStore({ file });
+  }
+
+  const methods = { addPoint, deleteLastPoint, setFile };
 
   return [store, methods, setStore] as const;
 }
@@ -93,7 +97,7 @@ function getDefaultStore() {
   return {
     url: "",
     file: new Blob(),
-    source: new Image(),
+    image: new Image(),
     points: [],
     quads: [],
     projected: [],
@@ -103,7 +107,7 @@ function getDefaultStore() {
 // context
 const StoreContext = createContext<Store>(undefined as unknown as Store);
 
-export function useStore() {
+export function useAppStore() {
   const store = useContext(StoreContext);
   if (!store) {
     throw new Error("useStore must be used within a StoreProvider");
@@ -111,7 +115,7 @@ export function useStore() {
   return store;
 }
 
-export function StoreProvider(props: { children: JSXElement }) {
+export function AppStoreProvider(props: { children: JSXElement }) {
   const store = createAppStore();
 
   return (

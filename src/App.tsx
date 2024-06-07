@@ -1,36 +1,22 @@
-import { Show, createEffect, createMemo, createSignal, on } from "solid-js";
+import { Show, createSignal } from "solid-js";
 import "./App.css";
 import { Editor } from "./Editor";
 import { Region } from "./Region";
 import { Texture } from "./Texture";
-import { editorMachine } from "./editorMachine";
-import { createActor, createActorState } from "./hooks";
-import { projectRectangles } from "./projection";
+import { AppStoreProvider, useAppStore } from "./store";
 
 export function App() {
-  const editor = createActor(editorMachine);
-  const state = createActorState(editor);
-  const quads = createMemo(() => state.context.quads);
+  return (
+    <AppStoreProvider>
+      <TextureRipper />
+    </AppStoreProvider>
+  );
+}
+
+export function TextureRipper() {
+  const [store, { setFile }] = useAppStore();
 
   const [imageRef, setImageRef] = createSignal<HTMLImageElement>();
-  const [file, setFile] = createSignal<File>();
-  const url = createMemo(() => {
-    return file() ? URL.createObjectURL(file()!) : "";
-  });
-
-  createEffect(on(file, () => editor.send({ type: "reset" })));
-
-  const [projected, setProjected] = createSignal<Blob[]>([]);
-  createEffect(
-    on(
-      () => quads().length,
-      () => {
-        if (file()) {
-          projectRectangles(file()!, quads()).then(setProjected);
-        }
-      }
-    )
-  );
 
   // DEBUG
   debugLoadFile().then(setFile);
@@ -39,7 +25,7 @@ export function App() {
     <div class="app">
       <Header />
       <DropImage setFile={setFile} />
-      <Show when={file()}>
+      <Show when={store.file}>
         <div class="editor">
           <div>
             Image size: {imageRef()?.naturalWidth} x {imageRef()?.naturalHeight}
@@ -47,14 +33,15 @@ export function App() {
 
           <Region trigger="move">
             <div class="editor-canvas">
-              <ImageBackground url={url()} setImageRef={setImageRef} />
+              {/* TODO Remove image ref */}
+              <ImageBackground url={store.url} setImageRef={setImageRef} />
               <Show when={imageRef()}>
-                <Editor imageRef={imageRef()!} initialEditor={editor} />
+                <Editor imageRef={imageRef()!} />
               </Show>
             </div>
           </Region>
 
-          <Texture blobs={projected()} />
+          <Texture blobs={store.projected} />
         </div>
       </Show>
     </div>

@@ -1,22 +1,17 @@
 import { createMemo, createSignal, For, onMount, Show } from "solid-js";
-import { Actor } from "xstate";
-import { editorMachine, type Point, type Quad } from "./editorMachine";
-import { createActorState } from "./hooks";
+import { type Point, type Quad } from "./editorMachine";
 import { useRegionContext } from "./Region";
+import { useAppStore } from "./store";
 import { v } from "./vector";
 
-export function Editor(props: {
-  imageRef: HTMLImageElement;
-  initialEditor: Actor<typeof editorMachine>;
-}) {
+export function Editor(props: { imageRef: HTMLImageElement }) {
+  const [store, { addPoint, deleteLastPoint }] = useAppStore();
   const [current, setCurrent] = createSignal({ x: 0, y: 0 });
   const region = useRegionContext();
   region.setActive(false);
 
-  const send = props.initialEditor.send;
-  const state = createActorState(props.initialEditor);
-  const quads = createMemo(() => state.context.quads);
-  const points = createMemo(() => state.context.points);
+  const quads = () => store.quads;
+  const points = () => store.points;
 
   const first = createMemo(() => points()[0]);
   const last = createMemo(() => points()[points().length - 1]);
@@ -62,9 +57,9 @@ export function Editor(props: {
   function onClick(e: MouseEvent) {
     e.preventDefault();
     if (e.button === 0) {
-      send({ type: "addPoint", point: current() });
+      addPoint(current());
     } else if (e.button === 2) {
-      send({ type: "discard" });
+      deleteLastPoint();
     }
   }
 
