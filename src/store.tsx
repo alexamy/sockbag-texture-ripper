@@ -17,41 +17,53 @@ interface StoreData {
   file: Blob;
   url: string;
   image: HTMLImageElement;
-  projected: Blob[];
   points: Point[];
   quads: Quad[];
+  projected: Blob[]; // TODO rename, they are rects (and below)
+  quadUrls: string[];
+  quadImages: HTMLImageElement[];
 }
+
+// TODO turn prettier on?
 
 // store
 function createAppStore() {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
 
+  // reset state when file changes
+  createEffect(on(
+    () => store.file,
+    () => setStore(store => ({ ...getDefaultStore(), file: store.file }),
+  )));
+
   // load image
   createEffect(on(
     () => store.file,
-    (file) => {
+    async (file) => {
       const url = URL.createObjectURL(file);
-      createImageSource(url).then((image) => {
-        setStore({ url, image });
-      }
-    );
-  }));
+      const image = await createImageSource(url);
+      setStore({ url, image });
+    },
+  ));
 
   // project rectangles
   createEffect(on(
     () => [store.image, store.quads] as const,
-    ([image, quads]) => {
+    async ([image, quads]) => {
       if(image.width === 0 || quads.length === 0) return;
-      projectRectangles(image, quads).then((projected) => {
-        setStore({ projected });
-      }
-    );
-  }));
+      const projected = await projectRectangles(image, quads);
+      setStore({ projected });
+    }
+  ));
 
-  // reset state when file changes
+  // create urls and images for projected rectangles
   createEffect(on(
-    () => store.file,
-    () => setStore({ quads: [], points: [], projected: [] })
+    () => store.projected,
+    async (projected) => {
+      const quadUrls = projected.map((blob) => URL.createObjectURL(blob));
+      const quadImages = await Promise.all(quadUrls.map(createImageSource));
+      setStore({ quadUrls, quadImages });
+    }
   ));
 
   // add quad when has 4 points
@@ -81,7 +93,7 @@ function createAppStore() {
     setStore({ file });
   }
 
-  const methods = { addPoint, deleteLastPoint, setFile };
+  const methods = { setFile, addPoint, deleteLastPoint };
 
   return [store, methods, setStore] as const;
 }
@@ -102,6 +114,8 @@ function getDefaultStore() {
     points: [],
     quads: [],
     projected: [],
+    quadUrls: [],
+    quadImages: [],
   };
 }
 

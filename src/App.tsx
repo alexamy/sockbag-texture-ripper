@@ -14,6 +14,7 @@ export function App() {
 }
 
 export function TextureRipper() {
+  // TODO move to inner components
   const [store, { setFile }] = useAppStore();
   debugLoadFile().then(setFile); // DEBUG
 
@@ -39,7 +40,7 @@ export function TextureRipper() {
             </div>
           </Region>
 
-          <Texture blobs={store.projected} />
+          <Texture />
         </div>
       </Show>
     </div>
