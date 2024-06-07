@@ -40,8 +40,9 @@ function createAppStore() {
   // project rectangles
   createEffect(on(
     () => [store.image, store.quads] as const,
-    ([source, quads]) => {
-      projectRectangles(source, quads).then((projected) => {
+    ([image, quads]) => {
+      if(image.width === 0 || quads.length === 0) return;
+      projectRectangles(image, quads).then((projected) => {
         setStore({ projected });
       }
     );

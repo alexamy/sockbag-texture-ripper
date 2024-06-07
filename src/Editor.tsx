@@ -1,7 +1,6 @@
 import { createMemo, createSignal, For, onMount, Show } from "solid-js";
-import { type Point, type Quad } from "./editorMachine";
 import { useRegionContext } from "./Region";
-import { useAppStore } from "./store";
+import { useAppStore, type Point, type Quad } from "./store";
 import { v } from "./vector";
 
 export function Editor(props: { imageRef: HTMLImageElement }) {
