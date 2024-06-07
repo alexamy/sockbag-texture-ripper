@@ -8,6 +8,10 @@
   user-select: none;
 }
 
+.region:focus {
+  outline: none;
+}
+
 .region-content {
   transform-origin: 0 0;
   position: absolute;

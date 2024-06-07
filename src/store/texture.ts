@@ -14,6 +14,7 @@ interface StoreData {
   packs: PackEntry[];
   dimensions: PackDimensions;
   transform: string[];
+  gap: number;
 }
 
 interface PackEntry {
@@ -63,8 +64,8 @@ export function createTextureStore(
 
   // prettier-ignore
   createEffect(
-    on(() => store.images, (images) => {
-      const { packs, dimensions } = autopack(images);
+    on(() => [store.images, store.gap] as const, ([images, gap]) => {
+      const { packs, dimensions } = autopack(images, gap);
       setStore({ packs, dimensions });
     })
   );
@@ -86,12 +87,12 @@ async function makeImages(blobs: Blob[]) {
   return { urls, images };
 }
 
-function autopack(images: HTMLImageElement[]) {
+function autopack(images: HTMLImageElement[], gap = 0) {
   const packs = images.map((image, i) => ({
     i,
     image,
-    w: image.naturalWidth,
-    h: image.naturalHeight,
+    w: image.naturalWidth + gap,
+    h: image.naturalHeight + gap,
     x: 0,
     y: 0,
   }));
@@ -110,5 +111,6 @@ function getDefaultStore() {
     packs: [],
     transform: [],
     dimensions: { w: 0, h: 0, fill: 0 },
+    gap: 0,
   } satisfies StoreData;
 }
