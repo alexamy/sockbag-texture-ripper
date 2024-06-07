@@ -1,7 +1,7 @@
 import { createMemo, createSignal, For, onMount, Show } from "solid-js";
 import { useRegionContext } from "./Region";
-import { useAppStore, type Point, type Quad } from "./store";
-import { v } from "./vector";
+import { useAppStore } from "./store";
+import { v, type Point, type Quad } from "./vector";
 
 export function Editor(props: { imageRef: HTMLImageElement }) {
   const [store, { addPoint, deleteLastPoint }] = useAppStore();

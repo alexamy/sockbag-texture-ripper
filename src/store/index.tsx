@@ -1,10 +1,6 @@
 import { JSXElement, createContext, useContext } from "solid-js";
 import { Store, createAppStore } from "./app";
 
-// TODO move to other place
-export type Point = { x: number; y: number };
-export type Quad = [Point, Point, Point, Point];
-
 // context
 const StoreContext = createContext<Store>(undefined as unknown as Store);
 

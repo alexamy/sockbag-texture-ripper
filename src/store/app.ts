@@ -1,10 +1,7 @@
 import { createEffect, on } from "solid-js";
 import { createStore } from "solid-js/store";
 import { createImageSource } from "../helper";
-import { v } from "../vector";
-
-type Point = { x: number; y: number };
-type Quad = [Point, Point, Point, Point];
+import { Point, Quad, v } from "../vector";
 
 export type Store = ReturnType<typeof createAppStore>;
 interface StoreData {

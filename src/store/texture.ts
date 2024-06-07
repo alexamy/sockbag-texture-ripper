@@ -1,9 +1,9 @@
 import potpack from "potpack";
 import { createEffect, on } from "solid-js";
 import { createStore } from "solid-js/store";
-import { Quad } from ".";
 import { createImageSource } from "../helper";
 import { projectRectangles } from "../projection";
+import { Quad } from "../vector";
 
 interface PackEntry {
   image: HTMLImageElement;

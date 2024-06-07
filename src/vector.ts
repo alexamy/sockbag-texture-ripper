@@ -1,4 +1,6 @@
+export type Point = { x: number; y: number };
 export type Vector = { x: number; y: number };
+export type Quad = [Point, Point, Point, Point];
 
 const Zero = () => ({ x: 0, y: 0 } satisfies Vector);
 const Up = () => ({ x: 0, y: -1 } satisfies Vector);
