@@ -13,46 +13,33 @@ interface StoreData {
   quads: Quad[];
 }
 
+// TODO add composite store
+
 // store
 export function createAppStore() {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
 
-  // TODO extract methods
-
-  // reset state when file changes
   // prettier-ignore
-  createEffect(on(
-    () => store.file,
-    () => setStore(store => ({ ...getDefaultStore(), file: store.file }),
-  )));
-
-  // load image
-  // prettier-ignore
-  createEffect(on(
-    () => store.file,
-    async (file) => {
-      const url = URL.createObjectURL(file);
-      const image = await createImageSource(url);
-      setStore({ url, image });
-    },
-  ));
+  createEffect(on(() => store.file, async (file) => {
+    const url = URL.createObjectURL(file);
+    const image = await createImageSource(url);
+    setStore({ url, image });
+  }));
 
   // add quad when has 4 points
   // prettier-ignore
-  createEffect(on(
-    () => store.points,
-    (points) => {
-      if(points.length < 4) return;
-      const [p1, p2, p3, p4] = points;
-      const quad: Quad = [p1, p2, p3, p4];
-      const quads = [...store.quads, quad];
-      setStore({ quads, points: [] });
-    }
-  ));
+  createEffect(on(() => store.points, (points) => {
+    if(points.length < 4) return;
+    const [p1, p2, p3, p4] = points;
+    const quad: Quad = [p1, p2, p3, p4];
+    const quads = [...store.quads, quad];
+    setStore({ quads, points: [] });
+  }));
 
   function addPoint(point: Point) {
     const isEqualSome = store.points.some((p) => v.equals(p, point));
-    const points = isEqualSome ? store.points : [...store.points, point];
+    if (isEqualSome) return;
+    const points = [...store.points, point];
     setStore({ points });
   }
 
@@ -62,7 +49,7 @@ export function createAppStore() {
   }
 
   function setFile(file: Blob) {
-    setStore({ file });
+    setStore({ ...getDefaultStore(), file });
   }
 
   const methods = { setFile, addPoint, deleteLastPoint };
