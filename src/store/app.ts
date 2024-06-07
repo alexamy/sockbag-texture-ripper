@@ -19,6 +19,7 @@ interface StoreData {
 export function createAppStore() {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
 
+  // load image from file
   // prettier-ignore
   createEffect(on(() => store.file, async (file) => {
     const url = URL.createObjectURL(file);
