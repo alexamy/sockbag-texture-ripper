@@ -7,6 +7,8 @@ export function Editor() {
   const [store] = useAppStore();
   const [imageRef, setImageRef] = createSignal<HTMLImageElement>();
 
+  // NOTE safe to move region inside, because it's context used in children
+
   return (
     <div class="editor-canvas">
       <ImageBackground src={store.url} onLoadRef={setImageRef} />
@@ -33,7 +35,6 @@ function DrawingBoard(props: { imageRef: HTMLImageElement }) {
   const [store, { addPoint, deleteLastPoint }] = useAppStore();
   const [current, setCurrent] = createSignal({ x: 0, y: 0 });
   const region = useRegionContext();
-  region.setActive(false);
 
   const quads = () => store.quads;
   const points = () => store.points;
@@ -91,20 +92,6 @@ function DrawingBoard(props: { imageRef: HTMLImageElement }) {
   const [svgRef, setSvgRef] = createSignal<SVGSVGElement>();
   onMount(() => svgRef()!.focus());
 
-  function onKeyDown(e: KeyboardEvent) {
-    e.preventDefault();
-    if (e.key === " ") {
-      region.setActive(true);
-    }
-  }
-
-  function onKeyUp(e: KeyboardEvent) {
-    e.preventDefault();
-    if (e.key === " ") {
-      region.setActive(false);
-    }
-  }
-
   return (
     <svg
       ref={setSvgRef}
@@ -114,9 +101,6 @@ function DrawingBoard(props: { imageRef: HTMLImageElement }) {
       onClick={onClick}
       onContextMenu={onClick}
       onMouseMove={onMouseMove}
-      onKeyDown={onKeyDown}
-      onKeyUp={onKeyUp}
-      tabindex="0"
     >
       <For each={quads()}>{(quad) => <Quad quad={quad} />}</For>
       <For each={points()}>

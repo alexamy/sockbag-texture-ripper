@@ -27,7 +27,7 @@ export function TextureRipper() {
             Image size: {store.image.naturalWidth} x {store.image.naturalHeight}
           </div>
 
-          <Region trigger="move">
+          <Region>
             <Editor />
           </Region>
 

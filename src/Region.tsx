@@ -30,10 +30,7 @@ export function useRegionContext() {
   return value!;
 }
 
-export function Region(props: {
-  children: JSXElement;
-  trigger?: "click" | "move";
-}) {
+export function Region(props: { children: JSXElement }) {
   const {
     x,
     y,
@@ -47,9 +44,9 @@ export function Region(props: {
     onMouseLeave,
     onMouseWheel,
     onScroll,
-  } = createMovement({
-    trigger: () => props.trigger ?? "click",
-  });
+    onKeyDown,
+    onKeyUp,
+  } = createMovement();
 
   const [parent, setParent] = createSignal<HTMLElement>();
   const [size, setSize] = createSignal({ width: 0, height: 0 });
@@ -58,16 +55,24 @@ export function Region(props: {
     setSize(size);
   });
 
+  function onMouseEnter() {
+    parent()?.focus();
+  }
+
   return (
     <div
       class="region"
       ref={setParent}
+      onMouseEnter={onMouseEnter}
       onMouseUp={onMouseUp}
       onMouseDown={onMouseDown}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
       onWheel={onMouseWheel}
       onScroll={onScroll}
+      onKeyDown={onKeyDown}
+      onKeyUp={onKeyUp}
+      tabindex="0"
     >
       <GridBackground
         scale={scale()}
@@ -125,9 +130,9 @@ function GridBackground(props: {
   );
 }
 
-function createMovement(opts: { trigger: () => "click" | "move" }) {
+function createMovement() {
   // transform
-  const [active, setActive] = createSignal(true);
+  const [active, setActive] = createSignal(false);
   const [x, setX] = createSignal(0);
   const [y, setY] = createSignal(0);
   const [scale, setScale] = createSignal(1);
@@ -156,13 +161,11 @@ function createMovement(opts: { trigger: () => "click" | "move" }) {
     }
 
     if (!active()) return;
-    if (event.buttons === 1 || opts.trigger() === "move") {
-      const dx = event.clientX - startPoint()!.x;
-      const dy = event.clientY - startPoint()!.y;
-      setX(x() + dx);
-      setY(y() + dy);
-      setStartPoint({ x: event.clientX, y: event.clientY });
-    }
+    const dx = event.clientX - startPoint()!.x;
+    const dy = event.clientY - startPoint()!.y;
+    setX(x() + dx);
+    setY(y() + dy);
+    setStartPoint({ x: event.clientX, y: event.clientY });
   }
 
   // zoom
@@ -181,6 +184,21 @@ function createMovement(opts: { trigger: () => "click" | "move" }) {
     setScale(newScale);
   }
 
+  // activation
+  function onKeyDown(e: KeyboardEvent) {
+    e.preventDefault();
+    if (e.key === " ") {
+      setActive(true);
+    }
+  }
+
+  function onKeyUp(e: KeyboardEvent) {
+    e.preventDefault();
+    if (e.key === " ") {
+      setActive(false);
+    }
+  }
+
   return {
     x,
     y,
@@ -194,5 +212,7 @@ function createMovement(opts: { trigger: () => "click" | "move" }) {
     onMouseLeave,
     onMouseWheel,
     onScroll,
+    onKeyDown,
+    onKeyUp,
   };
 }
