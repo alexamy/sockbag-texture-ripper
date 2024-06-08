@@ -3,17 +3,16 @@ import { Region } from "./Region";
 import { useAppStore } from "./store";
 
 export function Texture() {
-  const { texture: textureStore } = useAppStore();
-  const [texture, setStore] = textureStore;
+  const [store, setStore] = useAppStore().texture;
 
   // TODO move in separate component when texture will be part of store
   function onDownload() {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d")!;
-    canvas.width = texture.dimensions.w;
-    canvas.height = texture.dimensions.h;
+    canvas.width = store.dimensions.w;
+    canvas.height = store.dimensions.h;
 
-    for (const { image, x, y } of texture.packs) {
+    for (const { image, x, y } of store.packs) {
       ctx.drawImage(image, x, y);
     }
 
@@ -36,7 +35,7 @@ export function Texture() {
 
   return (
     <div>
-      <button onClick={onDownload} disabled={texture.urls.length === 0}>
+      <button onClick={onDownload} disabled={store.urls.length === 0}>
         Download
       </button>
       <label for="gap">Gap:</label>
@@ -45,17 +44,17 @@ export function Texture() {
         type="number"
         min="0"
         max="999"
-        value={texture.gap}
+        value={store.gap}
         onChange={onGapChange}
       />
       <Region>
         <div class="texture">
-          <For each={texture.urls}>
+          <For each={store.urls}>
             {(url, i) => (
               <img
                 src={url}
                 class="texture-rect"
-                style={{ transform: texture.transform[i()] }}
+                style={{ transform: store.transform[i()] }}
                 onMouseDown={(e) => e.preventDefault()}
               />
             )}
