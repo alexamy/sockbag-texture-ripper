@@ -1,8 +1,16 @@
 import { createEffect, on } from "solid-js";
 import { createStore } from "solid-js/store";
-import { Point, Quad, v } from "../vector";
+import { v } from "../vector";
 
 export type EditorStore = ReturnType<typeof createEditorStore>;
+
+interface Point {
+  id: string;
+  x: number;
+  y: number;
+}
+
+type Quad = [Point, Point, Point, Point];
 
 interface StoreData {
   points: Point[];
@@ -26,9 +34,11 @@ export function createEditorStore(file: { blob: Blob }) {
     setStore({ quads, points: [] });
   }));
 
-  function addPoint(point: Point) {
-    const isEqualSome = store.points.some((p) => v.equals(p, point));
+  function addPoint(raw: { x: number; y: number }) {
+    const isEqualSome = store.points.some((p) => v.equals(p, raw));
     if (isEqualSome) return;
+
+    const point = { ...raw, id: getId() };
     const points = [...store.points, point];
     setStore({ points });
   }
@@ -48,4 +58,8 @@ function getDefaultStore() {
     points: [],
     quads: [],
   } satisfies StoreData;
+}
+
+function getId() {
+  return Math.random().toString(36).slice(5);
 }
