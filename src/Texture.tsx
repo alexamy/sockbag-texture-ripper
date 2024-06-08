@@ -3,7 +3,7 @@ import { Region } from "./Region";
 import { useAppStore } from "./store";
 
 export function Texture() {
-  const [store, setStore] = useAppStore().texture;
+  const [store] = useAppStore().texture;
 
   // TODO move in separate component when texture will be part of store
   function onDownload() {
@@ -27,26 +27,12 @@ export function Texture() {
     });
   }
 
-  // TODO extract gap to separate component
-  function onGapChange(e: Event) {
-    const gap = parseInt((e.target as HTMLInputElement).value);
-    setStore({ gap });
-  }
-
   return (
     <div>
       <button onClick={onDownload} disabled={store.urls.length === 0}>
         Download
       </button>
-      <label for="gap">Gap:</label>
-      <input
-        id="gap"
-        type="number"
-        min="0"
-        max="999"
-        value={store.gap}
-        onChange={onGapChange}
-      />
+      <GapInput />
       <Region>
         <div class="texture">
           <For each={store.urls}>
@@ -62,5 +48,28 @@ export function Texture() {
         </div>
       </Region>
     </div>
+  );
+}
+
+function GapInput() {
+  const [store, setStore] = useAppStore().texture;
+
+  function onGapChange(e: Event) {
+    const gap = parseInt((e.target as HTMLInputElement).value);
+    setStore({ gap });
+  }
+
+  return (
+    <>
+      <label for="gap">Gap:</label>
+      <input
+        id="gap"
+        type="number"
+        min="0"
+        max="999"
+        value={store.gap}
+        onChange={onGapChange}
+      />
+    </>
   );
 }
