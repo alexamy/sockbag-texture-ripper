@@ -1,7 +1,6 @@
 import { Show, createSignal } from "solid-js";
 import "./App.css";
 import { Editor } from "./Editor";
-import { Region } from "./Region";
 import { Texture } from "./Texture";
 import { AppStoreProvider, useAppStore } from "./store";
 
@@ -14,23 +13,17 @@ export function App() {
 }
 
 export function TextureRipper() {
-  const [store, { setFile }] = useAppStore();
+  const [store, { setFile }] = useAppStore().file;
   debugLoadFile().then(setFile);
 
   return (
     <div class="app">
       <Header />
       <DropImage setFile={setFile} />
-      <Show when={store.file}>
+      <Show when={store.blob}>
         <div class="editor">
-          <div>
-            Image size: {store.image.naturalWidth} x {store.image.naturalHeight}
-          </div>
-
-          <Region>
-            <Editor />
-          </Region>
-
+          <ImageStats />
+          <Editor />
           <Texture />
         </div>
       </Show>
@@ -44,6 +37,18 @@ async function debugLoadFile() {
   const blob = await image.blob();
   const file = new File([blob], "source");
   return file;
+}
+
+function ImageStats() {
+  const [store] = useAppStore().file;
+  const width = () => store.image.naturalWidth;
+  const height = () => store.image.naturalHeight;
+
+  return (
+    <div>
+      Image size: {width()} x {height()}
+    </div>
+  );
 }
 
 function DropImage(props: { setFile: (file: File) => void }) {

@@ -33,21 +33,21 @@ interface PackDimensions {
 }
 
 export function createTextureStore(
-  image: () => HTMLImageElement,
-  quads: () => Quad[]
+  file: { image: HTMLImageElement },
+  editor: { quads: Quad[] }
 ) {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
 
   // prettier-ignore
   createEffect(
-    on(image, () => {
-      setStore({ rects: [], urls: [], images: [] })
+    on(() => file.image, () => {
+      setStore({ ...getDefaultStore(), gap: store.gap });
     })
   );
 
   // prettier-ignore
   createEffect(
-    on([image, quads] as const, async ([image, quads]) => {
+    on(() => [file.image, editor.quads] as const, async ([image, quads]) => {
       if (image.width === 0 || quads.length === 0) return;
       const rects = await projectRectangles(image, quads);
       setStore({ rects });

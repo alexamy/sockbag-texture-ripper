@@ -1,33 +1,22 @@
 import { createEffect, on } from "solid-js";
 import { createStore } from "solid-js/store";
-import { createImageSource } from "../helper";
 import { Point, Quad, v } from "../vector";
 
-export type AppStore = ReturnType<typeof createAppStore>;
+export type EditorStore = ReturnType<typeof createEditorStore>;
 
 interface StoreData {
-  file: Blob;
-  url: string;
-  image: HTMLImageElement;
   points: Point[];
   quads: Quad[];
 }
 
-// TODO add composite store
-
-// store
-export function createAppStore() {
+export function createEditorStore(file: { blob: Blob }) {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
 
-  // load image from file
   // prettier-ignore
-  createEffect(on(() => store.file, async (file) => {
-    const url = URL.createObjectURL(file);
-    const image = await createImageSource(url);
-    setStore({ url, image });
+  createEffect(on(() => file.blob, () => {
+    setStore(getDefaultStore());
   }));
 
-  // add quad when has 4 points
   // prettier-ignore
   createEffect(on(() => store.points, (points) => {
     if(points.length < 4) return;
@@ -49,20 +38,13 @@ export function createAppStore() {
     setStore({ points });
   }
 
-  function setFile(file: Blob) {
-    setStore({ ...getDefaultStore(), file });
-  }
-
-  const methods = { setFile, addPoint, deleteLastPoint };
+  const methods = { addPoint, deleteLastPoint };
 
   return [store, methods, setStore] as const;
 }
 
 function getDefaultStore() {
   return {
-    url: "",
-    file: new Blob(),
-    image: new Image(),
     points: [],
     quads: [],
   } satisfies StoreData;

@@ -1,21 +1,21 @@
 import { createMemo, createSignal, For, onMount, Show } from "solid-js";
-import { useRegionContext } from "./Region";
+import { Region, useRegionContext } from "./Region";
 import { useAppStore } from "./store";
 import { v, type Point, type Quad } from "./vector";
 
 export function Editor() {
-  const [store] = useAppStore();
+  const [store] = useAppStore().file;
   const [imageRef, setImageRef] = createSignal<HTMLImageElement>();
 
-  // NOTE safe to move region inside, because it's context used in children
-
   return (
-    <div class="editor-canvas">
-      <ImageBackground src={store.url} onLoadRef={setImageRef} />
-      <Show when={imageRef()}>
-        <DrawingBoard imageRef={imageRef()!} />
-      </Show>
-    </div>
+    <Region>
+      <div class="editor-canvas">
+        <ImageBackground src={store.url} onLoadRef={setImageRef} />
+        <Show when={imageRef()}>
+          <DrawingBoard imageRef={imageRef()!} />
+        </Show>
+      </div>
+    </Region>
   );
 }
 
@@ -32,7 +32,7 @@ function ImageBackground(props: {
 }
 
 function DrawingBoard(props: { imageRef: HTMLImageElement }) {
-  const [store, { addPoint, deleteLastPoint }] = useAppStore();
+  const [store, { addPoint, deleteLastPoint }] = useAppStore().editor;
   const [current, setCurrent] = createSignal({ x: 0, y: 0 });
   const region = useRegionContext();
 
