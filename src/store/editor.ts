@@ -4,15 +4,16 @@ import { v } from "../vector";
 
 export type EditorStore = ReturnType<typeof createEditorStore>;
 
-interface Point {
+export interface Point {
   id: string;
   x: number;
   y: number;
 }
 
-type Quad = [Point, Point, Point, Point];
+export type Quad = [Point, Point, Point, Point];
 
 interface StoreData {
+  current: Point;
   points: Point[];
   buffer: Point[];
   quads: Quad[];
@@ -35,13 +36,18 @@ export function createEditorStore(file: { blob: Blob }) {
     setStore({ quads, buffer: [], });
   }));
 
-  function addPoint(raw: { x: number; y: number }) {
-    const isEqualSome = store.buffer.some((p) => v.equals(p, raw));
+  function setCurrent(coordinates: { x: number; y: number }) {
+    const point = { ...store.current, ...coordinates };
+    setStore({ current: point });
+  }
+
+  function addPoint() {
+    const isEqualSome = store.buffer.some((p) => v.equals(p, store.current));
     if (isEqualSome) return;
 
-    const point = { ...raw, id: getId() };
-    const buffer = [...store.buffer, point];
-    setStore({ buffer });
+    const buffer = [...store.buffer, store.current];
+    const current = { ...store.current, id: getId() };
+    setStore({ buffer, current });
   }
 
   function deleteLastPoint() {
@@ -49,13 +55,14 @@ export function createEditorStore(file: { blob: Blob }) {
     setStore({ points });
   }
 
-  const methods = { addPoint, deleteLastPoint };
+  const methods = { setCurrent, addPoint, deleteLastPoint };
 
   return [store, methods, setStore] as const;
 }
 
 function getDefaultStore() {
   return {
+    current: { x: 0, y: 0, id: "first" },
     points: [],
     buffer: [],
     quads: [],

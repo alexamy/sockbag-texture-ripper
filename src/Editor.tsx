@@ -1,7 +1,10 @@
 import { createMemo, createSignal, For, onMount, Show } from "solid-js";
 import { Region, useRegionContext } from "./Region";
 import { useAppStore } from "./store";
-import { v, type Point, type Quad } from "./vector";
+import { type Quad } from "./store/editor";
+import { v } from "./vector";
+
+type Point = { x: number; y: number };
 
 export function Editor() {
   const [store] = useAppStore().file;
@@ -32,10 +35,11 @@ function ImageBackground(props: {
 }
 
 function DrawingBoard(props: { imageRef: HTMLImageElement }) {
-  const [store, { addPoint, deleteLastPoint }] = useAppStore().editor;
-  const [current, setCurrent] = createSignal({ x: 0, y: 0 });
+  const [store, { setCurrent, addPoint, deleteLastPoint }] =
+    useAppStore().editor;
   const region = useRegionContext();
 
+  const current = () => store.current;
   const quads = () => store.quads;
   const points = () => store.buffer;
 
@@ -83,7 +87,7 @@ function DrawingBoard(props: { imageRef: HTMLImageElement }) {
   function onClick(e: MouseEvent) {
     e.preventDefault();
     if (e.button === 0) {
-      addPoint(current());
+      addPoint();
     } else if (e.button === 2) {
       deleteLastPoint();
     }
