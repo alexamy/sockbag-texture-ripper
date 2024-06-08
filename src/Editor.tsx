@@ -1,7 +1,7 @@
 import { createMemo, createSignal, For, onMount, Show } from "solid-js";
 import { Region, useRegionContext } from "./Region";
 import { useAppStore } from "./store";
-import { type Quad } from "./store/editor";
+import { type Point as PointId, type Quad } from "./store/editor";
 import { v } from "./vector";
 
 type Point = { x: number; y: number };
@@ -146,8 +146,19 @@ function Quad(props: { quad: Quad }) {
         stroke-width="1"
       />
       <Line from={center()} to={top()} withTip={true} color="red" />
-      <For each={props.quad}>{(point) => <Point p={point} />}</For>
+      <For each={props.quad}>{(point) => <DragPoint p={point} />}</For>
     </>
+  );
+}
+
+function DragPoint(props: { p: PointId; r?: number; fill?: string }) {
+  return (
+    <circle
+      cx={props.p.x}
+      cy={props.p.y}
+      r={props.r ?? 2}
+      fill={props.fill ?? "black"}
+    />
   );
 }
 
@@ -189,16 +200,5 @@ function Line(props: {
         <polygon points={tip()} fill={color()} />
       </Show>
     </>
-  );
-}
-
-function Point(props: { p: Point; r?: number; fill?: string }) {
-  return (
-    <circle
-      cx={props.p.x}
-      cy={props.p.y}
-      r={props.r ?? 2}
-      fill={props.fill ?? "black"}
-    />
   );
 }
