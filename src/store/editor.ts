@@ -41,10 +41,9 @@ export function createEditorStore(file: { blob: Blob }) {
     setStore({ current: point });
   }
 
-  function updatePoint(id: string, coordinates: { x: number; y: number }) {
-    const points = store.points.map((p) =>
-      p.id === id ? { ...p, ...coordinates } : p
-    );
+  function updatePoint(id: string) {
+    const { x, y } = store.current;
+    const points = store.points.map((p) => (p.id === id ? { ...p, x, y } : p));
     setStore({ points });
   }
 
@@ -58,8 +57,8 @@ export function createEditorStore(file: { blob: Blob }) {
   }
 
   function deleteLastPoint() {
-    const points = store.points.slice(0, -1);
-    setStore({ points });
+    const buffer = store.buffer.slice(0, -1);
+    setStore({ buffer });
   }
 
   const methods = { updateCurrent, updatePoint, addPoint, deleteLastPoint };

@@ -151,13 +151,26 @@ function Quad(props: { quad: Quad }) {
   );
 }
 
-function DragPoint(props: { p: PointId; r?: number; fill?: string }) {
+function DragPoint(props: { p: PointId }) {
+  const [_, { updatePoint }] = useAppStore().editor;
+  const [r, setR] = createSignal(2);
+
+  function onMouseMove(e: MouseEvent) {
+    e.stopPropagation();
+    if (e.buttons === 1) {
+      updatePoint(props.p.id);
+    }
+  }
+
   return (
     <circle
       cx={props.p.x}
       cy={props.p.y}
-      r={props.r ?? 2}
-      fill={props.fill ?? "black"}
+      r={r()}
+      fill={"black"}
+      onMouseMove={onMouseMove}
+      onMouseEnter={() => setR(4)}
+      onMouseLeave={() => setR(2)}
     />
   );
 }
