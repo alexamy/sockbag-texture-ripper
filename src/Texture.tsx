@@ -1,35 +1,17 @@
 import { For } from "solid-js";
 import { Region } from "./Region";
 import { useAppStore } from "./store";
+import { TextureStore } from "./store/texture";
 
 export function Texture() {
   const [store] = useAppStore().texture;
 
-  // TODO move in separate component when texture will be part of store
-  function onDownload() {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d")!;
-    canvas.width = store.dimensions.w;
-    canvas.height = store.dimensions.h;
-
-    for (const { image, x, y } of store.packs) {
-      ctx.drawImage(image, x, y);
-    }
-
-    canvas.toBlob((blob) => {
-      if (!blob) throw new Error("Failed to download texture.");
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "texture.png";
-      a.click();
-      URL.revokeObjectURL(url);
-    });
-  }
-
   return (
     <div>
-      <button onClick={onDownload} disabled={store.urls.length === 0}>
+      <button
+        onClick={() => downloadTexture(store)}
+        disabled={store.urls.length === 0}
+      >
         Download
       </button>
       <GapInput />
@@ -72,4 +54,25 @@ function GapInput() {
       />
     </>
   );
+}
+
+function downloadTexture(store: TextureStore[0]) {
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d")!;
+  canvas.width = store.dimensions.w;
+  canvas.height = store.dimensions.h;
+
+  for (const { image, x, y } of store.packs) {
+    ctx.drawImage(image, x, y);
+  }
+
+  canvas.toBlob((blob) => {
+    if (!blob) throw new Error("Failed to download texture.");
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "texture.png";
+    a.click();
+    URL.revokeObjectURL(url);
+  });
 }
