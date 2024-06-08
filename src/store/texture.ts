@@ -33,8 +33,8 @@ interface PackDimensions {
 }
 
 export function createTextureStore(props: {
-  image: HTMLImageElement;
-  quads: Quad[];
+  image: () => HTMLImageElement;
+  quads: () => Quad[];
 }) {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
 
@@ -47,7 +47,7 @@ export function createTextureStore(props: {
 
   // prettier-ignore
   createEffect(
-    on(() => [props.image, props.quads] as const, async ([image, quads]) => {
+    on(() => [props.image(), props.quads()] as const, async ([image, quads]) => {
       if (image.width === 0 || quads.length === 0) return;
       const rects = await projectRectangles(image, quads);
       setStore({ rects });

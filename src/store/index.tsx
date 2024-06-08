@@ -1,9 +1,11 @@
 import { JSXElement, createContext, useContext } from "solid-js";
+import { EditorStore, createEditorStore } from "./editor";
 import { FileStore, createFileStore } from "./file";
 import { TextureStore, createTextureStore } from "./texture";
 
 interface Stores {
   file: FileStore;
+  editor: EditorStore;
   texture: TextureStore;
 }
 
@@ -19,10 +21,14 @@ export function useAppStore() {
 
 export function AppStoreProvider(props: { children: JSXElement }) {
   const file = createFileStore();
-  const texture = createTextureStore(file[0]);
+  const editor = createEditorStore();
+  const texture = createTextureStore({
+    image: () => file[0].image,
+    quads: () => editor[0].quads,
+  });
 
   return (
-    <StoreContext.Provider value={{ file, texture }}>
+    <StoreContext.Provider value={{ file, editor, texture }}>
       {props.children}
     </StoreContext.Provider>
   );

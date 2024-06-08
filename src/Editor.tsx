@@ -32,7 +32,7 @@ function ImageBackground(props: {
 }
 
 function DrawingBoard(props: { imageRef: HTMLImageElement }) {
-  const [store, { addPoint, deleteLastPoint }] = useAppStore().file;
+  const [store, { addPoint, deleteLastPoint }] = useAppStore().editor;
   const [current, setCurrent] = createSignal({ x: 0, y: 0 });
   const region = useRegionContext();
 
