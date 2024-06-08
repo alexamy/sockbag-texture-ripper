@@ -35,7 +35,7 @@ function ImageBackground(props: {
 }
 
 function DrawingBoard(props: { imageRef: HTMLImageElement }) {
-  const [store, { setCurrent, addPoint, deleteLastPoint }] =
+  const [store, { updateCurrent, addPoint, deleteLastPoint }] =
     useAppStore().editor;
   const region = useRegionContext();
 
@@ -81,7 +81,7 @@ function DrawingBoard(props: { imageRef: HTMLImageElement }) {
       }
     }
 
-    setCurrent({ x, y });
+    updateCurrent({ x, y });
   }
 
   function onClick(e: MouseEvent) {
