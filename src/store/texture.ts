@@ -40,8 +40,8 @@ export function createTextureStore(props: {
 
   // prettier-ignore
   createEffect(
-    on(() => props.image, () => {
-      setStore({ rects: [], urls: [], images: [] })
+    on(() => props.image(), () => {
+      setStore({ ...getDefaultStore(), gap: store.gap });
     })
   );
 
