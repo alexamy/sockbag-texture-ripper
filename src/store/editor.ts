@@ -9,11 +9,11 @@ interface StoreData {
   quads: Quad[];
 }
 
-export function createEditorStore(file: { file: Blob }) {
+export function createEditorStore(file: { blob: Blob }) {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
 
   // prettier-ignore
-  createEffect(on(() => file.file, () => {
+  createEffect(on(() => file.blob, () => {
     setStore(getDefaultStore());
   }));
 

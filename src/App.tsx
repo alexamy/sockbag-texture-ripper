@@ -22,7 +22,7 @@ export function TextureRipper() {
     <div class="app">
       <Header />
       <DropImage setFile={setFile} />
-      <Show when={store.file}>
+      <Show when={store.blob}>
         <div class="editor">
           <div>
             Image size: {store.image.naturalWidth} x {store.image.naturalHeight}

@@ -5,7 +5,7 @@ import { createImageSource } from "../helper";
 export type FileStore = ReturnType<typeof createFileStore>;
 
 interface StoreData {
-  file: Blob;
+  blob: Blob;
   url: string;
   image: HTMLImageElement;
 }
@@ -15,14 +15,14 @@ export function createFileStore() {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
 
   // prettier-ignore
-  createEffect(on(() => store.file, async (file) => {
+  createEffect(on(() => store.blob, async (file) => {
     const url = URL.createObjectURL(file);
     const image = await createImageSource(url);
     setStore({ url, image });
   }));
 
-  function setFile(file: Blob) {
-    setStore({ ...getDefaultStore(), file });
+  function setFile(blob: Blob) {
+    setStore({ ...getDefaultStore(), blob });
   }
 
   const methods = { setFile };
@@ -33,7 +33,7 @@ export function createFileStore() {
 function getDefaultStore() {
   return {
     url: "",
-    file: new Blob(),
+    blob: new Blob(),
     image: new Image(),
   } satisfies StoreData;
 }
