@@ -1,9 +1,13 @@
 import { JSXElement, createContext, useContext } from "solid-js";
 import { MainStore, createMainStore } from "./main";
+import { TextureStore, createTextureStore } from "./texture";
 
-const StoreContext = createContext<MainStore>(
-  undefined as unknown as MainStore
-);
+interface Stores {
+  main: MainStore;
+  texture: TextureStore;
+}
+
+const StoreContext = createContext<Stores>(undefined as unknown as Stores);
 
 export function useAppStore() {
   const store = useContext(StoreContext);
@@ -14,10 +18,11 @@ export function useAppStore() {
 }
 
 export function AppStoreProvider(props: { children: JSXElement }) {
-  const store = createMainStore();
+  const main = createMainStore();
+  const texture = createTextureStore(main[0]);
 
   return (
-    <StoreContext.Provider value={store}>
+    <StoreContext.Provider value={{ main, texture }}>
       {props.children}
     </StoreContext.Provider>
   );

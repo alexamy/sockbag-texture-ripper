@@ -4,7 +4,8 @@ import { useAppStore } from "./store";
 import { v, type Point, type Quad } from "./vector";
 
 export function Editor() {
-  const [store] = useAppStore();
+  const { main } = useAppStore();
+  const [store] = main;
   const [imageRef, setImageRef] = createSignal<HTMLImageElement>();
 
   // NOTE safe to move region inside, because it's context used in children
@@ -32,7 +33,8 @@ function ImageBackground(props: {
 }
 
 function DrawingBoard(props: { imageRef: HTMLImageElement }) {
-  const [store, { addPoint, deleteLastPoint }] = useAppStore();
+  const { main } = useAppStore();
+  const [store, { addPoint, deleteLastPoint }] = main;
   const [current, setCurrent] = createSignal({ x: 0, y: 0 });
   const region = useRegionContext();
 

@@ -1,11 +1,10 @@
 import { For } from "solid-js";
 import { Region } from "./Region";
 import { useAppStore } from "./store";
-import { createTextureStore } from "./store/texture";
 
 export function Texture() {
-  const [store] = useAppStore();
-  const [texture, setStore] = createTextureStore(store);
+  const { texture: textureStore } = useAppStore();
+  const [texture, setStore] = textureStore;
 
   // TODO move in separate component when texture will be part of store
   function onDownload() {

@@ -14,7 +14,9 @@ export function App() {
 }
 
 export function TextureRipper() {
-  const [store, { setFile }] = useAppStore();
+  const { main } = useAppStore();
+  const [store, { setFile }] = main;
+
   debugLoadFile().then(setFile);
 
   return (
