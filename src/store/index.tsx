@@ -1,9 +1,9 @@
 import { JSXElement, createContext, useContext } from "solid-js";
-import { MainStore, createMainStore } from "./main";
+import { FileStore, createFileStore } from "./file";
 import { TextureStore, createTextureStore } from "./texture";
 
 interface Stores {
-  main: MainStore;
+  file: FileStore;
   texture: TextureStore;
 }
 
@@ -18,11 +18,11 @@ export function useAppStore() {
 }
 
 export function AppStoreProvider(props: { children: JSXElement }) {
-  const main = createMainStore();
-  const texture = createTextureStore(main[0]);
+  const file = createFileStore();
+  const texture = createTextureStore(file[0]);
 
   return (
-    <StoreContext.Provider value={{ main, texture }}>
+    <StoreContext.Provider value={{ file, texture }}>
       {props.children}
     </StoreContext.Provider>
   );

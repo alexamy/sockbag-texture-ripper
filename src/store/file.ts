@@ -3,7 +3,7 @@ import { createStore } from "solid-js/store";
 import { createImageSource } from "../helper";
 import { Point, Quad, v } from "../vector";
 
-export type MainStore = ReturnType<typeof createMainStore>;
+export type FileStore = ReturnType<typeof createFileStore>;
 
 interface StoreData {
   file: Blob;
@@ -13,10 +13,8 @@ interface StoreData {
   quads: Quad[];
 }
 
-// TODO add composite store
-
 // store
-export function createMainStore() {
+export function createFileStore() {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
 
   // load image from file
