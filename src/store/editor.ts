@@ -14,6 +14,7 @@ type Quad = [Point, Point, Point, Point];
 
 interface StoreData {
   points: Point[];
+  buffer: Point[];
   quads: Quad[];
 }
 
@@ -26,21 +27,21 @@ export function createEditorStore(file: { blob: Blob }) {
   }));
 
   // prettier-ignore
-  createEffect(on(() => store.points, (points) => {
-    if(points.length < 4) return;
-    const [p1, p2, p3, p4] = points;
+  createEffect(on(() => store.buffer, (buffer) => {
+    if(buffer.length < 4) return;
+    const [p1, p2, p3, p4] = buffer;
     const quad: Quad = [p1, p2, p3, p4];
     const quads = [...store.quads, quad];
-    setStore({ quads, points: [] });
+    setStore({ quads, buffer: [], });
   }));
 
   function addPoint(raw: { x: number; y: number }) {
-    const isEqualSome = store.points.some((p) => v.equals(p, raw));
+    const isEqualSome = store.buffer.some((p) => v.equals(p, raw));
     if (isEqualSome) return;
 
     const point = { ...raw, id: getId() };
-    const points = [...store.points, point];
-    setStore({ points });
+    const buffer = [...store.buffer, point];
+    setStore({ buffer });
   }
 
   function deleteLastPoint() {
@@ -56,6 +57,7 @@ export function createEditorStore(file: { blob: Blob }) {
 function getDefaultStore() {
   return {
     points: [],
+    buffer: [],
     quads: [],
   } satisfies StoreData;
 }

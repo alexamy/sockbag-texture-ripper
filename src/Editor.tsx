@@ -37,7 +37,7 @@ function DrawingBoard(props: { imageRef: HTMLImageElement }) {
   const region = useRegionContext();
 
   const quads = () => store.quads;
-  const points = () => store.points;
+  const points = () => store.buffer;
 
   const first = createMemo(() => points()[0]);
   const last = createMemo(() => points()[points().length - 1]);
