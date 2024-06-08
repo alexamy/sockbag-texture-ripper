@@ -106,7 +106,10 @@ function DrawingBoard(props: { imageRef: HTMLImageElement }) {
       onContextMenu={onClick}
       onMouseMove={onMouseMove}
     >
+      {/* Already drawn quads */}
       <For each={quads()}>{(quad) => <Quad quad={quad} />}</For>
+
+      {/* Currently drawn quad */}
       <For each={points()}>
         {(point, i) => (
           <>
@@ -115,6 +118,7 @@ function DrawingBoard(props: { imageRef: HTMLImageElement }) {
         )}
       </For>
 
+      {/* Helpers for currently drawn quad */}
       <Show when={points().length >= 1}>
         <Line from={last()} to={current()} />
       </Show>
@@ -122,6 +126,7 @@ function DrawingBoard(props: { imageRef: HTMLImageElement }) {
         <Line from={first()} to={current()} />
       </Show>
 
+      {/* Normal line */}
       <Show when={points().length === 2}>
         <Line from={current()} to={top()} withTip={true} color="red" />
       </Show>
@@ -156,7 +161,6 @@ function DragPoint(props: { p: PointId }) {
   const [r, setR] = createSignal(2);
 
   function onMouseMove(e: MouseEvent) {
-    e.stopPropagation();
     if (e.buttons === 1) {
       updatePoint(props.p.id);
     }
@@ -169,6 +173,7 @@ function DragPoint(props: { p: PointId }) {
       r={r()}
       fill={"black"}
       onMouseMove={onMouseMove}
+      onClick={(e) => e.stopPropagation()}
       onMouseEnter={() => setR(4)}
       onMouseLeave={() => setR(2)}
     />

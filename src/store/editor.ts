@@ -33,7 +33,8 @@ export function createEditorStore(file: { blob: Blob }) {
     const [p1, p2, p3, p4] = buffer;
     const quad: Quad = [p1, p2, p3, p4];
     const quads = [...store.quads, quad];
-    setStore({ quads, buffer: [], });
+    const points = [...store.points, ...buffer];
+    setStore({ quads, points, buffer: [], });
   }));
 
   function updateCurrent(coordinates: { x: number; y: number }) {
