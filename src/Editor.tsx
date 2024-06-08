@@ -35,9 +35,9 @@ function ImageBackground(props: {
 }
 
 function DrawingBoard(props: { imageRef: HTMLImageElement }) {
+  const region = useRegionContext();
   const [store, { updateCurrent, addPoint, deleteLastPoint }] =
     useAppStore().editor;
-  const region = useRegionContext();
 
   const current = () => store.current;
   const quads = () => store.quads;
