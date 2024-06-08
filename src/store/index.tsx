@@ -21,7 +21,9 @@ export function useAppStore() {
 
 export function AppStoreProvider(props: { children: JSXElement }) {
   const file = createFileStore();
-  const editor = createEditorStore();
+  const editor = createEditorStore({
+    file: () => file[0].file,
+  });
   const texture = createTextureStore({
     image: () => file[0].image,
     quads: () => editor[0].quads,

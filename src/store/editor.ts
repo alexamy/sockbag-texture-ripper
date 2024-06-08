@@ -9,8 +9,13 @@ interface StoreData {
   quads: Quad[];
 }
 
-export function createEditorStore() {
+export function createEditorStore(props: { file: () => Blob }) {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
+
+  // prettier-ignore
+  createEffect(on(() => props.file(), () => {
+    setStore(getDefaultStore());
+  }));
 
   // prettier-ignore
   createEffect(on(() => store.points, (points) => {
