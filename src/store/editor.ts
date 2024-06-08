@@ -43,7 +43,8 @@ export function createEditorStore(file: { blob: Blob }) {
   }
 
   function updatePoint(id: string) {
-    const { x, y } = store.current;
+    const { x, y } = { x: 0, y: 0 };
+    // BUG it is new created point, so signals won't update
     const points = store.points.map((p) => (p.id === id ? { ...p, x, y } : p));
     setStore({ points });
   }
