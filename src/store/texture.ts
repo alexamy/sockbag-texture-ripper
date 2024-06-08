@@ -32,22 +32,22 @@ interface PackDimensions {
   fill: number;
 }
 
-export function createTextureStore(
-  image: () => HTMLImageElement,
-  quads: () => Quad[]
-) {
+export function createTextureStore(props: {
+  image: HTMLImageElement;
+  quads: Quad[];
+}) {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
 
   // prettier-ignore
   createEffect(
-    on(image, () => {
+    on(() => props.image, () => {
       setStore({ rects: [], urls: [], images: [] })
     })
   );
 
   // prettier-ignore
   createEffect(
-    on([image, quads] as const, async ([image, quads]) => {
+    on(() => [props.image, props.quads] as const, async ([image, quads]) => {
       if (image.width === 0 || quads.length === 0) return;
       const rects = await projectRectangles(image, quads);
       setStore({ rects });

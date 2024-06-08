@@ -5,10 +5,7 @@ import { createTextureStore } from "./store/texture";
 
 export function Texture() {
   const [store] = useAppStore();
-  const [texture, setStore] = createTextureStore(
-    () => store.image,
-    () => store.quads
-  );
+  const [texture, setStore] = createTextureStore(store);
 
   // TODO move in separate component when texture will be part of store
   function onDownload() {
@@ -69,5 +66,3 @@ export function Texture() {
     </div>
   );
 }
-
-function gapInput() {}
