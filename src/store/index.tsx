@@ -1,7 +1,9 @@
 import { JSXElement, createContext, useContext } from "solid-js";
-import { AppStore, createAppStore } from "./app";
+import { MainStore, createMainStore } from "./main";
 
-const StoreContext = createContext<AppStore>(undefined as unknown as AppStore);
+const StoreContext = createContext<MainStore>(
+  undefined as unknown as MainStore
+);
 
 export function useAppStore() {
   const store = useContext(StoreContext);
@@ -12,7 +14,7 @@ export function useAppStore() {
 }
 
 export function AppStoreProvider(props: { children: JSXElement }) {
-  const store = createAppStore();
+  const store = createMainStore();
 
   return (
     <StoreContext.Provider value={store}>

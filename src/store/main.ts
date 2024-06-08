@@ -3,7 +3,7 @@ import { createStore } from "solid-js/store";
 import { createImageSource } from "../helper";
 import { Point, Quad, v } from "../vector";
 
-export type AppStore = ReturnType<typeof createAppStore>;
+export type MainStore = ReturnType<typeof createMainStore>;
 
 interface StoreData {
   file: Blob;
@@ -16,7 +16,7 @@ interface StoreData {
 // TODO add composite store
 
 // store
-export function createAppStore() {
+export function createMainStore() {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
 
   // load image from file
