@@ -49,13 +49,11 @@ export function createEditorStore(file: { blob: Blob }) {
 
   function updateCurrent(coordinates: { x: number; y: number }) {
     const point = { ...store.current, ...coordinates };
-    console.log("updateCurrent", point);
     setStore({ current: point });
   }
 
   function updatePoint(id: string) {
     const { x, y } = store.current;
-    console.log("updatePoint", id, x, y);
     const points = store.points.map((p) => (p.id === id ? { ...p, x, y } : p));
     setStore({ points });
   }

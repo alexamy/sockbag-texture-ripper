@@ -160,6 +160,8 @@ function DragPoint(props: { p: PointId }) {
   const [_, { updatePoint }] = useAppStore().editor;
   const [r, setR] = createSignal(2);
 
+  console.log("new point");
+
   function onMouseMove(e: MouseEvent) {
     if (e.buttons === 1) {
       updatePoint(props.p.id);
