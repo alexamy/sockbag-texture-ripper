@@ -94,7 +94,7 @@ function DrawingBoard(props: { imageRef: HTMLImageElement }) {
   }
 
   const [svgRef, setSvgRef] = createSignal<SVGSVGElement>();
-  onMount(() => svgRef()!.focus({ preventScroll: true }));
+  onMount(() => svgRef()!.focus());
 
   return (
     <svg
