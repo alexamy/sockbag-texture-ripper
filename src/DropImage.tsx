@@ -1,13 +1,15 @@
 import { createSignal } from "solid-js";
+import { useAppStore } from "./store";
 
-export function DropImage(props: { setFile: (file: File) => void }) {
+export function DropImage() {
+  const [_, { setFile }] = useAppStore().file;
   const [isDragOver, setIsDragOver] = createSignal(false);
 
   function onDrop(e: DragEvent) {
     e.preventDefault();
     const file = e.dataTransfer?.files[0];
     if (file && file.type.startsWith("image/")) {
-      props.setFile(file);
+      setFile(file);
     }
   }
 

@@ -1,4 +1,5 @@
 import { createMemo, createSignal, For, onMount, Show } from "solid-js";
+import { DropImage } from "./DropImage";
 import "./Editor.css";
 import { Header } from "./Header";
 import { Region, useRegionContext } from "./Region";
@@ -15,6 +16,7 @@ export function Editor() {
   return (
     <Region toolbar={<Toolbar />}>
       <div class="editor-canvas">
+        <DropImage />
         <ImageBackground src={store.url} onLoadRef={setImageRef} />
         <Show when={imageRef()}>
           <DrawingBoard imageRef={imageRef()!} />
