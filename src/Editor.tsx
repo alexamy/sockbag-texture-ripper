@@ -1,5 +1,6 @@
 import { createMemo, createSignal, For, onMount, Show } from "solid-js";
 import "./Editor.css";
+import { Header } from "./Header";
 import { Region, useRegionContext } from "./Region";
 import { useAppStore } from "./store";
 import { type Point as PointId, type Quad } from "./store/editor";
@@ -33,6 +34,7 @@ function Toolbar() {
       <div>
         Image size: {width()} x {height()}
       </div>
+      <Header />
     </div>
   );
 }

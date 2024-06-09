@@ -4,6 +4,7 @@
 }
 
 .app-title {
+  font-size: 1.2rem;
   user-select: none;
   width: fit-content;
 }
