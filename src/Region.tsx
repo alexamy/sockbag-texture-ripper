@@ -154,6 +154,7 @@ function createMovement() {
 
   function onMouseLeave(_event: MouseEvent) {
     setStartPoint(undefined);
+    setActive(false);
   }
 
   function onMouseMove(event: MouseEvent) {
