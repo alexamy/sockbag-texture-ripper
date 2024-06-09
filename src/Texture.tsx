@@ -31,7 +31,7 @@ function Toolbar() {
   const [store] = useAppStore().texture;
 
   return (
-    <div class="toolbar">
+    <div class="texture-toolbar">
       <button
         onClick={() => downloadTexture(store)}
         disabled={store.urls.length === 0}
