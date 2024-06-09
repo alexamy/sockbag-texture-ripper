@@ -1,4 +1,4 @@
-import { Show, createSignal } from "solid-js";
+import { Show } from "solid-js";
 import "./App.css";
 import { Editor } from "./Editor";
 import { Texture } from "./Texture";
@@ -18,7 +18,6 @@ export function TextureRipper() {
 
   return (
     <div class="app">
-      <DropImage setFile={setFile} />
       <Show when={store.blob}>
         <Editor />
         <ResizeBorder />
@@ -38,37 +37,4 @@ async function debugLoadFile() {
   const blob = await image.blob();
   const file = new File([blob], "source");
   return file;
-}
-
-function DropImage(props: { setFile: (file: File) => void }) {
-  const [isDragOver, setIsDragOver] = createSignal(false);
-
-  function onDrop(e: DragEvent) {
-    e.preventDefault();
-    const file = e.dataTransfer?.files[0];
-    if (file && file.type.startsWith("image/")) {
-      props.setFile(file);
-    }
-  }
-
-  function onDragOver(e: DragEvent) {
-    e.preventDefault();
-    setIsDragOver(true);
-  }
-
-  function onDragLeave() {
-    setIsDragOver(false);
-  }
-
-  return (
-    <div
-      class="image-drop"
-      classList={{ "drag-over": isDragOver() }}
-      onDrop={onDrop}
-      onDragOver={onDragOver}
-      onDragLeave={onDragLeave}
-    >
-      Drop image here
-    </div>
-  );
 }

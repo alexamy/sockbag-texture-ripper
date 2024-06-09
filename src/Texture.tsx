@@ -8,22 +8,20 @@ export function Texture() {
   const [store] = useAppStore().texture;
 
   return (
-    <div>
-      <Region toolbar={<Toolbar />}>
-        <div class="texture">
-          <For each={store.urls}>
-            {(url, i) => (
-              <img
-                src={url}
-                class="texture-rect"
-                style={{ transform: store.transform[i()] }}
-                onMouseDown={(e) => e.preventDefault()}
-              />
-            )}
-          </For>
-        </div>
-      </Region>
-    </div>
+    <Region toolbar={<Toolbar />}>
+      <div class="texture">
+        <For each={store.urls}>
+          {(url, i) => (
+            <img
+              src={url}
+              class="texture-rect"
+              style={{ transform: store.transform[i()] }}
+              onMouseDown={(e) => e.preventDefault()}
+            />
+          )}
+        </For>
+      </div>
+    </Region>
   );
 }
 

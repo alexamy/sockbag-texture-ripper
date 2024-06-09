@@ -10,6 +10,9 @@
 }
 
 .image-drop {
+  position: absolute;
+  top: 0;
+  left: 0;
   padding: 10px;
   background-color: gray;
 }
