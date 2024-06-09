@@ -170,11 +170,13 @@ function createMovement() {
 
   // zoom
   function onScroll(event: Event) {
+    if (!active()) return;
     event.preventDefault();
     event.stopPropagation();
   }
 
   function onMouseWheel(event: WheelEvent) {
+    if (!active()) return;
     event.preventDefault();
     event.stopPropagation();
 
