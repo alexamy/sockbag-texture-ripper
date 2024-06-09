@@ -9,14 +9,7 @@ export function Texture() {
 
   return (
     <div>
-      <button
-        onClick={() => downloadTexture(store)}
-        disabled={store.urls.length === 0}
-      >
-        Download
-      </button>
-      <GapInput />
-      <Region>
+      <Region toolbar={<Toolbar />}>
         <div class="texture">
           <For each={store.urls}>
             {(url, i) => (
@@ -30,6 +23,22 @@ export function Texture() {
           </For>
         </div>
       </Region>
+    </div>
+  );
+}
+
+function Toolbar() {
+  const [store] = useAppStore().texture;
+
+  return (
+    <div class="toolbar">
+      <button
+        onClick={() => downloadTexture(store)}
+        disabled={store.urls.length === 0}
+      >
+        Download
+      </button>
+      <GapInput />
     </div>
   );
 }
