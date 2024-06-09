@@ -1,0 +1,17 @@
+.editor-canvas {
+  user-select: none;
+}
+
+.editor-toolbar {
+  display: flex;
+  background-color: whitesmoke;
+  padding: 0 10px;
+  width: 100%;
+}
+
+.editor-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 1px solid white;
+}

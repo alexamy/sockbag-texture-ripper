@@ -1,4 +1,5 @@
 import { createMemo, createSignal, For, onMount, Show } from "solid-js";
+import "./Editor.css";
 import { Region, useRegionContext } from "./Region";
 import { useAppStore } from "./store";
 import { type Point as PointId, type Quad } from "./store/editor";
@@ -115,7 +116,7 @@ function DrawingBoard(props: { imageRef: HTMLImageElement }) {
   return (
     <svg
       ref={setSvgRef}
-      class="svg-canvas"
+      class="editor-canvas"
       viewBox={viewBox()}
       style={style()}
       onClick={onClick}
