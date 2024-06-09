@@ -1,5 +1,4 @@
 .app {
-  width: 800px;
   display: flex;
   flex-direction: column;
   border: 1px dashed grey;
@@ -18,10 +17,6 @@
 .image-drop.drag-over {
   background-color: lightgray;
   color: black;
-}
-
-.editor {
-  width: 800px;
 }
 
 .editor-canvas {
