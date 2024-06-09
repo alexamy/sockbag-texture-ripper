@@ -33,6 +33,7 @@ function Toolbar() {
   return (
     <div class="texture-toolbar">
       <button
+        class="texture-form"
         onClick={() => downloadTexture(store)}
         disabled={store.urls.length === 0}
       >
@@ -52,17 +53,18 @@ function GapInput() {
   }
 
   return (
-    <>
-      <label for="gap">Gap:</label>
+    <div>
+      <label for="gap">Gap: </label>
       <input
         id="gap"
+        class="texture-form"
         type="number"
         min="0"
         max="999"
         value={store.gap}
         onChange={onGapChange}
       />
-    </>
+    </div>
   );
 }
 
