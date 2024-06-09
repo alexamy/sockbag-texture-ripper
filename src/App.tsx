@@ -2,6 +2,7 @@ import { Show } from "solid-js";
 import "./App.css";
 import { Editor } from "./Editor";
 import { Texture } from "./Texture";
+import { createDnd } from "./createDnd";
 import { AppStoreProvider, useAppStore } from "./store";
 
 export function App() {
@@ -15,13 +16,23 @@ export function App() {
 export function TextureRipper() {
   const [store, { setFile }] = useAppStore().file;
   debugLoadFile().then(setFile);
+  const { isDraggedOver, onDrop, onDragEnter, onDragLeave } =
+    createDnd(setFile);
 
   return (
-    <div class="app">
+    <div
+      class="app"
+      onDrop={onDrop}
+      onDragEnter={onDragEnter}
+      onDragLeave={onDragLeave}
+    >
       <Show when={store.blob}>
         <Editor />
         <ResizeBorder />
         <Texture />
+      </Show>
+      <Show when={isDraggedOver()}>
+        <div class="image-drop">Drop image here</div>
       </Show>
     </div>
   );

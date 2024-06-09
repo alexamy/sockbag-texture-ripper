@@ -1,5 +1,4 @@
 import { createMemo, createSignal, For, onMount, Show } from "solid-js";
-import { createDnd } from "./createDnd";
 import "./Editor.css";
 import { Header } from "./Header";
 import { Region, useRegionContext } from "./Region";
@@ -10,26 +9,15 @@ import { v } from "./vector";
 type Point = { x: number; y: number };
 
 export function Editor() {
-  const [store, { setFile }] = useAppStore().file;
+  const [store] = useAppStore().file;
   const [imageRef, setImageRef] = createSignal<HTMLImageElement>();
-  const { isDraggedOver, onDrop, onDragEnter, onDragLeave } =
-    createDnd(setFile);
 
   return (
     <Region toolbar={<Toolbar />}>
-      <div
-        class="editor-canvas"
-        onDrop={onDrop}
-        onDragEnter={onDragEnter}
-        onDragLeave={onDragLeave}
-      >
+      <div class="editor-canvas">
         <ImageBackground src={store.url} onLoadRef={setImageRef} />
         <Show when={imageRef()}>
           <DrawingBoard imageRef={imageRef()!} />
-        </Show>
-
-        <Show when={isDraggedOver()}>
-          <div class="image-drop">Drop image here</div>
         </Show>
       </div>
     </Region>
