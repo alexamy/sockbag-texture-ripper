@@ -12,14 +12,15 @@ type Point = { x: number; y: number };
 export function Editor() {
   const [store, { setFile }] = useAppStore().file;
   const [imageRef, setImageRef] = createSignal<HTMLImageElement>();
-  const { isDraggedOver, onDrop, onDragOver, onDragLeave } = createDnd(setFile);
+  const { isDraggedOver, onDrop, onDragEnter, onDragLeave } =
+    createDnd(setFile);
 
   return (
     <Region toolbar={<Toolbar />}>
       <div
         class="editor-canvas"
         onDrop={onDrop}
-        onDragOver={onDragOver}
+        onDragEnter={onDragEnter}
         onDragLeave={onDragLeave}
       >
         <ImageBackground src={store.url} onLoadRef={setImageRef} />
@@ -28,14 +29,11 @@ export function Editor() {
         </Show>
 
         <Show when={isDraggedOver()}>
-          <DragDropOverlay />
+          <div class="image-drop">Drop image here</div>
         </Show>
       </div>
     </Region>
   );
-}
-function DragDropOverlay() {
-  return <div class="image-drop">Drop image here</div>;
 }
 
 function Toolbar() {

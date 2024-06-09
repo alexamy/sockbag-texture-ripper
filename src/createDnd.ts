@@ -11,8 +11,7 @@ export function createDnd(setFile: (blob: Blob) => void) {
     }
   }
 
-  function onDragOver(e: DragEvent) {
-    e.preventDefault();
+  function onDragEnter() {
     setIsDraggedOver(true);
   }
 
@@ -20,5 +19,5 @@ export function createDnd(setFile: (blob: Blob) => void) {
     setIsDraggedOver(false);
   }
 
-  return { isDraggedOver, onDrop, onDragOver, onDragLeave };
+  return { isDraggedOver, onDrop, onDragEnter, onDragLeave };
 }

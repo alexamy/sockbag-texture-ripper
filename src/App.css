@@ -19,6 +19,7 @@
   width: 50%;
   height: 50%;
   background-color: gray;
+  pointer-events: none;
 }
 
 .image-drop-drag-over {
