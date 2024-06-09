@@ -22,6 +22,18 @@ export function Editor() {
   );
 }
 
+function ImageStats() {
+  const [store] = useAppStore().file;
+  const width = () => store.image.naturalWidth;
+  const height = () => store.image.naturalHeight;
+
+  return (
+    <div>
+      Image size: {width()} x {height()}
+    </div>
+  );
+}
+
 function Toolbar() {
   return <div class="toolbar">Hey</div>;
 }

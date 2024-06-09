@@ -21,11 +21,8 @@ export function TextureRipper() {
       <Header />
       <DropImage setFile={setFile} />
       <Show when={store.blob}>
-        <div class="editor">
-          <ImageStats />
-          <Editor />
-          <Texture />
-        </div>
+        <Editor />
+        <Texture />
       </Show>
     </div>
   );
@@ -37,18 +34,6 @@ async function debugLoadFile() {
   const blob = await image.blob();
   const file = new File([blob], "source");
   return file;
-}
-
-function ImageStats() {
-  const [store] = useAppStore().file;
-  const width = () => store.image.naturalWidth;
-  const height = () => store.image.naturalHeight;
-
-  return (
-    <div>
-      Image size: {width()} x {height()}
-    </div>
-  );
 }
 
 function DropImage(props: { setFile: (file: File) => void }) {
