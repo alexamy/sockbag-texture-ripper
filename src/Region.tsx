@@ -30,7 +30,7 @@ export function useRegionContext() {
   return value!;
 }
 
-export function Region(props: { children: JSXElement }) {
+export function Region(props: { toolbar: JSXElement; children: JSXElement }) {
   const {
     x,
     y,
@@ -82,6 +82,7 @@ export function Region(props: { children: JSXElement }) {
       <RegionContext.Provider
         value={{ x, y, scale, transform, active, setActive }}
       >
+        <div class="region-toolbar">{props.toolbar}</div>
         <div class="region-content" style={{ transform: transform() }}>
           {props.children}
         </div>

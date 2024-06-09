@@ -11,7 +11,7 @@ export function Editor() {
   const [imageRef, setImageRef] = createSignal<HTMLImageElement>();
 
   return (
-    <Region>
+    <Region toolbar={<Toolbar />}>
       <div class="editor-canvas">
         <ImageBackground src={store.url} onLoadRef={setImageRef} />
         <Show when={imageRef()}>
@@ -20,6 +20,10 @@ export function Editor() {
       </div>
     </Region>
   );
+}
+
+function Toolbar() {
+  return <div class="toolbar">Hey</div>;
 }
 
 function ImageBackground(props: {
