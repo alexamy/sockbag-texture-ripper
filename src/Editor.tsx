@@ -1,7 +1,10 @@
 import { createMemo, createSignal, For, onMount, Show } from "solid-js";
 import { Region, useRegionContext } from "./Region";
 import { useAppStore } from "./store";
-import { v, type Point, type Quad } from "./vector";
+import { type Point as PointId, type Quad } from "./store/editor";
+import { v } from "./vector";
+
+type Point = { x: number; y: number };
 
 export function Editor() {
   const [store] = useAppStore().file;
@@ -32,12 +35,13 @@ function ImageBackground(props: {
 }
 
 function DrawingBoard(props: { imageRef: HTMLImageElement }) {
-  const [store, { addPoint, deleteLastPoint }] = useAppStore().editor;
-  const [current, setCurrent] = createSignal({ x: 0, y: 0 });
   const region = useRegionContext();
+  const [store, { updateCurrent, addPoint, deleteLastPoint }] =
+    useAppStore().editor;
 
+  const current = () => store.current;
   const quads = () => store.quads;
-  const points = () => store.points;
+  const points = () => store.buffer;
 
   const first = createMemo(() => points()[0]);
   const last = createMemo(() => points()[points().length - 1]);
@@ -77,13 +81,13 @@ function DrawingBoard(props: { imageRef: HTMLImageElement }) {
       }
     }
 
-    setCurrent({ x, y });
+    updateCurrent({ x, y });
   }
 
   function onClick(e: MouseEvent) {
     e.preventDefault();
     if (e.button === 0) {
-      addPoint(current());
+      addPoint();
     } else if (e.button === 2) {
       deleteLastPoint();
     }
@@ -102,7 +106,10 @@ function DrawingBoard(props: { imageRef: HTMLImageElement }) {
       onContextMenu={onClick}
       onMouseMove={onMouseMove}
     >
+      {/* Already drawn quads */}
       <For each={quads()}>{(quad) => <Quad quad={quad} />}</For>
+
+      {/* Currently drawn quad */}
       <For each={points()}>
         {(point, i) => (
           <>
@@ -111,6 +118,7 @@ function DrawingBoard(props: { imageRef: HTMLImageElement }) {
         )}
       </For>
 
+      {/* Helpers for currently drawn quad */}
       <Show when={points().length >= 1}>
         <Line from={last()} to={current()} />
       </Show>
@@ -118,6 +126,7 @@ function DrawingBoard(props: { imageRef: HTMLImageElement }) {
         <Line from={first()} to={current()} />
       </Show>
 
+      {/* Normal line */}
       <Show when={points().length === 2}>
         <Line from={current()} to={top()} withTip={true} color="red" />
       </Show>
@@ -142,9 +151,13 @@ function Quad(props: { quad: Quad }) {
         stroke-width="1"
       />
       <Line from={center()} to={top()} withTip={true} color="red" />
-      <For each={props.quad}>{(point) => <Point p={point} />}</For>
+      <For each={props.quad}>{(point) => <DragPoint p={point} />}</For>
     </>
   );
+}
+
+function DragPoint(props: { p: PointId }) {
+  return <circle cx={props.p.x} cy={props.p.y} r={2} fill="black" />;
 }
 
 function Line(props: {
@@ -185,16 +198,5 @@ function Line(props: {
         <polygon points={tip()} fill={color()} />
       </Show>
     </>
-  );
-}
-
-function Point(props: { p: Point; r?: number; fill?: string }) {
-  return (
-    <circle
-      cx={props.p.x}
-      cy={props.p.y}
-      r={props.r ?? 2}
-      fill={props.fill ?? "black"}
-    />
   );
 }

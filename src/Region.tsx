@@ -56,7 +56,7 @@ export function Region(props: { children: JSXElement }) {
   });
 
   function onMouseEnter() {
-    parent()?.focus();
+    parent()?.focus({ preventScroll: true });
   }
 
   return (
