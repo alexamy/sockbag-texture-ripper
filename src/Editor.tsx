@@ -23,20 +23,18 @@ export function Editor() {
   );
 }
 
-function ImageStats() {
+function Toolbar() {
   const [store] = useAppStore().file;
   const width = () => store.image.naturalWidth;
   const height = () => store.image.naturalHeight;
 
   return (
-    <div>
-      Image size: {width()} x {height()}
+    <div class="editor-toolbar">
+      <div>
+        Image size: {width()} x {height()}
+      </div>
     </div>
   );
-}
-
-function Toolbar() {
-  return <div class="editor-toolbar">Hey</div>;
 }
 
 function ImageBackground(props: {
