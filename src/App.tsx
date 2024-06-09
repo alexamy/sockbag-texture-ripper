@@ -28,7 +28,7 @@ export function TextureRipper() {
 }
 
 function ResizeBorder() {
-  return <hr class="regions-border" />;
+  return <div class="regions-border" />;
 }
 
 async function debugLoadFile() {
