@@ -30,7 +30,7 @@ function Toolbar() {
   const height = () => store.image.naturalHeight;
 
   return (
-    <div class="editor-toolbar">
+    <div class="toolbar">
       <div>
         Image size: {width()} x {height()}
       </div>
