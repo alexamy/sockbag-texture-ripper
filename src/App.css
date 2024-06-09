@@ -24,6 +24,7 @@
   background-color: gray;
   color: black;
   font-size: 3rem;
+  pointer-events: none;
 }
 
 .regions-border {

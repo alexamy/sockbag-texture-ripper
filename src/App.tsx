@@ -16,7 +16,7 @@ export function App() {
 export function TextureRipper() {
   const [store, { setFile }] = useAppStore().file;
   debugLoadFile().then(setFile);
-  const { isDraggedOver, onDrop, onDragEnter, onDragLeave } =
+  const { isDragOver, onDrop, onDragEnter, onDragOver, onDragLeave } =
     createDnd(setFile);
 
   return (
@@ -24,6 +24,7 @@ export function TextureRipper() {
       class="app"
       onDrop={onDrop}
       onDragEnter={onDragEnter}
+      onDragOver={onDragOver}
       onDragLeave={onDragLeave}
     >
       <Show when={store.blob}>
@@ -31,7 +32,7 @@ export function TextureRipper() {
         <ResizeBorder />
         <Texture />
       </Show>
-      <Show when={isDraggedOver()}>
+      <Show when={isDragOver()}>
         <div class="image-drop">Drop image here</div>
       </Show>
     </div>

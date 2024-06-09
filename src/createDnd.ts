@@ -1,23 +1,31 @@
 import { createSignal } from "solid-js";
 
 export function createDnd(setFile: (blob: Blob) => void) {
-  const [isDraggedOver, setIsDraggedOver] = createSignal(false);
+  const [isDragOver, setIsDraggedOver] = createSignal(false);
+  const [counter, setCounter] = createSignal(0);
 
   function onDrop(e: DragEvent) {
     e.preventDefault();
     const file = e.dataTransfer?.files[0];
     if (file && file.type.startsWith("image/")) {
       setFile(file);
+      setIsDraggedOver(false);
     }
   }
 
   function onDragEnter() {
-    setIsDraggedOver(true);
+    setCounter((prev) => prev + 1);
+    if (counter() === 1) setIsDraggedOver(true);
   }
 
   function onDragLeave() {
-    setIsDraggedOver(false);
+    setCounter((prev) => prev - 1);
+    if (counter() === 0) setIsDraggedOver(false);
   }
 
-  return { isDraggedOver, onDrop, onDragEnter, onDragLeave };
+  function onDragOver(e: DragEvent) {
+    e.preventDefault();
+  }
+
+  return { isDragOver, onDrop, onDragEnter, onDragOver, onDragLeave };
 }
