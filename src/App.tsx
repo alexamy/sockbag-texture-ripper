@@ -21,10 +21,15 @@ export function TextureRipper() {
       <DropImage setFile={setFile} />
       <Show when={store.blob}>
         <Editor />
+        <ResizeBorder />
         <Texture />
       </Show>
     </div>
   );
+}
+
+function ResizeBorder() {
+  return <hr class="regions-border" />;
 }
 
 async function debugLoadFile() {

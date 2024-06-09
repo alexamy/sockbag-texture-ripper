@@ -32,6 +32,7 @@ function Toolbar() {
 
   return (
     <div class="texture-toolbar">
+      <GapInput />
       <button
         class="texture-form"
         onClick={() => downloadTexture(store)}
@@ -39,7 +40,6 @@ function Toolbar() {
       >
         Download
       </button>
-      <GapInput />
     </div>
   );
 }

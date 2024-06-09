@@ -18,3 +18,14 @@
   background-color: lightgray;
   color: black;
 }
+
+.regions-border {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 7px;
+  border: 1px solid white;
+  text-align: center;
+  background: darkgrey;
+  color: black;
+}
