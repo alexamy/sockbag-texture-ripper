@@ -23,6 +23,11 @@ interface StoreData {
   quads: Quad[];
 }
 
+// TODO implement point drag
+// currently new points are created each time,
+// so event listener won't work
+// needed to implement stable points
+
 export function createEditorStore(file: { blob: Blob }) {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
 
@@ -72,7 +77,12 @@ export function createEditorStore(file: { blob: Blob }) {
     setStore({ buffer });
   }
 
-  const methods = { updateCurrent, updatePoint, addPoint, deleteLastPoint };
+  const methods = {
+    updateCurrent,
+    updatePoint,
+    addPoint,
+    deleteLastPoint,
+  };
 
   return [store, methods, setStore] as const;
 }

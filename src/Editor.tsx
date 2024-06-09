@@ -94,7 +94,7 @@ function DrawingBoard(props: { imageRef: HTMLImageElement }) {
   }
 
   const [svgRef, setSvgRef] = createSignal<SVGSVGElement>();
-  onMount(() => svgRef()!.focus());
+  onMount(() => svgRef()!.focus({ preventScroll: true }));
 
   return (
     <svg
@@ -157,29 +157,7 @@ function Quad(props: { quad: Quad }) {
 }
 
 function DragPoint(props: { p: PointId }) {
-  const [_, { updatePoint }] = useAppStore().editor;
-  const [r, setR] = createSignal(2);
-
-  console.log("new point");
-
-  function onMouseMove(e: MouseEvent) {
-    if (e.buttons === 1) {
-      updatePoint(props.p.id);
-    }
-  }
-
-  return (
-    <circle
-      cx={props.p.x}
-      cy={props.p.y}
-      r={r()}
-      fill={"black"}
-      onMouseMove={onMouseMove}
-      onClick={(e) => e.stopPropagation()}
-      onMouseEnter={() => setR(4)}
-      onMouseLeave={() => setR(2)}
-    />
-  );
+  return <circle cx={props.p.x} cy={props.p.y} r={2} fill="black" />;
 }
 
 function Line(props: {
