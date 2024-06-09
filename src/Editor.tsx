@@ -35,7 +35,7 @@ function ImageStats() {
 }
 
 function Toolbar() {
-  return <div class="toolbar">Hey</div>;
+  return <div class="editor-toolbar">Hey</div>;
 }
 
 function ImageBackground(props: {
