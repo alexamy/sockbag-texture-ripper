@@ -42,19 +42,20 @@ export function createEditorStore(file: { blob: Blob }) {
   }));
 
   // prettier-ignore
-  createEffect(on(() => store.figures, (figures) => {
-    const quads = figures.map((figure) => figureToQuad(figure, store.points));
+  createEffect(on(() => [store.figures, store.points] as const, ([figures, points]) => {
+    const quads = figures.map((figure) => figureToQuad(figure, points));
     setStore({ quads });
   }));
 
   function updateCurrent(coordinates: { x: number; y: number }) {
     const point = { ...store.current, ...coordinates };
+    console.log("updateCurrent", point);
     setStore({ current: point });
   }
 
   function updatePoint(id: string) {
-    const { x, y } = { x: 0, y: 0 };
-    // BUG it is new created point, so signals won't update
+    const { x, y } = store.current;
+    console.log("updatePoint", id, x, y);
     const points = store.points.map((p) => (p.id === id ? { ...p, x, y } : p));
     setStore({ points });
   }
