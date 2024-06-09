@@ -30,7 +30,7 @@ export function useRegionContext() {
   return value!;
 }
 
-export function Region(props: { toolbar: JSXElement; children: JSXElement }) {
+export function Region(props: { children: JSXElement; toolbar?: JSXElement }) {
   const {
     x,
     y,

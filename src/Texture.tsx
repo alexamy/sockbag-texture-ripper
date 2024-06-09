@@ -1,5 +1,6 @@
 import { For } from "solid-js";
 import { Region } from "./Region";
+import "./Texture.css";
 import { useAppStore } from "./store";
 import { TextureStore } from "./store/texture";
 

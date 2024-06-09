@@ -17,13 +17,3 @@
   background-color: lightgray;
   color: black;
 }
-
-.texture {
-  position: relative;
-}
-
-.texture-rect {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
