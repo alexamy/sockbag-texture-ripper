@@ -176,19 +176,22 @@ function createMovement() {
     if (!active()) return;
     event.preventDefault();
     event.stopPropagation();
+    setScale(getScale(event));
   }
 
   // activation
   function onKeyDown(e: KeyboardEvent) {
     e.preventDefault();
-    if (e.key !== " ") return;
-    setActive(true);
+    if (e.key === " ") {
+      setActive(true);
+    }
   }
 
   function onKeyUp(e: KeyboardEvent) {
     e.preventDefault();
-    if (e.key !== " ") return;
-    setActive(false);
+    if (e.key === " ") {
+      setActive(false);
+    }
   }
 
   // helpers
