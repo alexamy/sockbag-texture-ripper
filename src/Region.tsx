@@ -141,7 +141,6 @@ function GridBackground(props: {
 function createMovement() {
   const [active, setActive] = createSignal(false);
   const [current, setCurrent] = createSignal({ x: 0, y: 0 });
-  const [offset, setOffset] = createSignal({ x: 0, y: 0 });
 
   const [translate, setTranslate] = createSignal({ x: 0, y: 0 });
   const [origin, setOrigin] = createSignal({ x: 0, y: 0 });
@@ -156,24 +155,22 @@ function createMovement() {
   });
 
   // pan
-  function onMouseLeave(event: MouseEvent) {
+  function onMouseLeave() {
     setActive(false);
   }
 
   function onMouseMove(event: MouseEvent) {
+    const previous = { ...current() };
+    setCurrent({ x: event.clientX, y: event.clientY });
+
     if (active()) {
-      const delta = getDelta();
       const { x, y } = translate();
-      console.log(current(), offset(), delta);
+      const delta = {
+        x: current().x - previous.x,
+        y: current().y - previous.y,
+      };
       setTranslate({ x: x + delta.x, y: y + delta.y });
     }
-    setCurrent({ x: event.clientX, y: event.clientY });
-  }
-
-  function getDelta() {
-    const x = current().x - offset().x;
-    const y = current().y - offset().y;
-    return { x, y };
   }
 
   // zoom
