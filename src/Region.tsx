@@ -142,7 +142,7 @@ function GridBackground(props: {
 
 function createMovement() {
   const [active, setActive] = createSignal(false);
-  const [startPoint, setStartPoint] = createSignal<{ x: number; y: number }>();
+  const [startPoint, setStartPoint] = createSignal({ x: 0, y: 0 });
 
   const [translate, setTranslate] = createSignal({ x: 0, y: 0 });
   const [origin, setOrigin] = createSignal({ x: 0, y: 0 });
@@ -157,31 +157,13 @@ function createMovement() {
   });
 
   // pan
-  function onMouseDown(event: MouseEvent) {
-    setStartPoint({ x: event.clientX, y: event.clientY });
-  }
+  function onMouseDown(event: MouseEvent) {}
 
-  function onMouseUp(_event: MouseEvent) {
-    setStartPoint(undefined);
-  }
+  function onMouseUp(event: MouseEvent) {}
 
-  function onMouseLeave(_event: MouseEvent) {
-    setStartPoint(undefined);
-    setActive(false);
-  }
+  function onMouseLeave(event: MouseEvent) {}
 
-  function onMouseMove(event: MouseEvent) {
-    if (!startPoint() || !active()) {
-      setStartPoint({ x: event.clientX, y: event.clientY });
-    }
-
-    if (!active()) return;
-    const dx = event.clientX - startPoint()!.x;
-    const dy = event.clientY - startPoint()!.y;
-    const { x, y } = translate();
-    setTranslate({ x: x + dx, y: y + dy });
-    setStartPoint({ x: event.clientX, y: event.clientY });
-  }
+  function onMouseMove(event: MouseEvent) {}
 
   // zoom
   function onScroll(event: Event) {
@@ -194,11 +176,6 @@ function createMovement() {
     if (!active()) return;
     event.preventDefault();
     event.stopPropagation();
-
-    const delta =
-      Math.sign(event.deltaY) * Math.min(80, Math.abs(event.deltaY));
-    const newScale = scale() * (1 - delta / 800);
-    setScale(newScale);
   }
 
   // activation
@@ -215,6 +192,19 @@ function createMovement() {
   }
 
   // helpers
+  function getDelta(event: MouseEvent) {
+    const x = event.clientX - startPoint().x;
+    const y = event.clientY - startPoint().y;
+    return { x, y };
+  }
+
+  function getScale(event: WheelEvent) {
+    const dy = event.deltaY;
+    const delta = Math.sign(dy) * Math.min(80, Math.abs(dy));
+    const newScale = scale() * (1 - delta / 800);
+    return newScale;
+  }
+
   function resetView() {
     setScale(1);
     setOrigin({ x: 0, y: 0 });
