@@ -84,7 +84,13 @@ export function Region(props: {
       />
       <RegionContext.Provider value={{ ...move }}>
         <div class="region-toolbar">{props.toolbar}</div>
-        <div class="region-content" style={{ transform: move.transform() }}>
+        <div
+          class="region-content"
+          style={{
+            "transform-origin": move.origin(),
+            transform: move.transform(),
+          }}
+        >
           {props.children}
         </div>
         <div class="region-footer">
@@ -147,9 +153,16 @@ function createMovement() {
   const [x, setX] = createSignal(0);
   const [y, setY] = createSignal(0);
   const [scale, setScale] = createSignal(1);
+
+  const [ox, setOx] = createSignal(100);
+  const [oy, setOy] = createSignal(100);
+
+  const origin = createMemo(() => `${ox()}px ${oy()}px`);
   const transform = createMemo(
     () => `translate(${x()}px, ${y()}px) scale(${scale()})`
   );
+
+  // TODO x and y must respect origin
 
   // pan
   const [startPoint, setStartPoint] = createSignal<{ x: number; y: number }>();
@@ -203,6 +216,8 @@ function createMovement() {
     e.preventDefault();
     if (e.key === " ") {
       setActive(true);
+      setOx(startPoint()?.x ?? 0);
+      setOy(startPoint()?.y ?? 0);
     }
   }
 
@@ -224,6 +239,7 @@ function createMovement() {
     x,
     y,
     scale,
+    origin,
     transform,
     active,
     setActive,
