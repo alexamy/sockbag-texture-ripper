@@ -1,7 +1,7 @@
 .region {
   position: relative;
-  width: 800px;
-  height: 600px;
+  width: 50%;
+  height: 100vh;
   border: 1px solid grey;
   overflow: hidden;
   color: black;
@@ -14,6 +14,14 @@
 
 .region-content {
   transform-origin: 0 0;
+}
+
+.region-toolbar {
+  position: relative;
+  z-index: 1;
+}
+
+.grid-background {
   position: absolute;
   top: 0;
   left: 0;

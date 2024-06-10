@@ -30,7 +30,7 @@ export function useRegionContext() {
   return value!;
 }
 
-export function Region(props: { children: JSXElement }) {
+export function Region(props: { children: JSXElement; toolbar?: JSXElement }) {
   const {
     x,
     y,
@@ -82,6 +82,7 @@ export function Region(props: { children: JSXElement }) {
       <RegionContext.Provider
         value={{ x, y, scale, transform, active, setActive }}
       >
+        <div class="region-toolbar">{props.toolbar}</div>
         <div class="region-content" style={{ transform: transform() }}>
           {props.children}
         </div>
@@ -153,6 +154,7 @@ function createMovement() {
 
   function onMouseLeave(_event: MouseEvent) {
     setStartPoint(undefined);
+    setActive(false);
   }
 
   function onMouseMove(event: MouseEvent) {
@@ -170,11 +172,13 @@ function createMovement() {
 
   // zoom
   function onScroll(event: Event) {
+    if (!active()) return;
     event.preventDefault();
     event.stopPropagation();
   }
 
   function onMouseWheel(event: WheelEvent) {
+    if (!active()) return;
     event.preventDefault();
     event.stopPropagation();
 

@@ -1,5 +1,6 @@
 import cv from "@techstark/opencv-js";
-import { Quad, v } from "./vector";
+import { Quad } from "./store/editor";
+import { v } from "./vector";
 
 export async function projectRectangles(
   image: HTMLImageElement,

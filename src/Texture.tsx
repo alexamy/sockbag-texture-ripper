@@ -1,5 +1,6 @@
 import { For } from "solid-js";
 import { Region } from "./Region";
+import "./Texture.css";
 import { useAppStore } from "./store";
 import { TextureStore } from "./store/texture";
 
@@ -7,28 +8,36 @@ export function Texture() {
   const [store] = useAppStore().texture;
 
   return (
-    <div>
+    <Region toolbar={<Toolbar />}>
+      <div class="texture">
+        <For each={store.urls}>
+          {(url, i) => (
+            <img
+              src={url}
+              class="texture-rect"
+              style={{ transform: store.transform[i()] }}
+              onMouseDown={(e) => e.preventDefault()}
+            />
+          )}
+        </For>
+      </div>
+    </Region>
+  );
+}
+
+function Toolbar() {
+  const [store] = useAppStore().texture;
+
+  return (
+    <div class="texture-toolbar">
+      <GapInput />
       <button
+        class="texture-form"
         onClick={() => downloadTexture(store)}
         disabled={store.urls.length === 0}
       >
         Download
       </button>
-      <GapInput />
-      <Region>
-        <div class="texture">
-          <For each={store.urls}>
-            {(url, i) => (
-              <img
-                src={url}
-                class="texture-rect"
-                style={{ transform: store.transform[i()] }}
-                onMouseDown={(e) => e.preventDefault()}
-              />
-            )}
-          </For>
-        </div>
-      </Region>
     </div>
   );
 }
@@ -42,17 +51,18 @@ function GapInput() {
   }
 
   return (
-    <>
-      <label for="gap">Gap:</label>
+    <div>
+      <label for="gap">Gap: </label>
       <input
         id="gap"
+        class="texture-form"
         type="number"
         min="0"
         max="999"
         value={store.gap}
         onChange={onGapChange}
       />
-    </>
+    </div>
   );
 }
 

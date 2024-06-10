@@ -1,0 +1,23 @@
+.texture {
+  position: relative;
+}
+
+.texture-rect {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.texture-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: whitesmoke;
+  width: 100%;
+  padding: 5px;
+  white-space: nowrap;
+}
+
+.texture-form {
+  padding: 4px;
+}

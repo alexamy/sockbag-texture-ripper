@@ -1,46 +1,39 @@
 .app {
-  width: 800px;
   display: flex;
-  flex-direction: column;
-  border: 1px dashed grey;
+  width: 100%;
+  height: 100vh;
 }
 
 .app-title {
+  font-size: 1.2rem;
   user-select: none;
   width: fit-content;
 }
 
 .image-drop {
-  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 99;
+  opacity: 0.95;
   background-color: gray;
-}
-
-.image-drop.drag-over {
-  background-color: lightgray;
   color: black;
+  font-size: 3rem;
+  pointer-events: none;
 }
 
-.editor {
-  width: 800px;
-}
-
-.editor-canvas {
-  user-select: none;
-}
-
-.svg-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  border: 1px solid white;
-}
-
-.texture {
-  position: relative;
-}
-
-.texture-rect {
-  position: absolute;
-  top: 0;
-  left: 0;
+.regions-border {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  border: 3px solid white;
+  text-align: center;
+  background: darkgrey;
+  color: black;
 }
