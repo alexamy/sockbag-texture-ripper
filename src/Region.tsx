@@ -2,8 +2,10 @@ import {
   Accessor,
   JSXElement,
   createContext,
+  createEffect,
   createMemo,
   createSignal,
+  onCleanup,
   onMount,
   useContext,
 } from "solid-js";
@@ -50,9 +52,18 @@ export function Region(props: { children: JSXElement; toolbar?: JSXElement }) {
 
   const [parent, setParent] = createSignal<HTMLElement>();
   const [size, setSize] = createSignal({ width: 0, height: 0 });
-  onMount(() => {
+
+  function updateSize() {
     const size = parent()!.getBoundingClientRect();
     setSize(size);
+  }
+
+  onMount(updateSize);
+
+  createEffect(() => {
+    const observer = new ResizeObserver(updateSize);
+    observer.observe(parent()!);
+    onCleanup(() => observer.disconnect());
   });
 
   function onMouseEnter() {
