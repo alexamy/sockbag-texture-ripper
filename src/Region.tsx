@@ -52,6 +52,7 @@ export function Region(props: {
     onScroll,
     onKeyDown,
     onKeyUp,
+    resetView,
   } = createMovement();
 
   const [parent, setParent] = createSignal<HTMLElement>();
@@ -102,7 +103,15 @@ export function Region(props: {
         <div class="region-content" style={{ transform: transform() }}>
           {props.children}
         </div>
-        <div class="region-footer">Hey i am footer</div>
+        <div class="region-footer">
+          <button
+            class="region-reset"
+            onClick={resetView}
+            onMouseDown={(e) => e.preventDefault()}
+          >
+            Reset
+          </button>
+        </div>
       </RegionContext.Provider>
     </div>
   );
@@ -220,6 +229,13 @@ function createMovement() {
     }
   }
 
+  // helpers
+  function resetView() {
+    setX(0);
+    setY(0);
+    setScale(1);
+  }
+
   return {
     x,
     y,
@@ -235,5 +251,6 @@ function createMovement() {
     onScroll,
     onKeyDown,
     onKeyUp,
+    resetView,
   };
 }
