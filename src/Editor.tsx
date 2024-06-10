@@ -189,7 +189,8 @@ function Line(props: {
   const right = () => v.negate(left());
 
   const pairs = () => [
-    props.to,
+    v.add(props.to, v.scale(right(), 0.15)),
+    v.add(props.to, v.scale(left(), 0.15)),
     v.add(v.subtract(props.to, v.scale(dist(), 1.5)), left()),
     v.add(v.subtract(props.to, v.scale(dist(), 1.5)), right()),
   ];
