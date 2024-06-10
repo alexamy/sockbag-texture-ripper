@@ -102,6 +102,7 @@ export function Region(props: {
         <div class="region-content" style={{ transform: transform() }}>
           {props.children}
         </div>
+        <div class="region-footer">Hey i am footer</div>
       </RegionContext.Provider>
     </div>
   );
