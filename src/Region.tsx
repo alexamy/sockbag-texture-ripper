@@ -53,11 +53,6 @@ export function Region(props: { children: JSXElement; toolbar?: JSXElement }) {
   const [parent, setParent] = createSignal<HTMLElement>();
   const [size, setSize] = createSignal({ width: 0, height: 0 });
 
-  function updateSize() {
-    const size = parent()!.getBoundingClientRect();
-    setSize(size);
-  }
-
   onMount(updateSize);
 
   createEffect(() => {
@@ -65,6 +60,11 @@ export function Region(props: { children: JSXElement; toolbar?: JSXElement }) {
     observer.observe(parent()!);
     onCleanup(() => observer.disconnect());
   });
+
+  function updateSize() {
+    const size = parent()!.getBoundingClientRect();
+    setSize(size);
+  }
 
   function onMouseEnter() {
     parent()?.focus({ preventScroll: true });
