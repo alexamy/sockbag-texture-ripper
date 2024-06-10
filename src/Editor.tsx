@@ -145,10 +145,10 @@ function DrawingBoard(props: { imageRef: HTMLImageElement }) {
 
       {/* Normal line */}
       <Show when={points().length === 2}>
-        <Line from={current()} to={top()} withTip={true} color="red" />
+        <Line from={current()} to={top()} withTip={true} color="darkred" />
       </Show>
       <Show when={points().length === 3}>
-        <Line from={bottom()} to={top()} withTip={true} color="red" />
+        <Line from={bottom()} to={top()} withTip={true} color="darkred" />
       </Show>
     </svg>
   );
@@ -162,12 +162,12 @@ function Quad(props: { quad: Quad }) {
     <>
       <polygon
         points={props.quad.map((point) => `${point.x},${point.y}`).join(" ")}
-        fill="white"
-        fill-opacity={0.3}
-        stroke="white"
+        stroke="greenyellow"
         stroke-width="1"
+        fill="greenyellow"
+        fill-opacity={0.2}
       />
-      <Line from={center()} to={top()} withTip={true} color="red" />
+      <Line from={center()} to={top()} withTip={true} color="darkred" />
       <For each={props.quad}>{(point) => <DragPoint p={point} />}</For>
     </>
   );
@@ -200,7 +200,7 @@ function Line(props: {
       .map((p) => `${p.x},${p.y}`)
       .join(" ");
 
-  const color = () => props.color ?? "white";
+  const color = () => props.color ?? "greenyellow";
 
   return (
     <>
