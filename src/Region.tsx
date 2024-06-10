@@ -13,8 +13,7 @@ import {
 import "./Region.css";
 
 interface Transform {
-  x: Accessor<number>;
-  y: Accessor<number>;
+  position: Accessor<{ x: number; y: number }>;
   scale: Accessor<number>;
   transform: Accessor<string>;
   active: Accessor<boolean>;
@@ -150,8 +149,7 @@ function GridBackground(props: {
 function createMovement() {
   // transform
   const [active, setActive] = createSignal(false);
-  const [x, setX] = createSignal(0);
-  const [y, setY] = createSignal(0);
+  const [position, setPosition] = createSignal({ x: 0, y: 0 });
   const [scale, setScale] = createSignal(1);
 
   const [ox, setOx] = createSignal(100);
@@ -159,7 +157,7 @@ function createMovement() {
 
   const origin = createMemo(() => `${ox()}px ${oy()}px`);
   const transform = createMemo(
-    () => `translate(${x()}px, ${y()}px) scale(${scale()})`
+    () => `translate(${position().x}px, ${position().y}px) scale(${scale()})`
   );
 
   // TODO x and y must respect origin
@@ -188,8 +186,8 @@ function createMovement() {
     if (!active()) return;
     const dx = event.clientX - startPoint()!.x;
     const dy = event.clientY - startPoint()!.y;
-    setX(x() + dx);
-    setY(y() + dy);
+    const { x, y } = position();
+    setPosition({ x: x + dx, y: y + dy });
     setStartPoint({ x: event.clientX, y: event.clientY });
   }
 
@@ -230,14 +228,12 @@ function createMovement() {
 
   // helpers
   function resetView() {
-    setX(0);
-    setY(0);
+    setPosition({ x: 0, y: 0 });
     setScale(1);
   }
 
   return {
-    x,
-    y,
+    position,
     scale,
     origin,
     transform,
