@@ -37,24 +37,7 @@ export function Region(props: {
   toolbar?: JSXElement;
   width: number;
 }) {
-  const {
-    x,
-    y,
-    scale,
-    transform,
-    active,
-    setActive,
-    onMouseDown,
-    onMouseUp,
-    onMouseMove,
-    onMouseLeave,
-    onMouseWheel,
-    onScroll,
-    onKeyDown,
-    onKeyUp,
-    resetView,
-  } = createMovement();
-
+  const move = createMovement();
   const [parent, setParent] = createSignal<HTMLElement>();
   const [size, setSize] = createSignal({ width: 0, height: 0 });
 
@@ -81,32 +64,30 @@ export function Region(props: {
       ref={setParent}
       style={{ width: `${props.width}%` }}
       onMouseEnter={onMouseEnter}
-      onMouseUp={onMouseUp}
-      onMouseDown={onMouseDown}
-      onMouseMove={onMouseMove}
-      onMouseLeave={onMouseLeave}
-      onWheel={onMouseWheel}
-      onScroll={onScroll}
-      onKeyDown={onKeyDown}
-      onKeyUp={onKeyUp}
+      onMouseUp={move.onMouseUp}
+      onMouseDown={move.onMouseDown}
+      onMouseMove={move.onMouseMove}
+      onMouseLeave={move.onMouseLeave}
+      onWheel={move.onMouseWheel}
+      onScroll={move.onScroll}
+      onKeyDown={move.onKeyDown}
+      onKeyUp={move.onKeyUp}
       tabindex="0"
     >
       <GridBackground
-        scale={scale()}
+        scale={move.scale()}
         width={size().width}
         height={size().height}
       />
-      <RegionContext.Provider
-        value={{ x, y, scale, transform, active, setActive }}
-      >
+      <RegionContext.Provider value={{ ...move }}>
         <div class="region-toolbar">{props.toolbar}</div>
-        <div class="region-content" style={{ transform: transform() }}>
+        <div class="region-content" style={{ transform: move.transform() }}>
           {props.children}
         </div>
         <div class="region-footer">
           <button
             class="region-reset"
-            onClick={resetView}
+            onClick={move.resetView}
             onMouseDown={(e) => e.preventDefault()}
           >
             Reset
