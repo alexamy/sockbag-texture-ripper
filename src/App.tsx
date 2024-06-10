@@ -1,11 +1,14 @@
-import { Show } from "solid-js";
+import { Show, createSignal } from "solid-js";
 import "./App.css";
-import { Editor } from "./Editor";
-import { Texture } from "./Texture";
+import { Editor, EditorToolbar } from "./Editor";
+import { Region } from "./Region";
+import { Texture, TextureToolbar } from "./Texture";
 import { createDnd } from "./createDnd";
 import { AppStoreProvider, useAppStore } from "./store";
 
-export function App() {
+export default App;
+
+function App() {
   return (
     <AppStoreProvider>
       <TextureRipper />
@@ -13,34 +16,74 @@ export function App() {
   );
 }
 
-export function TextureRipper() {
+function TextureRipper() {
   const [store, { setFile }] = useAppStore().file;
   debugLoadFile().then(setFile);
-  const { isDragOver, onDrop, onDragEnter, onDragOver, onDragLeave } =
-    createDnd(setFile);
+
+  const dnd = createDnd(setFile);
+  const resize = createResize();
 
   return (
     <div
       class="app"
-      onDrop={onDrop}
-      onDragEnter={onDragEnter}
-      onDragOver={onDragOver}
-      onDragLeave={onDragLeave}
+      onDrop={dnd.onDrop}
+      onDragEnter={dnd.onDragEnter}
+      onDragOver={dnd.onDragOver}
+      onDragLeave={dnd.onDragLeave}
+      onMouseMove={resize.onMouseMove}
     >
       <Show when={store.blob}>
-        <Editor />
-        <ResizeBorder />
-        <Texture />
+        <Region toolbar={<EditorToolbar />} width={resize.left()}>
+          <Editor />
+        </Region>
+
+        <div
+          class="region-border"
+          onMouseDown={resize.activate}
+          onMouseUp={resize.deactivate}
+          onDblClick={resize.reset}
+        >
+          <div class="region-border-handle" />
+        </div>
+
+        <Region toolbar={<TextureToolbar />} width={resize.right()}>
+          <Texture />
+        </Region>
       </Show>
-      <Show when={isDragOver()}>
-        <div class="image-drop">Drop image here</div>
+
+      <Show when={dnd.isDragOver()}>
+        <div class="image-drop">Drop image here to upload</div>
       </Show>
     </div>
   );
 }
 
-function ResizeBorder() {
-  return <div class="regions-border" />;
+function createResize() {
+  const [dragging, setDragging] = createSignal(false);
+  const [width, setWidth] = createSignal(50);
+  const left = () => width();
+  const right = () => 100 - width();
+
+  function onMouseMove(e: MouseEvent) {
+    if (dragging()) {
+      const width = (e.clientX / window.innerWidth) * 100;
+      setWidth(width);
+    }
+  }
+
+  function reset() {
+    setWidth(50);
+  }
+
+  function activate() {
+    setDragging(true);
+  }
+
+  function deactivate() {
+    setDragging(false);
+  }
+
+  return { width, left, right, onMouseMove, reset, activate, deactivate };
 }
 
 async function debugLoadFile() {

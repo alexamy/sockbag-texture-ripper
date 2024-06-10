@@ -1,7 +1,7 @@
 import { createMemo, createSignal, For, onMount, Show } from "solid-js";
 import "./Editor.css";
 import { Header } from "./Header";
-import { Region, useRegionContext } from "./Region";
+import { useRegionContext } from "./Region";
 import { useAppStore } from "./store";
 import { type Point as PointId, type Quad } from "./store/editor";
 import { v } from "./vector";
@@ -13,18 +13,16 @@ export function Editor() {
   const [imageRef, setImageRef] = createSignal<HTMLImageElement>();
 
   return (
-    <Region toolbar={<Toolbar />}>
-      <div class="editor-canvas">
-        <ImageBackground src={store.url} onLoadRef={setImageRef} />
-        <Show when={imageRef()}>
-          <DrawingBoard imageRef={imageRef()!} />
-        </Show>
-      </div>
-    </Region>
+    <div class="editor-canvas">
+      <ImageBackground src={store.url} onLoadRef={setImageRef} />
+      <Show when={imageRef()}>
+        <DrawingBoard imageRef={imageRef()!} />
+      </Show>
+    </div>
   );
 }
 
-function Toolbar() {
+export function EditorToolbar() {
   const [store] = useAppStore().file;
   const width = () => store.image.naturalWidth;
   const height = () => store.image.naturalHeight;
@@ -32,7 +30,7 @@ function Toolbar() {
   return (
     <div class="editor-toolbar">
       <div>
-        Image size: {width()} x {height()}
+        Size: {width()} x {height()}
       </div>
       <Header />
     </div>
@@ -145,10 +143,10 @@ function DrawingBoard(props: { imageRef: HTMLImageElement }) {
 
       {/* Normal line */}
       <Show when={points().length === 2}>
-        <Line from={current()} to={top()} withTip={true} color="red" />
+        <Line from={current()} to={top()} withTip={true} color="darkred" />
       </Show>
       <Show when={points().length === 3}>
-        <Line from={bottom()} to={top()} withTip={true} color="red" />
+        <Line from={bottom()} to={top()} withTip={true} color="darkred" />
       </Show>
     </svg>
   );
@@ -162,12 +160,12 @@ function Quad(props: { quad: Quad }) {
     <>
       <polygon
         points={props.quad.map((point) => `${point.x},${point.y}`).join(" ")}
-        fill="white"
-        fill-opacity={0.3}
-        stroke="white"
+        stroke="greenyellow"
         stroke-width="1"
+        fill="greenyellow"
+        fill-opacity={0.2}
       />
-      <Line from={center()} to={top()} withTip={true} color="red" />
+      <Line from={center()} to={top()} withTip={true} color="darkred" />
       <For each={props.quad}>{(point) => <DragPoint p={point} />}</For>
     </>
   );
@@ -189,7 +187,8 @@ function Line(props: {
   const right = () => v.negate(left());
 
   const pairs = () => [
-    props.to,
+    v.add(props.to, v.scale(right(), 0.15)),
+    v.add(props.to, v.scale(left(), 0.15)),
     v.add(v.subtract(props.to, v.scale(dist(), 1.5)), left()),
     v.add(v.subtract(props.to, v.scale(dist(), 1.5)), right()),
   ];
@@ -199,7 +198,7 @@ function Line(props: {
       .map((p) => `${p.x},${p.y}`)
       .join(" ");
 
-  const color = () => props.color ?? "white";
+  const color = () => props.color ?? "greenyellow";
 
   return (
     <>

@@ -27,13 +27,22 @@
   pointer-events: none;
 }
 
-.regions-border {
+.region-border {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  border: 3px solid white;
   text-align: center;
-  background: darkgrey;
-  color: black;
+  background: whitesmoke;
+  cursor: col-resize;
+  border: 1px solid lightgrey;
+  border-width: 0 1px;
+}
+
+.region-border-handle {
+  width: 4px;
+  height: 10%;
+  min-height: 30px;
+  background: darkgray;
+  outline: 1px solid darkgray;
 }

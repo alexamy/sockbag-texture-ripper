@@ -20,6 +20,7 @@ export const v = {
   negate,
   abs,
   equals,
+  map,
   dot,
   cross,
   length,
@@ -65,6 +66,10 @@ function abs(a: Vector): Vector {
 
 function equals(a: Vector, b: Vector): boolean {
   return a.x === b.x && a.y === b.y;
+}
+
+function map(a: Vector, f: (n: number) => number): Vector {
+  return { x: f(a.x), y: f(a.y) };
 }
 
 // 0 => same direction, 0.5 => orthogonal, 1 => opposite direction

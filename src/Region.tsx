@@ -2,8 +2,10 @@ import {
   Accessor,
   JSXElement,
   createContext,
+  createEffect,
   createMemo,
   createSignal,
+  onCleanup,
   onMount,
   useContext,
 } from "solid-js";
@@ -30,7 +32,11 @@ export function useRegionContext() {
   return value!;
 }
 
-export function Region(props: { children: JSXElement; toolbar?: JSXElement }) {
+export function Region(props: {
+  children: JSXElement;
+  toolbar?: JSXElement;
+  width: number;
+}) {
   const {
     x,
     y,
@@ -50,10 +56,19 @@ export function Region(props: { children: JSXElement; toolbar?: JSXElement }) {
 
   const [parent, setParent] = createSignal<HTMLElement>();
   const [size, setSize] = createSignal({ width: 0, height: 0 });
-  onMount(() => {
+
+  onMount(updateSize);
+
+  createEffect(() => {
+    const observer = new ResizeObserver(updateSize);
+    observer.observe(parent()!);
+    onCleanup(() => observer.disconnect());
+  });
+
+  function updateSize() {
     const size = parent()!.getBoundingClientRect();
     setSize(size);
-  });
+  }
 
   function onMouseEnter() {
     parent()?.focus({ preventScroll: true });
@@ -63,6 +78,7 @@ export function Region(props: { children: JSXElement; toolbar?: JSXElement }) {
     <div
       class="region"
       ref={setParent}
+      style={{ width: `${props.width}%` }}
       onMouseEnter={onMouseEnter}
       onMouseUp={onMouseUp}
       onMouseDown={onMouseDown}
