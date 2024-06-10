@@ -86,7 +86,7 @@ export function Region(props: {
         </div>
         <div class="region-footer">
           <button
-            class="region-reset"
+            class="region-button"
             onClick={move.resetView}
             onMouseDown={(e) => e.preventDefault()}
           >
