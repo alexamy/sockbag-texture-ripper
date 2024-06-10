@@ -32,7 +32,7 @@ function Toolbar() {
   return (
     <div class="editor-toolbar">
       <div>
-        Image size: {width()} x {height()}
+        Size: {width()} x {height()}
       </div>
       <Header />
     </div>
