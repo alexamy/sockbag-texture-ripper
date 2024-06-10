@@ -19,18 +19,17 @@ function App() {
 function TextureRipper() {
   const [store, { setFile }] = useAppStore().file;
   debugLoadFile().then(setFile);
-  const { isDragOver, onDrop, onDragEnter, onDragOver, onDragLeave } =
-    createDnd(setFile);
 
+  const dnd = createDnd(setFile);
   const resize = createResize();
 
   return (
     <div
       class="app"
-      onDrop={onDrop}
-      onDragEnter={onDragEnter}
-      onDragOver={onDragOver}
-      onDragLeave={onDragLeave}
+      onDrop={dnd.onDrop}
+      onDragEnter={dnd.onDragEnter}
+      onDragOver={dnd.onDragOver}
+      onDragLeave={dnd.onDragLeave}
       onMouseMove={resize.onMouseMove}
     >
       <Show when={store.blob}>
@@ -52,7 +51,7 @@ function TextureRipper() {
         </Region>
       </Show>
 
-      <Show when={isDragOver()}>
+      <Show when={dnd.isDragOver()}>
         <div class="image-drop">Drop image here to upload</div>
       </Show>
     </div>
