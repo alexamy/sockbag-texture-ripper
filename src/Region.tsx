@@ -183,7 +183,9 @@ function createMovement() {
     if (!active()) return;
     event.preventDefault();
     event.stopPropagation();
-    setScale(getScale(event));
+
+    const next = getScale(event);
+    setScale(next);
   }
 
   function getScale(event: WheelEvent) {
