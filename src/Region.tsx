@@ -1,5 +1,6 @@
 import {
   Accessor,
+  JSX,
   JSXElement,
   createContext,
   createEffect,
@@ -15,9 +16,8 @@ import "./Region.css";
 interface Transform {
   translate: Accessor<{ x: number; y: number }>;
   scale: Accessor<number>;
-  transform: Accessor<string>;
+  style: Accessor<JSX.CSSProperties>;
   active: Accessor<boolean>;
-  setActive: (active: boolean) => void;
 }
 
 const RegionContext = createContext<Transform>();
@@ -81,15 +81,9 @@ export function Region(props: {
         width={size().width}
         height={size().height}
       />
-      <RegionContext.Provider value={{ ...move }}>
+      <RegionContext.Provider value={move}>
         <div class="region-toolbar">{props.toolbar}</div>
-        <div
-          class="region-content"
-          style={{
-            "transform-origin": move.transformOrigin(),
-            transform: move.transform(),
-          }}
-        >
+        <div class="region-content" style={move.style()}>
           {props.children}
         </div>
         <div class="region-footer">
@@ -155,10 +149,12 @@ function createMovement() {
   const [origin, setOrigin] = createSignal({ x: 0, y: 0 });
   const [scale, setScale] = createSignal(1);
 
-  const transformOrigin = createMemo(() => `${origin().x}px ${origin().y}px`);
-  const transform = createMemo(() => {
+  const style = createMemo(() => {
     const { x, y } = translate();
-    return `translate(${x}px, ${y}px) scale(${scale()})`;
+    return {
+      "transform-origin": `${origin().x}px ${origin().y}px`,
+      transform: `scale(${scale()}), translate(${x}px, ${y}px)`,
+    } satisfies JSX.CSSProperties;
   });
 
   // pan
@@ -232,8 +228,7 @@ function createMovement() {
   return {
     translate,
     scale,
-    transformOrigin,
-    transform,
+    style,
     active,
     setActive,
     onMouseDown,
