@@ -22,7 +22,15 @@ function TextureRipper() {
   const { isDragOver, onDrop, onDragEnter, onDragOver, onDragLeave } =
     createDnd(setFile);
 
+  const [dragging, setDragging] = createSignal(false);
   const [width, setWidth] = createSignal(50);
+
+  function onMouseMove(e: MouseEvent) {
+    if (dragging()) {
+      const width = (e.clientX / window.innerWidth) * 100;
+      setWidth(width);
+    }
+  }
 
   return (
     <div
@@ -31,12 +39,22 @@ function TextureRipper() {
       onDragEnter={onDragEnter}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
+      onMouseMove={onMouseMove}
     >
       <Show when={store.blob}>
         <Region toolbar={<EditorToolbar />} width={width()}>
           <Editor />
         </Region>
-        <ResizeBorder />
+
+        <div
+          class="region-border"
+          onMouseDown={() => setDragging(true)}
+          onMouseUp={() => setDragging(false)}
+          onDblClick={() => setWidth(50)}
+        >
+          <div class="region-border-handle" />
+        </div>
+
         <Region toolbar={<TextureToolbar />} width={100 - width()}>
           <Texture />
         </Region>
@@ -44,14 +62,6 @@ function TextureRipper() {
       <Show when={isDragOver()}>
         <div class="image-drop">Drop image here</div>
       </Show>
-    </div>
-  );
-}
-
-function ResizeBorder() {
-  return (
-    <div class="region-border">
-      <div class="region-border-handle" />
     </div>
   );
 }
