@@ -188,7 +188,8 @@ function createMovement() {
 
   function getScale(event: WheelEvent) {
     const dy = event.deltaY;
-    const delta = Math.sign(dy) * Math.min(80, Math.abs(dy));
+    const amount = Math.min(80, Math.abs(dy));
+    const delta = Math.sign(dy) * amount;
     const newScale = scale() * (1 - delta / 800);
     return newScale;
   }
