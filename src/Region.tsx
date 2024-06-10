@@ -214,20 +214,12 @@ function createMovement() {
     setTranslate({ x: 0, y: 0 });
   }
 
+  // prettier-ignore
   return {
-    translate,
-    scale,
-    style,
-    active,
-    setActive,
-    onMouseDown,
-    onMouseUp,
-    onMouseMove,
-    onMouseLeave,
-    onMouseWheel,
-    onScroll,
-    onKeyDown,
-    onKeyUp,
-    resetView,
+    translate, scale, style, active,
+    setActive, resetView,
+    onMouseDown, onMouseUp, onMouseMove, onMouseLeave,
+    onMouseWheel, onScroll,
+    onKeyDown, onKeyUp,
   };
 }
