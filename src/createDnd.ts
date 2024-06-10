@@ -10,6 +10,7 @@ export function createDnd(setFile: (blob: Blob) => void) {
     if (file && file.type.startsWith("image/")) {
       setFile(file);
       setIsDraggedOver(false);
+      setCounter(0);
     }
   }
 
