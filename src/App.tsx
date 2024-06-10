@@ -1,7 +1,8 @@
-import { Show } from "solid-js";
+import { Show, createSignal } from "solid-js";
 import "./App.css";
-import { Editor } from "./Editor";
-import { Texture } from "./Texture";
+import { Editor, EditorToolbar } from "./Editor";
+import { Region } from "./Region";
+import { Texture, TextureToolbar } from "./Texture";
 import { createDnd } from "./createDnd";
 import { AppStoreProvider, useAppStore } from "./store";
 
@@ -21,6 +22,8 @@ function TextureRipper() {
   const { isDragOver, onDrop, onDragEnter, onDragOver, onDragLeave } =
     createDnd(setFile);
 
+  const [width, setWidth] = createSignal(50);
+
   return (
     <div
       class="app"
@@ -30,9 +33,13 @@ function TextureRipper() {
       onDragLeave={onDragLeave}
     >
       <Show when={store.blob}>
-        <Editor />
+        <Region toolbar={<EditorToolbar />} width={width()}>
+          <Editor />
+        </Region>
         <ResizeBorder />
-        <Texture />
+        <Region toolbar={<TextureToolbar />} width={100 - width()}>
+          <Texture />
+        </Region>
       </Show>
       <Show when={isDragOver()}>
         <div class="image-drop">Drop image here</div>

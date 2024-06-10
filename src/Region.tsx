@@ -32,7 +32,11 @@ export function useRegionContext() {
   return value!;
 }
 
-export function Region(props: { children: JSXElement; toolbar?: JSXElement }) {
+export function Region(props: {
+  children: JSXElement;
+  toolbar?: JSXElement;
+  width: number;
+}) {
   const {
     x,
     y,
@@ -74,6 +78,7 @@ export function Region(props: { children: JSXElement; toolbar?: JSXElement }) {
     <div
       class="region"
       ref={setParent}
+      style={{ width: `${props.width}%` }}
       onMouseEnter={onMouseEnter}
       onMouseUp={onMouseUp}
       onMouseDown={onMouseDown}

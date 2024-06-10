@@ -1,5 +1,4 @@
 import { For } from "solid-js";
-import { Region } from "./Region";
 import "./Texture.css";
 import { useAppStore } from "./store";
 import { TextureStore } from "./store/texture";
@@ -8,24 +7,22 @@ export function Texture() {
   const [store] = useAppStore().texture;
 
   return (
-    <Region toolbar={<Toolbar />}>
-      <div class="texture">
-        <For each={store.urls}>
-          {(url, i) => (
-            <img
-              src={url}
-              class="texture-rect"
-              style={{ transform: store.transform[i()] }}
-              onMouseDown={(e) => e.preventDefault()}
-            />
-          )}
-        </For>
-      </div>
-    </Region>
+    <div class="texture">
+      <For each={store.urls}>
+        {(url, i) => (
+          <img
+            src={url}
+            class="texture-rect"
+            style={{ transform: store.transform[i()] }}
+            onMouseDown={(e) => e.preventDefault()}
+          />
+        )}
+      </For>
+    </div>
   );
 }
 
-function Toolbar() {
+export function TextureToolbar() {
   const [store] = useAppStore().texture;
 
   return (

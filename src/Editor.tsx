@@ -1,7 +1,7 @@
 import { createMemo, createSignal, For, onMount, Show } from "solid-js";
 import "./Editor.css";
 import { Header } from "./Header";
-import { Region, useRegionContext } from "./Region";
+import { useRegionContext } from "./Region";
 import { useAppStore } from "./store";
 import { type Point as PointId, type Quad } from "./store/editor";
 import { v } from "./vector";
@@ -13,18 +13,16 @@ export function Editor() {
   const [imageRef, setImageRef] = createSignal<HTMLImageElement>();
 
   return (
-    <Region toolbar={<Toolbar />}>
-      <div class="editor-canvas">
-        <ImageBackground src={store.url} onLoadRef={setImageRef} />
-        <Show when={imageRef()}>
-          <DrawingBoard imageRef={imageRef()!} />
-        </Show>
-      </div>
-    </Region>
+    <div class="editor-canvas">
+      <ImageBackground src={store.url} onLoadRef={setImageRef} />
+      <Show when={imageRef()}>
+        <DrawingBoard imageRef={imageRef()!} />
+      </Show>
+    </div>
   );
 }
 
-function Toolbar() {
+export function EditorToolbar() {
   const [store] = useAppStore().file;
   const width = () => store.image.naturalWidth;
   const height = () => store.image.naturalHeight;
