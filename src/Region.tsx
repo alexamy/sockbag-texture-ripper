@@ -140,7 +140,7 @@ function GridBackground(props: {
 
 function createMovement() {
   const [active, setActive] = createSignal(false);
-  const [current, setCurrent] = createSignal({ x: 0, y: 0 });
+  const [previous, setPrevious] = createSignal({ x: 0, y: 0 });
 
   const [translate, setTranslate] = createSignal({ x: 0, y: 0 });
   const [origin, setOrigin] = createSignal({ x: 0, y: 0 });
@@ -160,17 +160,18 @@ function createMovement() {
   }
 
   function onMouseMove(event: MouseEvent) {
-    const previous = { ...current() };
-    setCurrent({ x: event.clientX, y: event.clientY });
+    const current = { x: event.clientX, y: event.clientY };
 
     if (active()) {
-      const { x, y } = translate();
       const delta = {
-        x: current().x - previous.x,
-        y: current().y - previous.y,
+        x: current.x - previous().x,
+        y: current.y - previous().y,
       };
+      const { x, y } = translate();
       setTranslate({ x: x + delta.x, y: y + delta.y });
     }
+
+    setPrevious(current);
   }
 
   // zoom
