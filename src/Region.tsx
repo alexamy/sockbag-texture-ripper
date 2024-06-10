@@ -156,10 +156,6 @@ function createMovement() {
     } satisfies JSX.CSSProperties;
   });
 
-  createEffect(() => {
-    console.log(style());
-  });
-
   // pan
   function onMouseDown(event: MouseEvent) {
     setStartPoint({ x: event.clientX, y: event.clientY });
