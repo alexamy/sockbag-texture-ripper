@@ -86,7 +86,7 @@ export function Region(props: {
         <div
           class="region-content"
           style={{
-            "transform-origin": move.origin(),
+            "transform-origin": move.transformOrigin(),
             transform: move.transform(),
           }}
         >
@@ -151,11 +151,9 @@ function createMovement() {
   const [active, setActive] = createSignal(false);
   const [position, setPosition] = createSignal({ x: 0, y: 0 });
   const [scale, setScale] = createSignal(1);
+  const [origin, setOrigin] = createSignal({ x: 0, y: 0 });
 
-  const [ox, setOx] = createSignal(100);
-  const [oy, setOy] = createSignal(100);
-
-  const origin = createMemo(() => `${ox()}px ${oy()}px`);
+  const transformOrigin = createMemo(() => `${origin().x}px ${origin().y}px`);
   const transform = createMemo(
     () => `translate(${position().x}px, ${position().y}px) scale(${scale()})`
   );
@@ -214,8 +212,8 @@ function createMovement() {
     e.preventDefault();
     if (e.key === " ") {
       setActive(true);
-      setOx(startPoint()?.x ?? 0);
-      setOy(startPoint()?.y ?? 0);
+      const { x, y } = startPoint()!;
+      setOrigin({ x, y });
     }
   }
 
@@ -235,7 +233,7 @@ function createMovement() {
   return {
     position,
     scale,
-    origin,
+    transformOrigin,
     transform,
     active,
     setActive,
