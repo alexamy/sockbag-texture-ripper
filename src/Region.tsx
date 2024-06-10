@@ -66,8 +66,6 @@ export function Region(props: {
       ref={setParent}
       style={{ width: `${props.width}%` }}
       onMouseEnter={onMouseEnter}
-      onMouseUp={move.onMouseUp}
-      onMouseDown={move.onMouseDown}
       onMouseMove={move.onMouseMove}
       onMouseLeave={move.onMouseLeave}
       onWheel={move.onMouseWheel}
@@ -142,7 +140,8 @@ function GridBackground(props: {
 
 function createMovement() {
   const [active, setActive] = createSignal(false);
-  const [startPoint, setStartPoint] = createSignal({ x: 0, y: 0 });
+  const [current, setCurrent] = createSignal({ x: 0, y: 0 });
+  const [offset, setOffset] = createSignal({ x: 0, y: 0 });
 
   const [translate, setTranslate] = createSignal({ x: 0, y: 0 });
   const [origin, setOrigin] = createSignal({ x: 0, y: 0 });
@@ -157,13 +156,25 @@ function createMovement() {
   });
 
   // pan
-  function onMouseDown(event: MouseEvent) {}
+  function onMouseLeave(event: MouseEvent) {
+    setActive(false);
+  }
 
-  function onMouseUp(event: MouseEvent) {}
+  function onMouseMove(event: MouseEvent) {
+    if (active()) {
+      const delta = getDelta();
+      const { x, y } = translate();
+      console.log(current(), offset(), delta);
+      setTranslate({ x: x + delta.x, y: y + delta.y });
+    }
+    setCurrent({ x: event.clientX, y: event.clientY });
+  }
 
-  function onMouseLeave(event: MouseEvent) {}
-
-  function onMouseMove(event: MouseEvent) {}
+  function getDelta() {
+    const x = current().x - offset().x;
+    const y = current().y - offset().y;
+    return { x, y };
+  }
 
   // zoom
   function onScroll(event: Event) {
@@ -177,6 +188,13 @@ function createMovement() {
     event.preventDefault();
     event.stopPropagation();
     setScale(getScale(event));
+  }
+
+  function getScale(event: WheelEvent) {
+    const dy = event.deltaY;
+    const delta = Math.sign(dy) * Math.min(80, Math.abs(dy));
+    const newScale = scale() * (1 - delta / 800);
+    return newScale;
   }
 
   // activation
@@ -194,20 +212,7 @@ function createMovement() {
     }
   }
 
-  // helpers
-  function getDelta(event: MouseEvent) {
-    const x = event.clientX - startPoint().x;
-    const y = event.clientY - startPoint().y;
-    return { x, y };
-  }
-
-  function getScale(event: WheelEvent) {
-    const dy = event.deltaY;
-    const delta = Math.sign(dy) * Math.min(80, Math.abs(dy));
-    const newScale = scale() * (1 - delta / 800);
-    return newScale;
-  }
-
+  // api
   function resetView() {
     setScale(1);
     setOrigin({ x: 0, y: 0 });
@@ -218,7 +223,7 @@ function createMovement() {
   return {
     translate, scale, style, active,
     setActive, resetView,
-    onMouseDown, onMouseUp, onMouseMove, onMouseLeave,
+    onMouseMove, onMouseLeave,
     onMouseWheel, onScroll,
     onKeyDown, onKeyUp,
   };
