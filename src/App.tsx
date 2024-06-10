@@ -5,7 +5,9 @@ import { Texture } from "./Texture";
 import { createDnd } from "./createDnd";
 import { AppStoreProvider, useAppStore } from "./store";
 
-export function App() {
+export default App;
+
+function App() {
   return (
     <AppStoreProvider>
       <TextureRipper />
@@ -13,7 +15,7 @@ export function App() {
   );
 }
 
-export function TextureRipper() {
+function TextureRipper() {
   const [store, { setFile }] = useAppStore().file;
   debugLoadFile().then(setFile);
   const { isDragOver, onDrop, onDragEnter, onDragOver, onDragLeave } =
