@@ -141,7 +141,6 @@ function GridBackground(props: {
 }
 
 function createMovement() {
-  // transform
   const [active, setActive] = createSignal(false);
   const [startPoint, setStartPoint] = createSignal<{ x: number; y: number }>();
 
@@ -152,9 +151,13 @@ function createMovement() {
   const style = createMemo(() => {
     const { x, y } = translate();
     return {
-      "transform-origin": `${origin().x}px ${origin().y}px`,
-      transform: `scale(${scale()}), translate(${x}px, ${y}px)`,
+      // "transform-origin": `${origin().x}px ${origin().y}px`,
+      transform: `translate(${x}px, ${y}px) scale(${scale()}) `,
     } satisfies JSX.CSSProperties;
+  });
+
+  createEffect(() => {
+    console.log(style());
   });
 
   // pan
