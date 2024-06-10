@@ -42,7 +42,11 @@ function TextureRipper() {
 }
 
 function ResizeBorder() {
-  return <div class="regions-border" />;
+  return (
+    <div class="region-border">
+      <div class="region-border-handle" />
+    </div>
+  );
 }
 
 async function debugLoadFile() {
