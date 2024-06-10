@@ -12,6 +12,7 @@ import {
   useContext,
 } from "solid-js";
 import "./Region.css";
+import { v } from "./vector";
 
 interface Transform {
   translate: Accessor<{ x: number; y: number }>;
@@ -163,12 +164,9 @@ function createMovement() {
     const current = { x: event.clientX, y: event.clientY };
 
     if (active()) {
-      const delta = {
-        x: current.x - previous().x,
-        y: current.y - previous().y,
-      };
-      const { x, y } = translate();
-      setTranslate({ x: x + delta.x, y: y + delta.y });
+      const delta = v.subtract(current, previous());
+      const next = v.add(translate(), delta);
+      setTranslate(next);
     }
 
     setPrevious(current);
