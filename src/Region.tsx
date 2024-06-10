@@ -13,7 +13,7 @@ import {
 import "./Region.css";
 
 interface Transform {
-  position: Accessor<{ x: number; y: number }>;
+  translate: Accessor<{ x: number; y: number }>;
   scale: Accessor<number>;
   transform: Accessor<string>;
   active: Accessor<boolean>;
@@ -149,20 +149,19 @@ function GridBackground(props: {
 function createMovement() {
   // transform
   const [active, setActive] = createSignal(false);
-  const [position, setPosition] = createSignal({ x: 0, y: 0 });
-  const [scale, setScale] = createSignal(1);
-  const [origin, setOrigin] = createSignal({ x: 0, y: 0 });
-
-  const transformOrigin = createMemo(() => `${origin().x}px ${origin().y}px`);
-  const transform = createMemo(
-    () => `translate(${position().x}px, ${position().y}px) scale(${scale()})`
-  );
-
-  // TODO x and y must respect origin
-
-  // pan
   const [startPoint, setStartPoint] = createSignal<{ x: number; y: number }>();
 
+  const [translate, setTranslate] = createSignal({ x: 0, y: 0 });
+  const [origin, setOrigin] = createSignal({ x: 0, y: 0 });
+  const [scale, setScale] = createSignal(1);
+
+  const transformOrigin = createMemo(() => `${origin().x}px ${origin().y}px`);
+  const transform = createMemo(() => {
+    const { x, y } = translate();
+    return `translate(${x}px, ${y}px) scale(${scale()})`;
+  });
+
+  // pan
   function onMouseDown(event: MouseEvent) {
     setStartPoint({ x: event.clientX, y: event.clientY });
   }
@@ -184,8 +183,8 @@ function createMovement() {
     if (!active()) return;
     const dx = event.clientX - startPoint()!.x;
     const dy = event.clientY - startPoint()!.y;
-    const { x, y } = position();
-    setPosition({ x: x + dx, y: y + dy });
+    const { x, y } = translate();
+    setTranslate({ x: x + dx, y: y + dy });
     setStartPoint({ x: event.clientX, y: event.clientY });
   }
 
@@ -226,12 +225,12 @@ function createMovement() {
 
   // helpers
   function resetView() {
-    setPosition({ x: 0, y: 0 });
+    setTranslate({ x: 0, y: 0 });
     setScale(1);
   }
 
   return {
-    position,
+    translate,
     scale,
     transformOrigin,
     transform,
