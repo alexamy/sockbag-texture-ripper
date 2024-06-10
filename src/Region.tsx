@@ -5,6 +5,7 @@ import {
   createEffect,
   createMemo,
   createSignal,
+  on,
   onCleanup,
   onMount,
   useContext,
@@ -36,12 +37,14 @@ export function Region(props: {
   children: JSXElement;
   toolbar?: JSXElement;
   width: number;
+  resetTrigger: unknown;
 }) {
   const move = createMovement();
   const [parent, setParent] = createSignal<HTMLElement>();
   const [size, setSize] = createSignal({ width: 0, height: 0 });
 
   onMount(updateSize);
+  createEffect(on(() => props.resetTrigger, move.resetView));
 
   createEffect(() => {
     const observer = new ResizeObserver(updateSize);

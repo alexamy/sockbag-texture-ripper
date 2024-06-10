@@ -33,7 +33,11 @@ function TextureRipper() {
       onMouseMove={resize.onMouseMove}
     >
       <Show when={store.blob}>
-        <Region toolbar={<EditorToolbar />} width={resize.left()}>
+        <Region
+          toolbar={<EditorToolbar />}
+          width={resize.left()}
+          resetTrigger={store.blob}
+        >
           <Editor />
         </Region>
 
@@ -46,7 +50,11 @@ function TextureRipper() {
           <div class="region-border-handle" />
         </div>
 
-        <Region toolbar={<TextureToolbar />} width={resize.right()}>
+        <Region
+          toolbar={<TextureToolbar />}
+          width={resize.right()}
+          resetTrigger={store.blob}
+        >
           <Texture />
         </Region>
       </Show>
