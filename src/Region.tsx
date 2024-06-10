@@ -151,7 +151,7 @@ function createMovement() {
   const style = createMemo(() => {
     const { x, y } = translate();
     return {
-      // "transform-origin": `${origin().x}px ${origin().y}px`,
+      "transform-origin": `${origin().x}px ${origin().y}px`,
       transform: `translate(${x}px, ${y}px) scale(${scale()}) `,
     } satisfies JSX.CSSProperties;
   });
@@ -208,24 +208,21 @@ function createMovement() {
   // activation
   function onKeyDown(e: KeyboardEvent) {
     e.preventDefault();
-    if (e.key === " ") {
-      setActive(true);
-      const { x, y } = startPoint()!;
-      setOrigin({ x, y });
-    }
+    if (e.key !== " ") return;
+    setActive(true);
   }
 
   function onKeyUp(e: KeyboardEvent) {
     e.preventDefault();
-    if (e.key === " ") {
-      setActive(false);
-    }
+    if (e.key !== " ") return;
+    setActive(false);
   }
 
   // helpers
   function resetView() {
-    setTranslate({ x: 0, y: 0 });
     setScale(1);
+    setOrigin({ x: 0, y: 0 });
+    setTranslate({ x: 0, y: 0 });
   }
 
   return {
