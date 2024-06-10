@@ -220,7 +220,8 @@ function createMovement() {
 
   // prettier-ignore
   return {
-    translate, scale, style, active,
+    active,
+    translate, origin, scale, style,
     setActive, resetView,
     onMouseMove, onMouseLeave,
     onMouseWheel, onScroll,
