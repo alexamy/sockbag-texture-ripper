@@ -22,15 +22,7 @@ function TextureRipper() {
   const { isDragOver, onDrop, onDragEnter, onDragOver, onDragLeave } =
     createDnd(setFile);
 
-  const [dragging, setDragging] = createSignal(false);
-  const [width, setWidth] = createSignal(50);
-
-  function onMouseMove(e: MouseEvent) {
-    if (dragging()) {
-      const width = (e.clientX / window.innerWidth) * 100;
-      setWidth(width);
-    }
-  }
+  const resize = createResize();
 
   return (
     <div
@@ -39,23 +31,23 @@ function TextureRipper() {
       onDragEnter={onDragEnter}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
-      onMouseMove={onMouseMove}
+      onMouseMove={resize.onMouseMove}
     >
       <Show when={store.blob}>
-        <Region toolbar={<EditorToolbar />} width={width()}>
+        <Region toolbar={<EditorToolbar />} width={resize.left()}>
           <Editor />
         </Region>
 
         <div
           class="region-border"
-          onMouseDown={() => setDragging(true)}
-          onMouseUp={() => setDragging(false)}
-          onDblClick={() => setWidth(50)}
+          onMouseDown={resize.activate}
+          onMouseUp={resize.deactivate}
+          onDblClick={resize.reset}
         >
           <div class="region-border-handle" />
         </div>
 
-        <Region toolbar={<TextureToolbar />} width={100 - width()}>
+        <Region toolbar={<TextureToolbar />} width={resize.right()}>
           <Texture />
         </Region>
       </Show>
@@ -65,6 +57,34 @@ function TextureRipper() {
       </Show>
     </div>
   );
+}
+
+function createResize() {
+  const [dragging, setDragging] = createSignal(false);
+  const [width, setWidth] = createSignal(50);
+  const left = () => width();
+  const right = () => 100 - width();
+
+  function onMouseMove(e: MouseEvent) {
+    if (dragging()) {
+      const width = (e.clientX / window.innerWidth) * 100;
+      setWidth(width);
+    }
+  }
+
+  function reset() {
+    setWidth(50);
+  }
+
+  function activate() {
+    setDragging(true);
+  }
+
+  function deactivate() {
+    setDragging(false);
+  }
+
+  return { width, left, right, onMouseMove, reset, activate, deactivate };
 }
 
 async function debugLoadFile() {
