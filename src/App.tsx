@@ -59,8 +59,9 @@ function TextureRipper() {
           <Texture />
         </Region>
       </Show>
+
       <Show when={isDragOver()}>
-        <div class="image-drop">Drop image here</div>
+        <div class="image-drop">Drop image here to upload</div>
       </Show>
     </div>
   );
