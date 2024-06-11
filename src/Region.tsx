@@ -169,11 +169,11 @@ function createMovement() {
       setTranslate(next);
     }
 
-    setCurrent(mousePosition);
-    updateOrigin();
+    updatePositions(mousePosition);
   }
 
-  function updateOrigin() {
+  function updatePositions(mousePosition: { x: number; y: number }) {
+    setCurrent(mousePosition);
     setOrigin(current());
   }
 
