@@ -144,7 +144,7 @@ function createMovement() {
   const [previous, setPrevious] = createSignal({ x: 0, y: 0 });
 
   const [translate, setTranslate] = createSignal({ x: 0, y: 0 });
-  const [origin, setOrigin] = createSignal({ x: 0, y: 0 });
+  const [origin, setOrigin] = createSignal({ x: 1000, y: 500 });
   const [scale, setScale] = createSignal(1);
 
   const style = createMemo(() => {
@@ -170,6 +170,11 @@ function createMovement() {
     }
 
     setPrevious(current);
+    updateOrigin();
+  }
+
+  function updateOrigin() {
+    setOrigin(previous());
   }
 
   // zoom
