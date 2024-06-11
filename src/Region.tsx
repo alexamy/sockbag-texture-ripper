@@ -144,8 +144,8 @@ function createMovement() {
   const [current, setCurrent] = createSignal({ x: 0, y: 0 });
 
   const [translate, setTranslate] = createSignal({ x: 0, y: 0 });
-  const [origin, setOrigin] = createSignal({ x: 1000, y: 500 });
-  const [scale, setScale] = createSignal(1);
+  const [origin, setOrigin] = createSignal({ x: 0, y: 0 });
+  const [scale, setScale] = createSignal(3);
 
   const style = createMemo(() => {
     const { x, y } = translate();
@@ -164,13 +164,16 @@ function createMovement() {
     const mousePosition = { x: event.clientX, y: event.clientY };
     const delta = v.subtract(mousePosition, current());
 
-    if (active()) {
-      const next = v.add(translate(), delta);
-      setTranslate(next);
-    }
+    // if (active()) {
+    //   const next = v.subtract(v.add(translate(), delta), mousePosition);
+    //   setTranslate(next);
+    // }
 
     setCurrent(mousePosition);
     setOrigin(mousePosition);
+
+    const amount = v.scale(mousePosition, scale() - 1);
+    setTranslate(amount);
   }
 
   // zoom
@@ -214,9 +217,9 @@ function createMovement() {
 
   // api
   function resetView() {
-    setScale(1);
-    setOrigin({ x: 0, y: 0 });
-    setTranslate({ x: 0, y: 0 });
+    // setScale(1);
+    // setOrigin({ x: 0, y: 0 });
+    // setTranslate({ x: 0, y: 0 });
   }
 
   // prettier-ignore
