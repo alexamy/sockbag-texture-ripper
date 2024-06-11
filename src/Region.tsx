@@ -166,8 +166,8 @@ function createMovement() {
     if (active()) {
       const delta = v.subtract(mousePosition, current());
       const next = v.add(translate(), delta);
+      const offset = v.scale(mousePosition, scale() - 1);
       setTranslate(next);
-      // const offset = v.scale(mousePosition, scale() - 1);
       // setOrigin(mousePosition);
     }
 
