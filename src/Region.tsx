@@ -141,7 +141,7 @@ function GridBackground(props: {
 
 function createMovement() {
   const [active, setActive] = createSignal(false);
-  const [previous, setPrevious] = createSignal({ x: 0, y: 0 });
+  const [current, setCurrent] = createSignal({ x: 0, y: 0 });
 
   const [translate, setTranslate] = createSignal({ x: 0, y: 0 });
   const [origin, setOrigin] = createSignal({ x: 1000, y: 500 });
@@ -161,20 +161,20 @@ function createMovement() {
   }
 
   function onMouseMove(event: MouseEvent) {
-    const current = { x: event.clientX, y: event.clientY };
+    const mousePosition = { x: event.clientX, y: event.clientY };
 
     if (active()) {
-      const delta = v.subtract(current, previous());
+      const delta = v.subtract(mousePosition, current());
       const next = v.add(translate(), delta);
       setTranslate(next);
     }
 
-    setPrevious(current);
+    setCurrent(mousePosition);
     updateOrigin();
   }
 
   function updateOrigin() {
-    setOrigin(previous());
+    setOrigin(current());
   }
 
   // zoom
