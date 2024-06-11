@@ -162,14 +162,13 @@ function createMovement() {
 
   function onMouseMove(event: MouseEvent) {
     const mousePosition = { x: event.clientX, y: event.clientY };
-    const delta = v.subtract(mousePosition, current());
 
     if (active()) {
-      // const next = v.subtract(v.add(translate(), delta), mousePosition);
-      // setTranslate(next);
-      const amount = v.scale(mousePosition, scale() - 1);
-      setOrigin(mousePosition);
-      setTranslate(amount);
+      const delta = v.subtract(mousePosition, current());
+      const next = v.add(translate(), delta);
+      setTranslate(next);
+      // const offset = v.scale(mousePosition, scale() - 1);
+      // setOrigin(mousePosition);
     }
 
     setCurrent(mousePosition);
