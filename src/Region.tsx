@@ -84,6 +84,7 @@ export function Region(props: {
         <div class="region-toolbar">{props.toolbar}</div>
         <div class="region-content" style={move.style()}>
           {props.children}
+          <DebugPoint point={move.origin()} />
         </div>
         <div class="region-footer">
           <button
@@ -96,6 +97,23 @@ export function Region(props: {
         </div>
       </RegionContext.Provider>
     </div>
+  );
+}
+
+function DebugPoint(props: { point: { x: number; y: number } }) {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "4px",
+        height: "4px",
+        "border-radius": "50%",
+        background: "violet",
+        translate: `${props.point.x}px ${props.point.y}px`,
+      }}
+    />
   );
 }
 
@@ -150,8 +168,7 @@ function createMovement() {
   const [offset, setOffset] = createSignal({ x: 0, y: 0 });
   // prettier-ignore
   createEffect(on([current, scale], ([current, scale]) => {
-    const offset = v.scale(current, scale - 1);
-    setOffset(offset);
+    setOffset(current);
     setOrigin(current);
   }));
 
