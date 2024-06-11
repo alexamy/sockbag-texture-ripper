@@ -145,12 +145,13 @@ function createMovement() {
 
   const [translate, setTranslate] = createSignal({ x: 0, y: 0 });
   const [origin, setOrigin] = createSignal({ x: 0, y: 0 });
-  const [scale, setScale] = createSignal(3);
+  const [scale, setScale] = createSignal(3); // TODO set 1
 
   const style = createMemo(() => {
     const { x, y } = translate();
     return {
       "transform-origin": `${origin().x}px ${origin().y}px`,
+      // TODO is order proper?
       transform: `translate(${x}px, ${y}px) scale(${scale()}) `,
     } satisfies JSX.CSSProperties;
   });
@@ -216,6 +217,7 @@ function createMovement() {
 
   // api
   function resetView() {
+    // TODO uncomment
     // setScale(1);
     // setOrigin({ x: 0, y: 0 });
     // setTranslate({ x: 0, y: 0 });
