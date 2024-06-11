@@ -145,14 +145,18 @@ function createMovement() {
 
   const [translate, setTranslate] = createSignal({ x: 0, y: 0 });
   const [origin, setOrigin] = createSignal({ x: 0, y: 0 });
+  const [offset, setOffset] = createSignal({ x: 0, y: 0 });
   const [scale, setScale] = createSignal(3); // TODO set 1
 
   const style = createMemo(() => {
-    const { x, y } = translate();
+    const move = `translate(${translate().x}px, ${translate().y}px)`;
+    const shift = `translate(${offset().x}px, ${offset().y}px)`;
+    const zoom = `scale(${scale()})`;
+    const transform = `${move} ${shift} ${zoom}`;
+
     return {
+      transform,
       "transform-origin": `${origin().x}px ${origin().y}px`,
-      // TODO is order proper?
-      transform: `translate(${x}px, ${y}px) scale(${scale()}) `,
     } satisfies JSX.CSSProperties;
   });
 
@@ -163,9 +167,6 @@ function createMovement() {
 
   function onMouseMove(event: MouseEvent) {
     const mousePosition = { x: event.clientX, y: event.clientY };
-    const offset = v.scale(mousePosition, scale() - 1);
-    setTranslate(offset);
-    setOrigin(mousePosition);
 
     if (active()) {
       const delta = v.subtract(mousePosition, current());
@@ -173,6 +174,9 @@ function createMovement() {
       setTranslate(next);
     }
 
+    const offset = v.scale(mousePosition, scale() - 1);
+    setOffset(offset);
+    setOrigin(mousePosition);
     setCurrent(mousePosition);
   }
 
