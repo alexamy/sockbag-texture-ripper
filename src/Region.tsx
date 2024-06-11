@@ -145,8 +145,15 @@ function createMovement() {
 
   const [translate, setTranslate] = createSignal({ x: 0, y: 0 });
   const [origin, setOrigin] = createSignal({ x: 0, y: 0 });
-  const [offset, setOffset] = createSignal({ x: 0, y: 0 });
   const [scale, setScale] = createSignal(3); // TODO set 1
+
+  const [offset, setOffset] = createSignal({ x: 0, y: 0 });
+  // prettier-ignore
+  createEffect(on([current, scale], ([current, scale]) => {
+    const offset = v.scale(current, scale - 1);
+    setOffset(offset);
+    setOrigin(current);
+  }));
 
   const style = createMemo(() => {
     const move = `translate(${translate().x}px, ${translate().y}px)`;
@@ -174,9 +181,6 @@ function createMovement() {
       setTranslate(next);
     }
 
-    const offset = v.scale(mousePosition, scale() - 1);
-    setOffset(offset);
-    setOrigin(mousePosition);
     setCurrent(mousePosition);
   }
 
