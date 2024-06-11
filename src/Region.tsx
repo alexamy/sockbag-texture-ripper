@@ -164,16 +164,15 @@ function createMovement() {
     const mousePosition = { x: event.clientX, y: event.clientY };
     const delta = v.subtract(mousePosition, current());
 
-    // if (active()) {
-    //   const next = v.subtract(v.add(translate(), delta), mousePosition);
-    //   setTranslate(next);
-    // }
+    if (active()) {
+      // const next = v.subtract(v.add(translate(), delta), mousePosition);
+      // setTranslate(next);
+      const amount = v.scale(mousePosition, scale() - 1);
+      setOrigin(mousePosition);
+      setTranslate(amount);
+    }
 
     setCurrent(mousePosition);
-    setOrigin(mousePosition);
-
-    const amount = v.scale(mousePosition, scale() - 1);
-    setTranslate(amount);
   }
 
   // zoom
