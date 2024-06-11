@@ -7,12 +7,13 @@ export function createRegionMovement() {
 
   const [translate, setTranslate] = createSignal({ x: 0, y: 0 });
   const [origin, setOrigin] = createSignal({ x: 0, y: 0 });
-  const [scale, setScale] = createSignal(3); // TODO set 1
+  const [scale, setScale] = createSignal(1);
 
   const [offset, setOffset] = createSignal({ x: 0, y: 0 });
   // prettier-ignore
   createEffect(on([current, scale], ([current, scale]) => {
-    setOffset(current);
+    const offset = v.scale(current, scale - 1);
+    setOffset(offset);
     setOrigin(current);
   }));
 
