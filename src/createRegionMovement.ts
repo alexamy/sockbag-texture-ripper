@@ -1,4 +1,4 @@
-import { createMemo, createSignal, type JSX } from "solid-js";
+import { createEffect, createMemo, createSignal, on, type JSX } from "solid-js";
 import { v } from "./vector";
 
 export function createRegionMovement() {
@@ -9,6 +9,16 @@ export function createRegionMovement() {
   const [translate, setTranslate] = createSignal({ x: 0, y: 0 });
   const [origin, setOrigin] = createSignal({ x: 0, y: 0 });
   const [scale, setScale] = createSignal(2);
+
+  // prettier-ignore
+  createEffect(on([current, scale], ([current, scale]) => {
+    const rect = ref()!.getBoundingClientRect();
+    const parent = { x: rect.left, y: rect.top };
+    const position = v.subtract(current, parent);
+    const scaled = v.scale(position, 1 / scale);
+    const rounded = v.map(scaled, Math.round);
+    setOrigin(rounded);
+  }));
 
   const style = createMemo(() => {
     const move = `translate(${translate().x}px, ${translate().y}px)`;
@@ -34,12 +44,6 @@ export function createRegionMovement() {
 
   function onMouseMove(event: MouseEvent) {
     const mousePosition = { x: event.clientX, y: event.clientY };
-    const rect = ref()!.getBoundingClientRect();
-    const position = v.subtract(mousePosition, {
-      x: Math.floor(rect.left),
-      y: Math.floor(rect.top),
-    });
-    const scaled = v.map(v.scale(position, 1 / scale()), Math.round);
 
     if (active()) {
       const delta = v.subtract(mousePosition, current());
@@ -47,7 +51,6 @@ export function createRegionMovement() {
       setTranslate(next);
     }
 
-    setOrigin(scaled);
     setCurrent(mousePosition);
   }
 
