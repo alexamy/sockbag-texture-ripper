@@ -2,6 +2,7 @@ import { createEffect, createMemo, createSignal, on, type JSX } from "solid-js";
 import { v } from "./vector";
 
 export function createRegionMovement() {
+  const [ref, setRef] = createSignal<HTMLElement>();
   const [active, setActive] = createSignal(false);
   const [current, setCurrent] = createSignal({ x: 0, y: 0 });
 
@@ -35,7 +36,11 @@ export function createRegionMovement() {
   }
 
   function onMouseMove(event: MouseEvent) {
-    const mousePosition = { x: event.clientX, y: event.clientY };
+    const rect = ref()!.getBoundingClientRect();
+    const mousePosition = {
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top,
+    };
 
     if (active()) {
       const delta = v.subtract(mousePosition, current());
@@ -95,6 +100,7 @@ export function createRegionMovement() {
 
   // prettier-ignore
   return {
+    setRef,
     active,
     translate, origin, scale, style,
     setActive, resetView,
