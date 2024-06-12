@@ -22,8 +22,8 @@ export function createRegionMovement() {
 
   const style = createMemo(() => {
     const scaled = v.scale(origin(), scale() - 1);
-    const move = `translate(${translate().x}px, ${translate().y}px)`;
     const shift = `translate(${scaled.x}px, ${scaled.y}px)`;
+    const move = `translate(${translate().x}px, ${translate().y}px)`;
     const zoom = `scale(${scale()})`;
 
     const transform = `${move} ${shift} ${zoom}`;
