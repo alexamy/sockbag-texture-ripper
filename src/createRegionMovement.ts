@@ -8,7 +8,7 @@ export function createRegionMovement() {
 
   const [translate, setTranslate] = createSignal({ x: 0, y: 0 });
   const [origin, setOrigin] = createSignal({ x: 0, y: 0 });
-  const [scale, setScale] = createSignal(1);
+  const [scale, setScale] = createSignal(2);
 
   const style = createMemo(() => {
     const move = `translate(${translate().x}px, ${translate().y}px)`;
@@ -87,10 +87,11 @@ export function createRegionMovement() {
   }
 
   // api
+  // TODO uncomment
   function resetView() {
-    setScale(1);
-    setOrigin({ x: 0, y: 0 });
-    setTranslate({ x: 0, y: 0 });
+    // setScale(1);
+    // setOrigin({ x: 0, y: 0 });
+    // setTranslate({ x: 0, y: 0 });
   }
 
   // prettier-ignore
