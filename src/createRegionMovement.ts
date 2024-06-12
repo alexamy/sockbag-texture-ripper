@@ -8,7 +8,7 @@ export function createRegionMovement() {
 
   const [translate, setTranslate] = createSignal({ x: 0, y: 0 });
   const [origin, setOrigin] = createSignal({ x: 0, y: 0 });
-  const [scale, setScale] = createSignal(2);
+  const [scale, setScale] = createSignal(3);
 
   // prettier-ignore
   createEffect(on([current, scale], ([current, scale]) => {
@@ -21,15 +21,13 @@ export function createRegionMovement() {
   }));
 
   const style = createMemo(() => {
+    const scaled = v.scale(origin(), scale() - 1);
     const move = `translate(${translate().x}px, ${translate().y}px)`;
-    const shift = `translate(${origin().x}px, ${origin().y}px)`;
+    const shift = `translate(${scaled.x}px, ${scaled.y}px)`;
     const zoom = `scale(${scale()})`;
 
-    // TODO add shift
-    const transform = `${move} ${zoom}`;
-
-    // TODO uncomment
-    const transformOrigin = ""; //`${origin().x}px ${origin().y}px`;
+    const transform = `${move} ${shift} ${zoom}`;
+    const transformOrigin = `${origin().x}px ${origin().y}px`;
 
     return {
       transform,
@@ -94,11 +92,10 @@ export function createRegionMovement() {
   }
 
   // api
-  // TODO uncomment
   function resetView() {
-    // setScale(1);
-    // setOrigin({ x: 0, y: 0 });
-    // setTranslate({ x: 0, y: 0 });
+    setScale(1);
+    setOrigin({ x: 0, y: 0 });
+    setTranslate({ x: 0, y: 0 });
   }
 
   // prettier-ignore
