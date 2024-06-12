@@ -87,7 +87,7 @@ export function createRegionMovement() {
   // prettier-ignore
   return {
     active,
-    translate, scale, style,
+    current, translate, scale, style,
     setActive, resetView,
     onMouseMove, onMouseLeave,
     onMouseWheel, onScroll,

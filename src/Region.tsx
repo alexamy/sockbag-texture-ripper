@@ -15,6 +15,7 @@ import "./Region.css";
 import { createRegionMovement } from "./createRegionMovement";
 
 interface Transform {
+  current: Accessor<{ x: number; y: number }>;
   translate: Accessor<{ x: number; y: number }>;
   scale: Accessor<number>;
   style: Accessor<JSX.CSSProperties>;
