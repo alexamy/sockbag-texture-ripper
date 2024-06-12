@@ -1,5 +1,6 @@
 import {
   Accessor,
+  JSX,
   JSXElement,
   createContext,
   createEffect,
@@ -11,14 +12,13 @@ import {
   useContext,
 } from "solid-js";
 import "./Region.css";
+import { createRegionMovement } from "./createRegionMovement";
 
 interface Transform {
-  x: Accessor<number>;
-  y: Accessor<number>;
+  translate: Accessor<{ x: number; y: number }>;
   scale: Accessor<number>;
-  transform: Accessor<string>;
+  style: Accessor<JSX.CSSProperties>;
   active: Accessor<boolean>;
-  setActive: (active: boolean) => void;
 }
 
 const RegionContext = createContext<Transform>();
@@ -39,7 +39,7 @@ export function Region(props: {
   width: number;
   resetTrigger: unknown;
 }) {
-  const move = createMovement();
+  const move = createRegionMovement();
   const [parent, setParent] = createSignal<HTMLElement>();
   const [size, setSize] = createSignal({ width: 0, height: 0 });
 
@@ -67,8 +67,6 @@ export function Region(props: {
       ref={setParent}
       style={{ width: `${props.width}%` }}
       onMouseEnter={onMouseEnter}
-      onMouseUp={move.onMouseUp}
-      onMouseDown={move.onMouseDown}
       onMouseMove={move.onMouseMove}
       onMouseLeave={move.onMouseLeave}
       onWheel={move.onMouseWheel}
@@ -82,9 +80,9 @@ export function Region(props: {
         width={size().width}
         height={size().height}
       />
-      <RegionContext.Provider value={{ ...move }}>
+      <RegionContext.Provider value={move}>
         <div class="region-toolbar">{props.toolbar}</div>
-        <div class="region-content" style={{ transform: move.transform() }}>
+        <div class="region-content" style={move.style()}>
           {props.children}
         </div>
         <div class="region-footer">
@@ -141,100 +139,20 @@ function GridBackground(props: {
   );
 }
 
-function createMovement() {
-  // transform
-  const [active, setActive] = createSignal(false);
-  const [x, setX] = createSignal(0);
-  const [y, setY] = createSignal(0);
-  const [scale, setScale] = createSignal(1);
-  const transform = createMemo(
-    () => `translate(${x()}px, ${y()}px) scale(${scale()})`
+function DebugPoint(props: { point: { x: number; y: number } }) {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "8px",
+        height: "8px",
+        border: "1px solid black",
+        "border-radius": "50%",
+        background: "violet",
+        translate: `${props.point.x}px ${props.point.y}px`,
+      }}
+    />
   );
-
-  // pan
-  const [startPoint, setStartPoint] = createSignal<{ x: number; y: number }>();
-
-  function onMouseDown(event: MouseEvent) {
-    setStartPoint({ x: event.clientX, y: event.clientY });
-  }
-
-  function onMouseUp(_event: MouseEvent) {
-    setStartPoint(undefined);
-  }
-
-  function onMouseLeave(_event: MouseEvent) {
-    setStartPoint(undefined);
-    setActive(false);
-  }
-
-  function onMouseMove(event: MouseEvent) {
-    if (!startPoint() || !active()) {
-      setStartPoint({ x: event.clientX, y: event.clientY });
-    }
-
-    if (!active()) return;
-    const dx = event.clientX - startPoint()!.x;
-    const dy = event.clientY - startPoint()!.y;
-    setX(x() + dx);
-    setY(y() + dy);
-    setStartPoint({ x: event.clientX, y: event.clientY });
-  }
-
-  // zoom
-  function onScroll(event: Event) {
-    if (!active()) return;
-    event.preventDefault();
-    event.stopPropagation();
-  }
-
-  function onMouseWheel(event: WheelEvent) {
-    if (!active()) return;
-    event.preventDefault();
-    event.stopPropagation();
-
-    const delta =
-      Math.sign(event.deltaY) * Math.min(80, Math.abs(event.deltaY));
-    const newScale = scale() * (1 - delta / 800);
-    setScale(newScale);
-  }
-
-  // activation
-  function onKeyDown(e: KeyboardEvent) {
-    e.preventDefault();
-    if (e.key === " ") {
-      setActive(true);
-    }
-  }
-
-  function onKeyUp(e: KeyboardEvent) {
-    e.preventDefault();
-    if (e.key === " ") {
-      setActive(false);
-    }
-  }
-
-  // helpers
-  function resetView() {
-    setX(0);
-    setY(0);
-    setScale(1);
-  }
-
-  return {
-    x,
-    y,
-    scale,
-    transform,
-    active,
-    setActive,
-    onMouseDown,
-    onMouseUp,
-    onMouseMove,
-    onMouseLeave,
-    onMouseWheel,
-    onScroll,
-    onKeyDown,
-    onKeyUp,
-    resetView,
-  };
 }
