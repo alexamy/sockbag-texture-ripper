@@ -84,7 +84,7 @@ export function Region(props: {
         <div class="region-toolbar">{props.toolbar}</div>
         <div class="region-content" ref={move.setRef} style={move.style()}>
           {props.children}
-          <DebugPoint point={move.origin()} />
+          <DebugPoint point={move.current()} />
         </div>
         <div class="region-footer">
           <button

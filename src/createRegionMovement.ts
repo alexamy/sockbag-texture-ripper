@@ -4,6 +4,7 @@ import { v } from "./vector";
 export function createRegionMovement() {
   const [ref, setRef] = createSignal<HTMLElement>();
   const [active, setActive] = createSignal(false);
+  const [client, setClient] = createSignal({ x: 0, y: 0 });
   const [current, setCurrent] = createSignal({ x: 0, y: 0 });
 
   const [translate, setTranslate] = createSignal({ x: 0, y: 0 });
@@ -12,10 +13,10 @@ export function createRegionMovement() {
 
   const [offset, setOffset] = createSignal({ x: 0, y: 0 });
   // prettier-ignore
-  createEffect(on([current, scale], ([current, scale]) => {
+  createEffect(on([client, scale], ([current, scale]) => {
     const offset = v.scale(current, scale - 1);
-    setOffset(offset);
-    setOrigin(current);
+    // setOffset(offset);
+    // setOrigin(current);
   }));
 
   const style = createMemo(() => {
@@ -37,17 +38,19 @@ export function createRegionMovement() {
 
   function onMouseMove(event: MouseEvent) {
     const rect = ref()!.getBoundingClientRect();
-    const mousePosition = {
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top,
-    };
+    const eventPosition = { x: event.clientX, y: event.clientY };
+    const mousePosition = v.subtract(eventPosition, {
+      x: rect.left,
+      y: rect.top,
+    });
 
     if (active()) {
-      const delta = v.subtract(mousePosition, current());
+      const delta = v.subtract(eventPosition, client());
       const next = v.add(translate(), delta);
       setTranslate(next);
     }
 
+    setClient(eventPosition);
     setCurrent(mousePosition);
   }
 
@@ -102,7 +105,7 @@ export function createRegionMovement() {
   return {
     setRef,
     active,
-    translate, origin, scale, style,
+    current, translate, origin, scale, style,
     setActive, resetView,
     onMouseMove, onMouseLeave,
     onMouseWheel, onScroll,
