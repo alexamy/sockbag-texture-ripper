@@ -2,6 +2,7 @@ import { createMemo, createSignal, type JSX } from "solid-js";
 import { v } from "./vector";
 
 export function createRegionMovement() {
+  const [ref, setRef] = createSignal<HTMLElement>();
   const [active, setActive] = createSignal(false);
   const [current, setCurrent] = createSignal({ x: 0, y: 0 });
 
@@ -86,6 +87,7 @@ export function createRegionMovement() {
 
   // prettier-ignore
   return {
+    setRef,
     active,
     current, translate, scale, style,
     setActive, resetView,

@@ -83,7 +83,7 @@ export function Region(props: {
       />
       <RegionContext.Provider value={move}>
         <div class="region-toolbar">{props.toolbar}</div>
-        <div class="region-content" style={move.style()}>
+        <div class="region-content" ref={move.setRef} style={move.style()}>
           {props.children}
         </div>
         <div class="region-footer">
