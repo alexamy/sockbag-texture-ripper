@@ -14,7 +14,9 @@ export function createRegionMovement() {
     const move = `translate(${translate().x}px, ${translate().y}px)`;
     const shift = `translate(${origin().x}px, ${origin().y}px)`;
     const zoom = `scale(${scale()})`;
-    const transform = `${move} ${shift} ${zoom}`;
+
+    // TODO add shift
+    const transform = `${move} ${zoom}`;
 
     return {
       transform,
@@ -29,6 +31,11 @@ export function createRegionMovement() {
 
   function onMouseMove(event: MouseEvent) {
     const mousePosition = { x: event.clientX, y: event.clientY };
+    const rect = ref()!.getBoundingClientRect();
+    const position = v.subtract(mousePosition, {
+      x: Math.floor(rect.left),
+      y: Math.floor(rect.top),
+    });
 
     if (active()) {
       const delta = v.subtract(mousePosition, current());
@@ -36,6 +43,7 @@ export function createRegionMovement() {
       setTranslate(next);
     }
 
+    setOrigin(position);
     setCurrent(mousePosition);
   }
 
@@ -89,7 +97,8 @@ export function createRegionMovement() {
   return {
     setRef,
     active,
-    current, translate, scale, style,
+    current, origin,
+    translate, scale, style,
     setActive, resetView,
     onMouseMove, onMouseLeave,
     onMouseWheel, onScroll,

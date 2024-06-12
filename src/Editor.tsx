@@ -34,7 +34,7 @@ export function EditorToolbar() {
     <div class="editor-toolbar">
       <div>
         Size: {width()} x {height()} Current: {move.current().x},{" "}
-        {move.current().y}
+        {move.current().y} Origin: {move.origin().x}, {move.origin().y}
       </div>
       <Header />
     </div>
