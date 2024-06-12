@@ -1,27 +1,17 @@
-import { createEffect, createMemo, createSignal, on, type JSX } from "solid-js";
+import { createMemo, createSignal, type JSX } from "solid-js";
 import { v } from "./vector";
 
 export function createRegionMovement() {
-  const [ref, setRef] = createSignal<HTMLElement>();
   const [active, setActive] = createSignal(false);
-  const [client, setClient] = createSignal({ x: 0, y: 0 });
   const [current, setCurrent] = createSignal({ x: 0, y: 0 });
 
   const [translate, setTranslate] = createSignal({ x: 0, y: 0 });
   const [origin, setOrigin] = createSignal({ x: 0, y: 0 });
   const [scale, setScale] = createSignal(1);
 
-  const [offset, setOffset] = createSignal({ x: 0, y: 0 });
-  // prettier-ignore
-  createEffect(on([client, scale], ([current, scale]) => {
-    const offset = v.scale(current, scale - 1);
-    // setOffset(offset);
-    // setOrigin(current);
-  }));
-
   const style = createMemo(() => {
     const move = `translate(${translate().x}px, ${translate().y}px)`;
-    const shift = `translate(${offset().x}px, ${offset().y}px)`;
+    const shift = `translate(${origin().x}px, ${origin().y}px)`;
     const zoom = `scale(${scale()})`;
     const transform = `${move} ${shift} ${zoom}`;
 
@@ -37,20 +27,14 @@ export function createRegionMovement() {
   }
 
   function onMouseMove(event: MouseEvent) {
-    const rect = ref()!.getBoundingClientRect();
-    const eventPosition = { x: event.clientX, y: event.clientY };
-    const mousePosition = v.subtract(eventPosition, {
-      x: rect.left,
-      y: rect.top,
-    });
+    const mousePosition = { x: event.clientX, y: event.clientY };
 
     if (active()) {
-      const delta = v.subtract(eventPosition, client());
+      const delta = v.subtract(mousePosition, current());
       const next = v.add(translate(), delta);
       setTranslate(next);
     }
 
-    setClient(eventPosition);
     setCurrent(mousePosition);
   }
 
@@ -95,17 +79,15 @@ export function createRegionMovement() {
 
   // api
   function resetView() {
-    // TODO uncomment
-    // setScale(1);
-    // setOrigin({ x: 0, y: 0 });
-    // setTranslate({ x: 0, y: 0 });
+    setScale(1);
+    setOrigin({ x: 0, y: 0 });
+    setTranslate({ x: 0, y: 0 });
   }
 
   // prettier-ignore
   return {
-    setRef,
     active,
-    current, translate, origin, scale, style,
+    translate, scale, style,
     setActive, resetView,
     onMouseMove, onMouseLeave,
     onMouseWheel, onScroll,
