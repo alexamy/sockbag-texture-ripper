@@ -8,7 +8,7 @@ export function createRegionMovement() {
 
   const [translate, setTranslate] = createSignal({ x: 0, y: 0 });
   const [origin, setOrigin] = createSignal({ x: 0, y: 0 });
-  const [scale, setScale] = createSignal(2);
+  const [scale, setScale] = createSignal(1);
 
   const style = createMemo(() => {
     const move = `translate(${translate().x}px, ${translate().y}px)`;
@@ -18,9 +18,12 @@ export function createRegionMovement() {
     // TODO add shift
     const transform = `${move} ${zoom}`;
 
+    // TODO uncomment
+    const transformOrigin = ""; //`${origin().x}px ${origin().y}px`;
+
     return {
       transform,
-      "transform-origin": `${origin().x}px ${origin().y}px`,
+      "transform-origin": transformOrigin,
     } satisfies JSX.CSSProperties;
   });
 
