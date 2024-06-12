@@ -8,7 +8,7 @@ export function createRegionMovement() {
 
   const [translate, setTranslate] = createSignal({ x: 0, y: 0 });
   const [origin, setOrigin] = createSignal({ x: 0, y: 0 });
-  const [scale, setScale] = createSignal(1);
+  const [scale, setScale] = createSignal(2);
 
   const style = createMemo(() => {
     const move = `translate(${translate().x}px, ${translate().y}px)`;
@@ -39,6 +39,7 @@ export function createRegionMovement() {
       x: Math.floor(rect.left),
       y: Math.floor(rect.top),
     });
+    const scaled = v.map(v.scale(position, 1 / scale()), Math.round);
 
     if (active()) {
       const delta = v.subtract(mousePosition, current());
@@ -46,7 +47,7 @@ export function createRegionMovement() {
       setTranslate(next);
     }
 
-    setOrigin(position);
+    setOrigin(scaled);
     setCurrent(mousePosition);
   }
 
