@@ -68,7 +68,7 @@ function TextureRipper() {
 
 async function debugLoadFile() {
   // textrip, river, houses, rainbow
-  const image = await fetch("http://alexamy.me/pub/river.png");
+  const image = await fetch("http://alexamy.me/pub/rainbow.png");
   const blob = await image.blob();
   const file = new File([blob], "source");
   return file;
