@@ -15,6 +15,8 @@ import "./Region.css";
 import { createRegionMovement } from "./createRegionMovement";
 
 interface Transform {
+  current: Accessor<{ x: number; y: number }>;
+  origin: Accessor<{ x: number; y: number }>;
   translate: Accessor<{ x: number; y: number }>;
   scale: Accessor<number>;
   style: Accessor<JSX.CSSProperties>;
@@ -82,7 +84,7 @@ export function Region(props: {
       />
       <RegionContext.Provider value={move}>
         <div class="region-toolbar">{props.toolbar}</div>
-        <div class="region-content" style={move.style()}>
+        <div class="region-content" ref={move.setRef} style={move.style()}>
           {props.children}
         </div>
         <div class="region-footer">

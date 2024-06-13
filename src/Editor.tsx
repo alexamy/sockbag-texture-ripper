@@ -27,10 +27,14 @@ export function EditorToolbar() {
   const width = () => store.image.naturalWidth;
   const height = () => store.image.naturalHeight;
 
+  // TODO remove
+  const move = useRegionContext();
+
   return (
     <div class="editor-toolbar">
       <div>
-        Size: {width()} x {height()}
+        Size: {width()} x {height()} Current: {move.current().x},{" "}
+        {move.current().y} Origin: {move.origin().x}, {move.origin().y}
       </div>
       <Header />
     </div>
