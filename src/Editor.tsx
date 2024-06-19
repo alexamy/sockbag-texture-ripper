@@ -10,7 +10,10 @@ type Point = { x: number; y: number };
 
 export function Editor() {
   const [store] = useAppStore().file;
-  const [imageRef, setImageRef] = createSignal<HTMLImageElement>();
+
+  // image reference is pointing at the same img element,
+  // but we must retrigger each time the image is loaded
+  const [imageRef, setImageRef] = createSignal<HTMLImageElement | undefined>(undefined, { equals: false });
 
   return (
     <div class="editor-canvas">
