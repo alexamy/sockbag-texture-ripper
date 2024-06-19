@@ -8,7 +8,10 @@ Inspired by [Texture Ripper](https://renderhjs.net/shoebox/textureRipper.htm) by
 > [!NOTE]
 > This section may be incomplete and will be updated during app development.
 
+TL;DR:
 Upload an image, draw rectangles, view the result, and download the texture.
+
+Drag and drop an image onto the app to upload it.
 
 The *left region* is the uploaded image. Draw quads on the image to crop the texture. Press left click to add points, right click to remove the last point. **Hold** space and move the mouse to pan the image. **Hold** space and scroll the mouse wheel to zoom in and out.
 
