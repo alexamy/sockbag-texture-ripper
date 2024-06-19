@@ -6,14 +6,15 @@ Inspired by [Texture Ripper](https://renderhjs.net/shoebox/textureRipper.htm) by
 
 ## Usage
 > [!NOTE]
-> This section will be updated once the application is fully developed.
+> This section may be incomplete and will be updated during app development.
 
 Upload an image, draw rectangles, view the result, and download the texture.
 
-The top rectangle is the uploaded image. Draw quads on the image to crop the texture. Press left click to add points, right click to remove the last point. Hold space to pan the image. Use the mouse wheel to zoom in and out.
+The *left region* is the uploaded image. Draw quads on the image to crop the texture. Press left click to add points, right click to remove the last point. **Hold** space and move the mouse to pan the image. **Hold** space and scroll the mouse wheel to zoom in and out.
 
-The bottom rectangle is the texture. The texture slices will be projected onto the rectangles. Rectangles have a width of a top side of the quad (marked by red arrow) and height of smaller adjacent side.
+The *right region* is the texture. The texture slices will be projected onto the rectangles. Rectangles have a width of a top side of the quad (marked by red arrow) and height of smaller adjacent side.
 Press the "Download" button to download the texture.
+**Hold** space and move the mouse to pan the image. **Hold** space and scroll the mouse wheel to zoom in and out.
 
 ## Dev usage
 ```bash
