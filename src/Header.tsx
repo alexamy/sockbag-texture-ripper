@@ -21,13 +21,13 @@ export function Header() {
   }
 
   return (
-    <h1
+    <span
       class="app-title"
       title={`${title().text} Texture Ripper`}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
       {title().icon}
-    </h1>
+    </span>
   );
 }

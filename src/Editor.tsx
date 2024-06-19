@@ -1,6 +1,7 @@
 import { createMemo, createSignal, For, onMount, Show } from "solid-js";
 import "./Editor.css";
 import { Header } from "./Header";
+import { Help } from './Help';
 import { useRegionContext } from "./Region";
 import { useAppStore } from "./store";
 import { type Point as PointId, type Quad } from "./store/editor";
@@ -36,7 +37,10 @@ export function EditorToolbar() {
         Size: {width()} x {height()} Current: {move.current().x},{" "}
         {move.current().y} Origin: {move.origin().x}, {move.origin().y}
       </div>
-      <Header />
+      <div>
+        <Help />
+        <Header />
+      </div>
     </div>
   );
 }
