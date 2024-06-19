@@ -46,10 +46,3 @@
   background: darkgray;
   outline: 1px solid darkgray;
 }
-
-.help {
-  cursor: help;
-  &:hover {
-    filter: grayscale(100%);
-  }
-}
