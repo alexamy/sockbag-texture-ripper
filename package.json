@@ -3,6 +3,11 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "homepage": "https://alexamy.github.io/sockbag-texture-ripper/",
+  "author": {
+    "name": "alexamy",
+    "email": "achasch@gmail.com"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
