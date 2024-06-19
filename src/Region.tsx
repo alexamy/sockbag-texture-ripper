@@ -45,6 +45,11 @@ export function Region(props: {
   const [parent, setParent] = createSignal<HTMLElement>();
   const [size, setSize] = createSignal({ width: 0, height: 0 });
 
+  const cursor = createMemo(() => {
+    if (move.active()) return "grabbing";
+    return "default";
+  });
+
   onMount(updateSize);
   createEffect(on(() => props.resetTrigger, move.resetView));
 
@@ -67,7 +72,7 @@ export function Region(props: {
     <div
       class="region"
       ref={setParent}
-      style={{ width: `${props.width}%` }}
+      style={{ width: `${props.width}%`, cursor: cursor() }}
       onMouseEnter={onMouseEnter}
       onMouseMove={move.onMouseMove}
       onMouseLeave={move.onMouseLeave}
