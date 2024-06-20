@@ -138,7 +138,7 @@ export function Region(props: {
             onClick={move.resetView}
             onMouseDown={(e) => e.preventDefault()}
           >
-            Reset
+            Reset view
           </Button>
         </Footer>
       </RegionContext.Provider>
