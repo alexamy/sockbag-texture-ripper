@@ -3,12 +3,6 @@ import { Show, createSignal } from "solid-js";
 import { Portal } from "solid-js/web";
 import { Button } from "./styles";
 
-const HelpButton = styled(Button, {
-  base: {
-    marginRight: "15px",
-  },
-});
-
 const Backdrop = styled("div", {
   base: {
     position: "absolute",
@@ -43,9 +37,9 @@ export function Help() {
 
   return (
     <>
-      <HelpButton title="Click to show help" onClick={() => setShown(true)}>
+      <Button title="Click to show help" onClick={() => setShown(true)}>
         Help
-      </HelpButton>
+      </Button>
       <Show when={shown()}>
         <Portal mount={document.body}>
           <Modal close={() => setShown(false)} />
