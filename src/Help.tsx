@@ -1,8 +1,9 @@
 import { styled } from "@macaron-css/solid";
 import { Show, createSignal } from "solid-js";
 import { Portal } from "solid-js/web";
+import { Button } from "./styles";
 
-const Button = styled("button", {
+const HelpButton = styled(Button, {
   base: {
     marginRight: "15px",
   },
@@ -42,9 +43,9 @@ export function Help() {
 
   return (
     <>
-      <Button title="Click to show help" onClick={() => setShown(true)}>
+      <HelpButton title="Click to show help" onClick={() => setShown(true)}>
         Help
-      </Button>
+      </HelpButton>
       <Show when={shown()}>
         <Portal mount={document.body}>
           <Modal close={() => setShown(false)} />
@@ -53,12 +54,6 @@ export function Help() {
     </>
   );
 }
-
-const Close = styled("button", {
-  base: {
-    padding: "0.5rem",
-  },
-});
 
 function Modal(props: { close: () => void }) {
   return (
@@ -87,7 +82,7 @@ function Modal(props: { close: () => void }) {
             image. Hold space and scroll the mouse wheel to zoom in and out.
           </p>
           <br />
-          <Close onClick={() => props.close()}>Close</Close>
+          <Button onClick={() => props.close()}>Close</Button>
         </div>
       </Content>
     </>
