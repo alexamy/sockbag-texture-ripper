@@ -40,15 +40,15 @@ export function createEditorStore(file: { blob: Blob }) {
   createEffect(on(() => store.buffer, (buffer) => {
     if(buffer.length < 4) return;
     const [p1, p2, p3, p4] = buffer;
-    const figure = [p1.id, p2.id, p3.id, p4.id];
-    const quadLinks = [...store.quadLinks, figure];
+    const link = [p1.id, p2.id, p3.id, p4.id];
+    const quadLinks = [...store.quadLinks, link];
     const points = [...store.points, ...buffer];
     setStore({ quadLinks, points, buffer: [], });
   }));
 
   // prettier-ignore
-  createEffect(on(() => [store.quadLinks, store.points] as const, ([figures, points]) => {
-    const quads = figures.map((figure) => linksToQuad(figure, points));
+  createEffect(on(() => [store.quadLinks, store.points] as const, ([links, points]) => {
+    const quads = links.map((link) => linksToQuad(link, points));
     setStore({ quads });
   }));
 
