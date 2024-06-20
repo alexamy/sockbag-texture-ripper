@@ -5,6 +5,7 @@ import { Help } from "./Help";
 import { useRegionContext } from "./Region";
 import { useAppStore } from "./store";
 import { type Point as PointId, type Quad } from "./store/editor";
+import { Upload } from "./Upload";
 import { v } from "./vector";
 
 type Point = { x: number; y: number };
@@ -38,6 +39,13 @@ const Toolbar = styled("div", {
     padding: "5px 10px",
     width: "100%",
     whiteSpace: "nowrap",
+  },
+});
+
+const Buttons = styled("div", {
+  base: {
+    display: "flex",
+    gap: "5px",
   },
 });
 
@@ -75,10 +83,11 @@ export function EditorToolbar() {
         Size: {width()} x {height()} Current: {move.current().x},{" "}
         {move.current().y} Origin: {move.origin().x}, {move.origin().y}
       </div>
-      <div>
+      <Buttons>
+        <Upload />
         <Help />
         <Header />
-      </div>
+      </Buttons>
     </Toolbar>
   );
 }

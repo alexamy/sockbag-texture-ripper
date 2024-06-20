@@ -3,12 +3,6 @@ import { Show, createSignal } from "solid-js";
 import { Portal } from "solid-js/web";
 import { Button } from "./styles";
 
-const HelpButton = styled(Button, {
-  base: {
-    marginRight: "15px",
-  },
-});
-
 const Backdrop = styled("div", {
   base: {
     position: "absolute",
@@ -43,9 +37,9 @@ export function Help() {
 
   return (
     <>
-      <HelpButton title="Click to show help" onClick={() => setShown(true)}>
+      <Button title="Click to show help" onClick={() => setShown(true)}>
         Help
-      </HelpButton>
+      </Button>
       <Show when={shown()}>
         <Portal mount={document.body}>
           <Modal close={() => setShown(false)} />
@@ -61,7 +55,10 @@ function Modal(props: { close: () => void }) {
       <Backdrop onClick={() => props.close()} />
       <Content>
         <div>
-          <p>Drag and drop an image onto the app to upload.</p>
+          <p>
+            Drag and drop an image onto the app, or use Upload button to select
+            a file to upload.
+          </p>
           <br />
           <p>
             The <b>left region</b> is the uploaded image:
