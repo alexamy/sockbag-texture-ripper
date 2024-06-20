@@ -9,7 +9,17 @@ import { v } from "./vector";
 
 type Point = { x: number; y: number };
 
-const Canvas = styled("div", {
+const Container = styled("div", {
+  base: {
+    userSelect: "none",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    border: "1px solid white",
+  },
+});
+
+const Canvas = styled("svg", {
   base: {
     userSelect: "none",
     position: "absolute",
@@ -42,12 +52,12 @@ export function Editor() {
   );
 
   return (
-    <Canvas>
+    <Container>
       <ImageBackground src={store.url} onLoadRef={setImageRef} />
       <Show when={imageRef()}>
         <DrawingBoard imageRef={imageRef()!} />
       </Show>
-    </Canvas>
+    </Container>
   );
 }
 
@@ -148,9 +158,8 @@ function DrawingBoard(props: { imageRef: HTMLImageElement }) {
   onMount(() => svgRef()!.focus());
 
   return (
-    <svg
+    <Canvas
       ref={setSvgRef}
-      class="editor-canvas"
       viewBox={viewBox()}
       style={style()}
       onClick={onClick}
@@ -184,7 +193,7 @@ function DrawingBoard(props: { imageRef: HTMLImageElement }) {
       <Show when={points().length === 3}>
         <Line from={bottom()} to={top()} withTip={true} color="darkred" />
       </Show>
-    </svg>
+    </Canvas>
   );
 }
 

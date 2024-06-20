@@ -60,7 +60,7 @@ function Modal(props: { close: () => void }) {
     <>
       <Backdrop onClick={() => props.close()} />
       <Content>
-        <div class="modal-body">
+        <div>
           <p>Drag and drop an image onto the app to upload.</p>
           <br />
           <p>
