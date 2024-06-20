@@ -1,12 +1,64 @@
+import { styled } from "@macaron-css/solid";
 import { Show } from "solid-js";
-import "./App.css";
 import { Editor, EditorToolbar } from "./Editor";
 import { Region } from "./Region";
 import { Texture, TextureToolbar } from "./Texture";
 import { createDnd, createResize } from "./hooks";
 import { AppStoreProvider, useAppStore } from "./store";
 
+// default export because of lazy loading in <Loader>
 export default App;
+
+const Container = styled("div", {
+  base: {
+    display: "flex",
+    width: "100%",
+    height: "100vh",
+  },
+});
+
+const RegionBorder = styled("div", {
+  base: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100vh",
+    textAlign: "center",
+    background: "whitesmoke",
+    cursor: "col-resize",
+    border: "1px solid lightgrey",
+    borderWidth: "0 1px",
+  },
+});
+
+const RegionBorderHandler = styled("div", {
+  base: {
+    width: "4px",
+    height: "10%",
+    minHeight: "30px",
+    background: "darkgray",
+    outline: "1px solid darkgray",
+  },
+});
+
+const ImageDrop = styled("div", {
+  base: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100vh",
+    zIndex: 99,
+    opacity: 0.95,
+    backgroundColor: "gray",
+    color: "black",
+    fontSize: "3rem",
+    pointerEvents: "none",
+  },
+});
 
 function App() {
   return (
@@ -24,8 +76,7 @@ function TextureRipper() {
   const resize = createResize();
 
   return (
-    <div
-      class="app"
+    <Container
       onDrop={dnd.onDrop}
       onDragEnter={dnd.onDragEnter}
       onDragOver={dnd.onDragOver}
@@ -41,14 +92,13 @@ function TextureRipper() {
           <Editor />
         </Region>
 
-        <div
-          class="region-border"
+        <RegionBorder
           onMouseDown={resize.activate}
           onMouseUp={resize.deactivate}
           onDblClick={resize.reset}
         >
-          <div class="region-border-handle" />
-        </div>
+          <RegionBorderHandler />
+        </RegionBorder>
 
         <Region
           toolbar={<TextureToolbar />}
@@ -60,9 +110,9 @@ function TextureRipper() {
       </Show>
 
       <Show when={dnd.isDragOver()}>
-        <div class="image-drop">Drop image here to upload</div>
+        <ImageDrop>Drop image here to upload</ImageDrop>
       </Show>
-    </div>
+    </Container>
   );
 }
 

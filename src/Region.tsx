@@ -1,3 +1,4 @@
+import { styled } from "@macaron-css/solid";
 import {
   Accessor,
   JSX,
@@ -11,8 +12,8 @@ import {
   onMount,
   useContext,
 } from "solid-js";
-import "./Region.css";
 import { createRegionMovement } from "./createRegionMovement";
+import { Button } from "./styles";
 
 interface Transform {
   current: Accessor<{ x: number; y: number }>;
@@ -22,6 +23,54 @@ interface Transform {
   style: Accessor<JSX.CSSProperties>;
   active: Accessor<boolean>;
 }
+
+const GridBackgroundContainer = styled("svg", {
+  base: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+  },
+});
+
+const RegionContainer = styled("div", {
+  base: {
+    position: "relative",
+    width: "50%",
+    height: "100vh",
+    overflow: "hidden",
+    color: "black",
+    userSelect: "none",
+    ":focus": {
+      outline: "none",
+    },
+  },
+});
+
+const RegionContent = styled("div", {
+  base: {
+    transformOrigin: "0 0",
+  },
+});
+
+const RegionToolbar = styled("div", {
+  base: {
+    position: "relative",
+    zIndex: 1,
+  },
+});
+
+const RegionFooter = styled("div", {
+  base: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    width: "100%",
+    padding: "10px",
+  },
+});
 
 const RegionContext = createContext<Transform>();
 
@@ -69,8 +118,7 @@ export function Region(props: {
   }
 
   return (
-    <div
-      class="region"
+    <RegionContainer
       ref={setParent}
       style={{ width: `${props.width}%`, cursor: cursor() }}
       onMouseEnter={onMouseEnter}
@@ -88,21 +136,20 @@ export function Region(props: {
         height={size().height}
       />
       <RegionContext.Provider value={move}>
-        <div class="region-toolbar">{props.toolbar}</div>
-        <div class="region-content" ref={move.setRef} style={move.style()}>
+        <RegionToolbar>{props.toolbar}</RegionToolbar>
+        <RegionContent ref={move.setRef} style={move.style()}>
           {props.children}
-        </div>
-        <div class="region-footer">
-          <button
-            class="region-button"
+        </RegionContent>
+        <RegionFooter>
+          <Button
             onClick={move.resetView}
             onMouseDown={(e) => e.preventDefault()}
           >
             Reset
-          </button>
-        </div>
+          </Button>
+        </RegionFooter>
       </RegionContext.Provider>
-    </div>
+    </RegionContainer>
   );
 }
 
@@ -120,8 +167,7 @@ function GridBackground(props: {
   });
 
   return (
-    <svg
-      class="grid-background"
+    <GridBackgroundContainer
       xmlns="http://www.w3.org/2000/svg"
       style={{
         "transform-origin": "0 0",
@@ -142,7 +188,7 @@ function GridBackground(props: {
         <rect y="10" width="11" height="11" fill="#ffffff" />
         <rect x="10" y="10" width="11" height="11" fill="#eeeeee" />
       </pattern>
-    </svg>
+    </GridBackgroundContainer>
   );
 }
 

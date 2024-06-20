@@ -1,19 +1,51 @@
+import { styled } from "@macaron-css/solid";
 import { Show, createSignal } from "solid-js";
 import { Portal } from "solid-js/web";
-import "./Help.css";
+import { Button } from "./styles";
+
+const HelpButton = styled(Button, {
+  base: {
+    marginRight: "15px",
+  },
+});
+
+const Backdrop = styled("div", {
+  base: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    background: "black",
+    opacity: 0.5,
+    zIndex: 9998,
+  },
+});
+
+const Content = styled("div", {
+  base: {
+    position: "absolute",
+    left: "50%",
+    top: "50%",
+    transform: "translate(-50%, -50%)",
+    zIndex: 9999,
+    background: "white",
+    color: "black",
+    padding: "1.5rem",
+    borderRadius: "0.5rem",
+    lineHeight: 1.7,
+    textAlign: "justify",
+  },
+});
 
 export function Help() {
   const [shown, setShown] = createSignal(false);
 
   return (
     <>
-      <span
-        class="help"
-        title="Click to show help"
-        onClick={() => setShown(true)}
-      >
-        ❓
-      </span>
+      <HelpButton title="Click to show help" onClick={() => setShown(true)}>
+        Help
+      </HelpButton>
       <Show when={shown()}>
         <Portal mount={document.body}>
           <Modal close={() => setShown(false)} />
@@ -26,9 +58,9 @@ export function Help() {
 function Modal(props: { close: () => void }) {
   return (
     <>
-      <div class="modal-backdrop" onClick={() => props.close()} />
-      <div class="modal-content">
-        <div class="modal-body">
+      <Backdrop onClick={() => props.close()} />
+      <Content>
+        <div>
           <p>Drag and drop an image onto the app to upload.</p>
           <br />
           <p>
@@ -50,11 +82,9 @@ function Modal(props: { close: () => void }) {
             image. Hold space and scroll the mouse wheel to zoom in and out.
           </p>
           <br />
-          <button class="modal-button" onClick={() => props.close()}>
-            Close
-          </button>
+          <Button onClick={() => props.close()}>Close</Button>
         </div>
-      </div>
+      </Content>
     </>
   );
 }

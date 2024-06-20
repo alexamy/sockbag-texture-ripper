@@ -1,4 +1,13 @@
+import { styled } from "@macaron-css/solid";
 import { createSignal } from "solid-js";
+
+const Title = styled("span", {
+  base: {
+    fontSize: "1.2rem",
+    userSelect: "none",
+    width: "fit-content",
+  },
+});
 
 export function Header() {
   const titles = [
@@ -21,13 +30,12 @@ export function Header() {
   }
 
   return (
-    <span
-      class="app-title"
+    <Title
       title={`${title().text} Texture Ripper`}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
       {title().icon}
-    </span>
+    </Title>
   );
 }
