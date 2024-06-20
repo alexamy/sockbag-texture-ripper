@@ -100,7 +100,7 @@ function linksToQuad(links: QuadLink, points: Point[]): Quad {
 
 function getDefaultStore() {
   return {
-    current: { x: 0, y: 0, id: "first" },
+    current: { x: 0, y: 0, id: getId() },
     points: [],
     buffer: [],
     quadLinks: [],
