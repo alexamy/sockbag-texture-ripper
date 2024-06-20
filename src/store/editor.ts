@@ -12,14 +12,14 @@ export interface Point {
   y: number;
 }
 
-export type Figure = Id[];
+export type QuadLink = Id[];
 export type Quad = [Point, Point, Point, Point];
 
 interface StoreData {
   current: Point;
   points: Point[];
   buffer: Point[];
-  figures: Figure[];
+  quadLinks: QuadLink[]; // point ids to make quad from
   quads: Quad[];
 }
 
@@ -41,14 +41,14 @@ export function createEditorStore(file: { blob: Blob }) {
     if(buffer.length < 4) return;
     const [p1, p2, p3, p4] = buffer;
     const figure = [p1.id, p2.id, p3.id, p4.id];
-    const figures = [...store.figures, figure];
+    const quadLinks = [...store.quadLinks, figure];
     const points = [...store.points, ...buffer];
-    setStore({ figures, points, buffer: [], });
+    setStore({ quadLinks, points, buffer: [], });
   }));
 
   // prettier-ignore
-  createEffect(on(() => [store.figures, store.points] as const, ([figures, points]) => {
-    const quads = figures.map((figure) => figureToQuad(figure, points));
+  createEffect(on(() => [store.quadLinks, store.points] as const, ([figures, points]) => {
+    const quads = figures.map((figure) => linksToQuad(figure, points));
     setStore({ quads });
   }));
 
@@ -87,8 +87,8 @@ export function createEditorStore(file: { blob: Blob }) {
   return [store, methods, setStore] as const;
 }
 
-function figureToQuad(figure: Figure, points: Point[]): Quad {
-  const [p1, p2, p3, p4] = figure.map((id) => {
+function linksToQuad(links: QuadLink, points: Point[]): Quad {
+  const [p1, p2, p3, p4] = links.map((id) => {
     const point = points.find((p) => p.id === id);
     if (!point) throw new Error("Point not found.");
     return point;
@@ -103,7 +103,7 @@ function getDefaultStore() {
     current: { x: 0, y: 0, id: "first" },
     points: [],
     buffer: [],
-    figures: [],
+    quadLinks: [],
     quads: [],
   } satisfies StoreData;
 }
