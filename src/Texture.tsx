@@ -1,24 +1,56 @@
+import { styled } from "@macaron-css/solid";
 import { For } from "solid-js";
-import "./Texture.css";
 import { useAppStore } from "./store";
 import { TextureStore } from "./store/texture";
+import { Button } from "./styles";
+
+const Container = styled("div", {
+  base: {
+    position: "relative",
+  },
+});
+
+const TextureRect = styled("img", {
+  base: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+  },
+});
+
+const Toolbar = styled("div", {
+  base: {
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    backgroundColor: "whitesmoke",
+    width: "100%",
+    padding: "5px",
+    whiteSpace: "nowrap",
+  },
+});
+
+const GapInputElement = styled("input", {
+  base: {
+    padding: "4px",
+  },
+});
 
 export function Texture() {
   const [store] = useAppStore().texture;
 
   return (
-    <div class="texture">
+    <Container>
       <For each={store.urls}>
         {(url, i) => (
-          <img
+          <TextureRect
             src={url}
-            class="texture-rect"
             style={{ transform: store.transform[i()] }}
             onMouseDown={(e) => e.preventDefault()}
           />
         )}
       </For>
-    </div>
+    </Container>
   );
 }
 
@@ -26,16 +58,15 @@ export function TextureToolbar() {
   const [store] = useAppStore().texture;
 
   return (
-    <div class="texture-toolbar">
+    <Toolbar>
       <GapInput />
-      <button
-        class="texture-form"
+      <Button
         onClick={() => downloadTexture(store)}
         disabled={store.urls.length === 0}
       >
         Download
-      </button>
-    </div>
+      </Button>
+    </Toolbar>
   );
 }
 
@@ -50,9 +81,8 @@ function GapInput() {
   return (
     <div>
       <label for="gap">Gap: </label>
-      <input
+      <GapInputElement
         id="gap"
-        class="texture-form"
         type="number"
         min="0"
         max="999"
