@@ -6,6 +6,7 @@ import { Texture, TextureToolbar } from "./Texture";
 import { createDnd, createResize } from "./hooks";
 import { AppStoreProvider, useAppStore } from "./store";
 
+// default export because of lazy loading in <Loader>
 export default App;
 
 const Container = styled("div", {
