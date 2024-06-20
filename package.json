@@ -14,11 +14,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@macaron-css/core": "^1.5.2",
+    "@macaron-css/solid": "^1.5.3",
     "@techstark/opencv-js": "^4.9.0-release.3",
     "potpack": "^2.0.0",
     "solid-js": "^1.8.15"
   },
   "devDependencies": {
+    "@macaron-css/vite": "^1.5.1",
     "@typescript-eslint/eslint-plugin": "^7.11.0",
     "eslint": "^8.57.0",
     "eslint-plugin-solid": "^0.14.0",
