@@ -5,6 +5,7 @@ import {
   onMount,
   useContext,
 } from "solid-js";
+import { blobToDataURI, dataURItoBlob, tick } from "../helper";
 import { EditorStore, Point, QuadLink, createEditorStore } from "./editor";
 import { FileStore, createFileStore } from "./file";
 import { TextureStore, createTextureStore } from "./texture";
@@ -52,7 +53,7 @@ export function AppStoreProvider(props: { children: JSXElement }) {
 const key = "sockbag-texture-ripper-state";
 const version = 0;
 
-function loadFromLocalStorage(state: Stores) {
+async function loadFromLocalStorage(state: Stores) {
   const raw = localStorage.getItem(key);
   if (!raw) return;
 
@@ -64,6 +65,7 @@ function loadFromLocalStorage(state: Stores) {
     const blob = dataURItoBlob(file);
 
     state.file[2]({ blob });
+    await tick();
     state.editor[2]({ points, quadLinks });
   } catch (e) {
     console.log(e);
@@ -79,35 +81,4 @@ async function saveToLocalStorage(state: Stores) {
   const data = { version, file, points, quadLinks } satisfies PersistState;
   const raw = JSON.stringify(data);
   localStorage.setItem(key, raw);
-}
-
-function blobToDataURI(blob: Blob) {
-  const reader = new FileReader();
-  reader.readAsDataURL(blob);
-
-  return new Promise<string>((resolve) => {
-    reader.onload = () => {
-      resolve(reader.result as string);
-    };
-  });
-}
-
-function dataURItoBlob(dataURI: string) {
-  // convert base64 to raw binary data held in a string
-  const byteString = atob(dataURI.split(",")[1]);
-
-  // separate out the mime component
-  const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
-
-  // write the bytes of the string to an ArrayBuffer
-  const arrayBuffer = new ArrayBuffer(byteString.length);
-  const _ia = new Uint8Array(arrayBuffer);
-  for (let i = 0; i < byteString.length; i++) {
-    _ia[i] = byteString.charCodeAt(i);
-  }
-
-  const dataView = new DataView(arrayBuffer);
-  const blob = new Blob([dataView], { type: mimeString });
-
-  return blob;
 }
