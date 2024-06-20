@@ -43,7 +43,7 @@ export function AppStoreProvider(props: { children: JSXElement }) {
 
 // persist
 const key = "sockbag-texture-ripper-state";
-const version = "v0";
+const version = 0;
 
 function loadFromLocalStorage(state: Stores) {
   const raw = localStorage.getItem(key);
