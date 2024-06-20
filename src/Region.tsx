@@ -12,6 +12,7 @@ import {
   onMount,
   useContext,
 } from "solid-js";
+import { GridBackground } from "./GridBackground";
 import { createRegionMovement } from "./createRegionMovement";
 import { Button } from "./styles";
 
@@ -24,15 +25,7 @@ interface Transform {
   active: Accessor<boolean>;
 }
 
-const GridBackgroundContainer = styled("svg", {
-  base: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-  },
-});
-
-const RegionContainer = styled("div", {
+const Container = styled("div", {
   base: {
     position: "relative",
     width: "50%",
@@ -46,20 +39,20 @@ const RegionContainer = styled("div", {
   },
 });
 
-const RegionContent = styled("div", {
+const Content = styled("div", {
   base: {
     transformOrigin: "0 0",
   },
 });
 
-const RegionToolbar = styled("div", {
+const Toolbar = styled("div", {
   base: {
     position: "relative",
     zIndex: 1,
   },
 });
 
-const RegionFooter = styled("div", {
+const Footer = styled("div", {
   base: {
     display: "flex",
     alignItems: "center",
@@ -118,7 +111,7 @@ export function Region(props: {
   }
 
   return (
-    <RegionContainer
+    <Container
       ref={setParent}
       style={{ width: `${props.width}%`, cursor: cursor() }}
       onMouseEnter={onMouseEnter}
@@ -136,59 +129,20 @@ export function Region(props: {
         height={size().height}
       />
       <RegionContext.Provider value={move}>
-        <RegionToolbar>{props.toolbar}</RegionToolbar>
-        <RegionContent ref={move.setRef} style={move.style()}>
+        <Toolbar>{props.toolbar}</Toolbar>
+        <Content ref={move.setRef} style={move.style()}>
           {props.children}
-        </RegionContent>
-        <RegionFooter>
+        </Content>
+        <Footer>
           <Button
             onClick={move.resetView}
             onMouseDown={(e) => e.preventDefault()}
           >
             Reset
           </Button>
-        </RegionFooter>
+        </Footer>
       </RegionContext.Provider>
-    </RegionContainer>
-  );
-}
-
-function GridBackground(props: {
-  width: number;
-  height: number;
-  scale: number;
-}) {
-  const size = createMemo(() => {
-    const factor = 1 / props.scale;
-    return {
-      width: Math.round(props.width * factor),
-      height: Math.round(props.height * factor),
-    };
-  });
-
-  return (
-    <GridBackgroundContainer
-      xmlns="http://www.w3.org/2000/svg"
-      style={{
-        "transform-origin": "0 0",
-        transform: `scale(${props.scale})`,
-        width: `${size().width}px`,
-        height: `${size().height}px`,
-      }}
-    >
-      <rect width="100%" height="100%" fill="url(#checkerboard)" />
-      <pattern
-        id="checkerboard"
-        width="20"
-        height="20"
-        patternUnits="userSpaceOnUse"
-      >
-        <rect width="11" height="11" fill="#eeeeee" />
-        <rect x="10" width="11" height="11" fill="#ffffff" />
-        <rect y="10" width="11" height="11" fill="#ffffff" />
-        <rect x="10" y="10" width="11" height="11" fill="#eeeeee" />
-      </pattern>
-    </GridBackgroundContainer>
+    </Container>
   );
 }
 
