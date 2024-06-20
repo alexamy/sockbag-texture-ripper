@@ -70,7 +70,6 @@ function App() {
 
 function TextureRipper() {
   const [store, { setFile }] = useAppStore().file;
-  debugLoadFile().then(setFile);
 
   const dnd = createDnd(setFile);
   const resize = createResize();
@@ -114,12 +113,4 @@ function TextureRipper() {
       </Show>
     </Container>
   );
-}
-
-async function debugLoadFile() {
-  // textrip, river, houses, rainbow, grid
-  const image = await fetch("http://alexamy.me/pub/grid.png");
-  const blob = await image.blob();
-  const file = new File([blob], "source");
-  return file;
 }

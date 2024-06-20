@@ -37,6 +37,7 @@ export function createTextureStore(
   editor: { quads: Quad[] }
 ) {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
+  let projectTimeout: NodeJS.Timeout;
 
   // prettier-ignore
   createEffect(
@@ -49,8 +50,22 @@ export function createTextureStore(
   createEffect(
     on(() => [file.image, editor.quads] as const, async ([image, quads]) => {
       if (image.width === 0 || quads.length === 0) return;
-      const rects = await projectRectangles(image, quads);
-      setStore({ rects });
+
+      // possibly there is a bug with slow opencv loading (or my own bug in the app logic)
+      // which causes the "cv2.Mat is not a constructor" error
+      // when projecting texture from image stored in local storage on app load
+      // so we need to try to project the texture repeatedly until opencv is working
+      async function project() {
+        try {
+          const rects = await projectRectangles(image, quads);
+          setStore({ rects });
+        } catch {
+          projectTimeout = setTimeout(project, 300);
+        }
+      }
+
+      if(projectTimeout) clearTimeout(projectTimeout);
+      project();
     })
   );
 
