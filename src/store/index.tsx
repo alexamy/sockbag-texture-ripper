@@ -5,7 +5,7 @@ import {
   onMount,
   useContext,
 } from "solid-js";
-import { EditorStore, createEditorStore } from "./editor";
+import { EditorStore, Point, QuadLink, createEditorStore } from "./editor";
 import { FileStore, createFileStore } from "./file";
 import { TextureStore, createTextureStore } from "./texture";
 
@@ -13,6 +13,13 @@ interface Stores {
   file: FileStore;
   editor: EditorStore;
   texture: TextureStore;
+}
+
+interface PersistState {
+  version: number;
+  file: string;
+  points: Point[];
+  quadLinks: QuadLink[];
 }
 
 const StoreContext = createContext<Stores>(undefined as unknown as Stores);
@@ -51,18 +58,56 @@ function loadFromLocalStorage(state: Stores) {
 
   try {
     const data = JSON.parse(raw);
-    if (data.version < version) return;
+    if (data.version !== version) return;
 
-    // TODO set store
+    const { file, points, quadLinks } = data;
+    const blob = dataURItoBlob(file);
+
+    state.file[2]({ blob });
+    state.editor[2]({ points, quadLinks });
   } catch (e) {
     console.log(e);
     return;
   }
 }
 
-function saveToLocalStorage(state: Stores) {
-  // TODO add properties
-  const data = { version };
+async function saveToLocalStorage(state: Stores) {
+  const { blob } = state.file[0];
+  const { points, quadLinks } = state.editor[0];
+  const file = await blobToDataURI(blob);
+
+  const data = { version, file, points, quadLinks } satisfies PersistState;
   const raw = JSON.stringify(data);
   localStorage.setItem(key, raw);
+}
+
+function blobToDataURI(blob: Blob) {
+  const reader = new FileReader();
+  reader.readAsDataURL(blob);
+
+  return new Promise<string>((resolve) => {
+    reader.onload = () => {
+      resolve(reader.result as string);
+    };
+  });
+}
+
+function dataURItoBlob(dataURI: string) {
+  // convert base64 to raw binary data held in a string
+  const byteString = atob(dataURI.split(",")[1]);
+
+  // separate out the mime component
+  const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
+
+  // write the bytes of the string to an ArrayBuffer
+  const arrayBuffer = new ArrayBuffer(byteString.length);
+  const _ia = new Uint8Array(arrayBuffer);
+  for (let i = 0; i < byteString.length; i++) {
+    _ia[i] = byteString.charCodeAt(i);
+  }
+
+  const dataView = new DataView(arrayBuffer);
+  const blob = new Blob([dataView], { type: mimeString });
+
+  return blob;
 }
