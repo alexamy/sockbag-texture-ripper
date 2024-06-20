@@ -4,5 +4,5 @@ import solid from "vite-plugin-solid";
 
 export default defineConfig({
   base: "/sockbag-texture-ripper/",
-  plugins: [solid(), macaronVitePlugin()],
+  plugins: [macaronVitePlugin(), solid()],
 });
