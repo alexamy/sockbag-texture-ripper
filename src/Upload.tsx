@@ -1,7 +1,9 @@
 import { createSignal } from "solid-js";
+import { useAppStore } from "./store";
 import { Button } from "./styles";
 
 export function Upload() {
+  const [_, { setFile }] = useAppStore().file;
   const [input, setInput] = createSignal<HTMLInputElement>();
 
   function show() {
@@ -11,7 +13,7 @@ export function Upload() {
   function upload() {
     const file = input()?.files?.[0];
     if (file) {
-      console.log(file);
+      setFile(file);
     }
   }
 
@@ -20,9 +22,9 @@ export function Upload() {
       <Button onClick={show}>Upload</Button>
       <input
         ref={setInput}
+        hidden
         type="file"
         accept="image/*"
-        hidden
         onChange={upload}
       />
     </>
