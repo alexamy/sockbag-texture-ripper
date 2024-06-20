@@ -1,6 +1,5 @@
 import { styled } from "@macaron-css/solid";
 import { Show } from "solid-js";
-import "./App.css";
 import { Editor, EditorToolbar } from "./Editor";
 import { Region } from "./Region";
 import { Texture, TextureToolbar } from "./Texture";

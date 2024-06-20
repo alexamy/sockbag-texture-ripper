@@ -1,7 +1,7 @@
+import { styled } from "@macaron-css/solid";
 import { createMemo, createSignal, For, onMount, Show } from "solid-js";
-import "./Editor.css";
 import { Header } from "./Header";
-import { Help } from './Help';
+import { Help } from "./Help";
 import { useRegionContext } from "./Region";
 import { useAppStore } from "./store";
 import { type Point as PointId, type Quad } from "./store/editor";
@@ -9,20 +9,45 @@ import { v } from "./vector";
 
 type Point = { x: number; y: number };
 
+const Canvas = styled("div", {
+  base: {
+    userSelect: "none",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    border: "1px solid white",
+  },
+});
+
+const Toolbar = styled("div", {
+  base: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "whitesmoke",
+    padding: "5px 10px",
+    width: "100%",
+    whiteSpace: "nowrap",
+  },
+});
+
 export function Editor() {
   const [store] = useAppStore().file;
 
   // image reference is pointing at the same img element,
   // but we must retrigger each time the image is loaded
-  const [imageRef, setImageRef] = createSignal<HTMLImageElement | undefined>(undefined, { equals: false });
+  const [imageRef, setImageRef] = createSignal<HTMLImageElement | undefined>(
+    undefined,
+    { equals: false }
+  );
 
   return (
-    <div class="editor-canvas">
+    <Canvas>
       <ImageBackground src={store.url} onLoadRef={setImageRef} />
       <Show when={imageRef()}>
         <DrawingBoard imageRef={imageRef()!} />
       </Show>
-    </div>
+    </Canvas>
   );
 }
 
@@ -35,7 +60,7 @@ export function EditorToolbar() {
   const move = useRegionContext();
 
   return (
-    <div class="editor-toolbar">
+    <Toolbar>
       <div>
         Size: {width()} x {height()} Current: {move.current().x},{" "}
         {move.current().y} Origin: {move.origin().x}, {move.origin().y}
@@ -44,7 +69,7 @@ export function EditorToolbar() {
         <Help />
         <Header />
       </div>
-    </div>
+    </Toolbar>
   );
 }
 
