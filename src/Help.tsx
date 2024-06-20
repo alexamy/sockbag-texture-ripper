@@ -56,8 +56,12 @@ function Modal(props: { close: () => void }) {
       <Content>
         <div>
           <p>
-            Drag and drop an image onto the app, or use Upload button to select
-            a file to upload.
+            Drag and drop an image onto the app, or use <b>Upload</b> button to
+            select a file to upload.
+          </p>
+          <br />
+          <p>
+            Click <b>Clear</b> button to reset editor state.
           </p>
           <br />
           <p>

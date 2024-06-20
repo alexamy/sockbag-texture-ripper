@@ -1,5 +1,6 @@
 import { styled } from "@macaron-css/solid";
 import { createMemo, createSignal, For, onMount, Show } from "solid-js";
+import { Clear } from "./Clear";
 import { Header } from "./Header";
 import { Help } from "./Help";
 import { useRegionContext } from "./Region";
@@ -84,6 +85,7 @@ export function EditorToolbar() {
         {move.current().y} Origin: {move.origin().x}, {move.origin().y}
       </div>
       <Buttons>
+        <Clear />
         <Upload />
         <Help />
         <Header />

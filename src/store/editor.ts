@@ -77,11 +77,16 @@ export function createEditorStore(file: { blob: Blob }) {
     setStore({ buffer });
   }
 
+  function clear() {
+    setStore(getDefaultStore());
+  }
+
   const methods = {
     updateCurrent,
     updatePoint,
     addPoint,
     deleteLastPoint,
+    clear,
   };
 
   return [store, methods, setStore] as const;
