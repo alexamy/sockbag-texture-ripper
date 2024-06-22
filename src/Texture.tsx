@@ -40,7 +40,7 @@ export function Texture() {
   const [store] = useAppStore().texture;
 
   return (
-    <Container>
+    <Container data-testid="texture">
       <For each={store.urls}>
         {(url, i) => (
           <TextureRect
