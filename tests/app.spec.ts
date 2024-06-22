@@ -50,19 +50,4 @@ test("draws and makes the texture", async ({ page }) => {
   // await app.texture.toHaveScreenshot();
 });
 
-test("editor", async ({ page }) => {
-  // discrads last drawn point
-});
-
-test("texture", async ({ page }) => {
-  // increase the gap
-});
-
-test("controls the regions", async ({ page }) => {
-  // pan the editor
-  // zoom the editor
-  // pan the texture
-  // zoom the texture
-});
-
 test("shows the help", async ({ page }) => {});
