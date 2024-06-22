@@ -1,7 +1,7 @@
 import { test } from "@playwright/test";
 import { AppPage } from "./utils/app";
 
-test.skip("gap", async ({ page }) => {
+test.skip("adds gap between rectangles", async ({ page }) => {
   const app = new AppPage(page);
   await app.goto();
 
