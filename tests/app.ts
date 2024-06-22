@@ -21,6 +21,14 @@ export class AppPage {
     texture: Locator;
   };
 
+  /** Buttons */
+  buttons: {
+    upload: Locator;
+    download: Locator;
+    clear: Locator;
+    help: Locator;
+  };
+
   constructor(page: Page) {
     this.page = page;
 
@@ -37,6 +45,13 @@ export class AppPage {
     this.elements = {
       editor: page.getByTestId("editor"),
       texture: page.getByTestId("texture"),
+    };
+
+    this.buttons = {
+      upload: page.getByRole("button", { name: "Upload" }),
+      download: page.getByRole("button", { name: "Download" }),
+      clear: page.getByRole("button", { name: "Clear" }),
+      help: page.getByRole("button", { name: "Help" }),
     };
   }
 
