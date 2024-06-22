@@ -2,10 +2,12 @@ import { expect, test } from "@playwright/test";
 import { AppPage } from "./utils/app";
 
 test("loads", async ({ page }) => {
-  await page.goto("/");
+  const app = new AppPage(page);
+  await app.goto();
 
-  await expect(page.getByTestId("editor")).toBeVisible();
-  await expect(page.getByTestId("texture")).toBeVisible();
+  // all the elements are visible
+  await expect(app.editor.region).toBeVisible();
+  await expect(app.texture.region).toBeVisible();
 });
 
 test("draws and makes the texture", async ({ page }) => {
