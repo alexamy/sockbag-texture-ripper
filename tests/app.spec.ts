@@ -17,15 +17,20 @@ test("draws and makes the texture", async ({ page }) => {
   await app.editor.toHaveScreenshot();
 
   // draw first quad
-  await app.editor.content.click({ position: { x: 100, y: 150 } });
-  await app.editor.content.click({ position: { x: 230, y: 100 } });
-  await app.editor.content.click({ position: { x: 200, y: 200 } });
-  await app.editor.content.click({ position: { x: 120, y: 200 } });
+  await app.editor.content.click({ position: { x: 25, y: 60 } });
+  await app.editor.content.click({ position: { x: 90, y: 81 } });
+  await app.editor.content.click({ position: { x: 94, y: 168 } });
+  await app.editor.content.click({ position: { x: 47, y: 150 } });
   // see the result
   await app.texture.toHaveScreenshot();
 
   // draw second quad
+  await app.editor.content.click({ position: { x: 185, y: 100 } });
+  await app.editor.content.click({ position: { x: 320, y: 67 } });
+  await app.editor.content.click({ position: { x: 322, y: 214 } });
+  await app.editor.content.click({ position: { x: 166, y: 148 } });
   // see the result
+  await app.texture.toHaveScreenshot();
 
   // increase the gap
   // download the texture
