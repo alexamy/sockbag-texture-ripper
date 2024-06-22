@@ -1,4 +1,5 @@
 import { Locator, Page } from "@playwright/test";
+import { getFile } from "./helper";
 
 export class AppPage {
   page: Page;
@@ -57,5 +58,14 @@ export class AppPage {
 
   async goto() {
     await this.page.goto("/");
+  }
+
+  async upload(name: string) {
+    const image = getFile(name);
+    const fileChooserPromise = this.page.waitForEvent("filechooser");
+
+    await this.buttons.upload.click();
+    const fileChooser = await fileChooserPromise;
+    await fileChooser.setFiles(image);
   }
 }
