@@ -26,4 +26,25 @@ test("works", async ({ page }) => {
   await fileChooser.setFiles(image);
 
   await expect(editor).toHaveScreenshot("editor-upload.png");
+
+  // draw first quad
+  await editor.click({ position: { x: 100, y: 150 } });
+  await editor.click({ position: { x: 230, y: 100 } });
+  await editor.click({ position: { x: 200, y: 200 } });
+  await editor.click({ position: { x: 120, y: 200 } });
+
+  // see the result
+  // draw second quad
+  // see the result
+  // download the texture
+  // clear the editor
+
+  // pan the editor
+  // zoom the editor
+
+  // pan the texture
+  // zoom the texture
+  // increase the gap
+
+  // show the help
 });
