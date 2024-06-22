@@ -50,4 +50,16 @@ test("draws and makes the texture", async ({ page }) => {
   // await app.texture.toHaveScreenshot();
 });
 
-test("shows the help", async ({ page }) => {});
+test("shows the help", async ({ page }) => {
+  const app = new AppPage(page);
+  await app.goto();
+  await app.buttons.help.click();
+
+  await expect(
+    page.getByText("The left region is the uploaded image")
+  ).toBeVisible();
+
+  await expect(
+    page.getByText("The right region is the result texture")
+  ).toBeVisible();
+});
