@@ -32,15 +32,25 @@ test("draws and makes the texture", async ({ page }) => {
   // see the result
   await app.texture.toHaveScreenshot();
 
-  // increase the gap
   // download the texture
+  const file = await app.download();
+  expect(file).toMatchSnapshot();
 
   // persist after the reload
+  await app.goto();
+  await app.editor.toHaveScreenshot();
+
   // clear the editor
+  await app.buttons.clear.click();
+  await app.editor.toHaveScreenshot();
 });
 
 test("editor", async ({ page }) => {
   // discrads last drawn point
+});
+
+test("texture", async ({ page }) => {
+  // increase the gap
 });
 
 test("controls the regions", async ({ page }) => {

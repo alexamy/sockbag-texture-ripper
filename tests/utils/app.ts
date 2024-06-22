@@ -1,4 +1,5 @@
 import { Locator, Page, expect } from "@playwright/test";
+import internal from "node:stream";
 import { resolve } from "./helper";
 
 export class AppPage {
@@ -6,6 +7,10 @@ export class AppPage {
 
   editor: Editor;
   texture: Texture;
+
+  inputs: {
+    gap: Locator;
+  };
 
   buttons: {
     upload: Locator;
@@ -26,6 +31,10 @@ export class AppPage {
       clear: page.getByRole("button", { name: "Clear" }),
       help: page.getByRole("button", { name: "Help" }),
     };
+
+    this.inputs = {
+      gap: page.getByLabel("Gap"),
+    };
   }
 
   async goto() {
@@ -39,6 +48,17 @@ export class AppPage {
     await this.buttons.upload.click();
     const fileChooser = await fileChooserPromise;
     await fileChooser.setFiles(image);
+  }
+
+  async download() {
+    const downloadPromise = this.page.waitForEvent("download");
+    await this.buttons.download.click();
+
+    const download = await downloadPromise;
+    const stream = await download.createReadStream();
+    const file = await readDownload(stream);
+
+    return file;
   }
 }
 
@@ -92,4 +112,13 @@ class Texture {
       mask: [this.footer],
     });
   }
+}
+
+function readDownload(stream: internal.Readable): Promise<string> {
+  const chunks: Buffer[] = [];
+  return new Promise((resolve, reject) => {
+    stream.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
+    stream.on("error", (err) => reject(err));
+    stream.on("end", () => resolve(Buffer.concat(chunks).toString("binary")));
+  });
 }
