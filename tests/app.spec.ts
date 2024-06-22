@@ -41,11 +41,11 @@ test("draws and makes the texture", async ({ page }) => {
   // persist after the reload
   await app.goto();
   await app.editor.toHaveScreenshot();
+  await app.texture.toHaveScreenshot();
 
   // clear the editor
   await app.buttons.clear.click();
   await app.editor.toHaveScreenshot();
-
   // TODO clear the texture
   // await app.texture.toHaveScreenshot();
 });
