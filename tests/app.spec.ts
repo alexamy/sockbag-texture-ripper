@@ -11,7 +11,7 @@ test("loads", async ({ page }) => {
   await expect(page.getByTestId("texture")).toBeVisible();
 });
 
-test("works", async ({ page }) => {
+test("draws and makes the texture", async ({ page }) => {
   await page.goto("/");
 
   const editor = page.getByTestId("editor");
@@ -36,17 +36,19 @@ test("works", async ({ page }) => {
   // see the result
   // draw second quad
   // see the result
+
+  // increase the gap
   // download the texture
 
   // persist after the reload
   // clear the editor
+});
 
+test("controls the regions", async ({ page }) => {
   // pan the editor
   // zoom the editor
-
   // pan the texture
   // zoom the texture
-  // increase the gap
-
-  // show the help
 });
+
+test("shows the help", async ({ page }) => {});
