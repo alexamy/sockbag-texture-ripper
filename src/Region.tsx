@@ -82,6 +82,7 @@ export function Region(props: {
   toolbar?: JSXElement;
   width: number;
   resetTrigger: unknown;
+  testId?: string;
 }) {
   const move = createRegionMovement();
   const [parent, setParent] = createSignal<HTMLElement>();
@@ -113,6 +114,7 @@ export function Region(props: {
   return (
     <Container
       ref={setParent}
+      data-testid={props.testId}
       style={{ width: `${props.width}%`, cursor: cursor() }}
       onMouseEnter={onMouseEnter}
       onMouseMove={move.onMouseMove}
