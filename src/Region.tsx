@@ -116,7 +116,7 @@ export function Region(props: {
   return (
     <Container
       ref={setParent}
-      data-testid={props.testId}
+      data-testid={props.testId + "-region"}
       style={{ width: `${props.width}%`, cursor: cursor() }}
       onMouseEnter={onMouseEnter}
       onMouseMove={move.onMouseMove}
@@ -137,7 +137,7 @@ export function Region(props: {
           {props.toolbar}
         </Toolbar>
         <Content
-          data-testid={props.testId}
+          data-testid={props.testId + "-content"}
           ref={move.setRef}
           style={move.style()}
         >

@@ -1,32 +1,12 @@
-import { Locator, Page } from "@playwright/test";
+import { Locator, Page, expect } from "@playwright/test";
 import { resolve } from "./helper";
 
 export class AppPage {
   page: Page;
 
-  /** Main: without toolbars, but affected by pan and zoom */
-  editor: Locator;
-  texture: Locator;
+  editor: Editor;
+  texture: Texture;
 
-  /** Full: with toolbars */
-  regions: {
-    editor: Locator;
-    texture: Locator;
-  };
-
-  /** Native: without toolbars, and not affected by pan and zoom */
-  elements: {
-    editor: Locator;
-    texture: Locator;
-  };
-
-  /** Region footer */
-  footers: {
-    editor: Locator;
-    texture: Locator;
-  };
-
-  /** Buttons */
   buttons: {
     upload: Locator;
     download: Locator;
@@ -37,23 +17,8 @@ export class AppPage {
   constructor(page: Page) {
     this.page = page;
 
-    this.regions = {
-      editor: page.getByTestId("editor-region"),
-      texture: page.getByTestId("texture-region"),
-    };
-
-    this.editor = page.getByTestId("editor-region-content");
-    this.texture = page.getByTestId("texture-region-content");
-
-    this.elements = {
-      editor: page.getByTestId("editor"),
-      texture: page.getByTestId("texture"),
-    };
-
-    this.footers = {
-      editor: page.getByTestId("editor-region-footer"),
-      texture: page.getByTestId("texture-region-footer"),
-    };
+    this.editor = new Editor(page);
+    this.texture = new Texture(page);
 
     this.buttons = {
       upload: page.getByRole("button", { name: "Upload" }),
@@ -74,5 +39,57 @@ export class AppPage {
     await this.buttons.upload.click();
     const fileChooser = await fileChooserPromise;
     await fileChooser.setFiles(image);
+  }
+}
+
+class Editor {
+  page: Page;
+
+  /** Full: with toolbar */
+  region: Locator;
+  /** Main: without toolbar, affected by pan and zoom */
+  content: Locator;
+
+  toolbar: Locator;
+  footer: Locator;
+
+  constructor(page: Page) {
+    this.page = page;
+    this.region = page.getByTestId("editor-region");
+    this.content = page.getByTestId("editor-content");
+    this.toolbar = page.getByTestId("editor-toolbar");
+    this.footer = page.getByTestId("editor-footer");
+  }
+
+  async toHaveScreenshot() {
+    await expect(this.content).toHaveScreenshot({
+      mask: [this.footer],
+    });
+  }
+}
+
+class Texture {
+  page: Page;
+
+  /** Full: with toolbar */
+  region: Locator;
+  /** Main: without toolbar, affected by pan and zoom */
+  content: Locator;
+
+  toolbar: Locator;
+  footer: Locator;
+
+  constructor(page: Page) {
+    this.page = page;
+    this.region = page.getByTestId("texture-region");
+    this.content = page.getByTestId("texture-content");
+    this.toolbar = page.getByTestId("texture-toolbar");
+    this.footer = page.getByTestId("texture-footer");
+  }
+
+  async toHaveScreenshot(name: string) {
+    await expect(this.content).toHaveScreenshot(name, {
+      mask: [this.footer],
+    });
   }
 }

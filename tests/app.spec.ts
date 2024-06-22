@@ -1,9 +1,5 @@
 import { expect, test } from "@playwright/test";
-import path from "node:path";
-import url from "node:url";
 import { AppPage } from "./utils/app";
-
-const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 test("loads", async ({ page }) => {
   await page.goto("/");
@@ -18,15 +14,13 @@ test("draws and makes the texture", async ({ page }) => {
 
   // upload image
   await app.upload("./images/cat.png", import.meta.url);
-  await expect(app.editor).toHaveScreenshot("editor-upload.png", {
-    mask: [app.footers.editor],
-  });
+  await app.editor.toHaveScreenshot();
 
   // draw first quad
-  await app.editor.click({ position: { x: 100, y: 150 } });
-  await app.editor.click({ position: { x: 230, y: 100 } });
-  await app.editor.click({ position: { x: 200, y: 200 } });
-  await app.editor.click({ position: { x: 120, y: 200 } });
+  await app.editor.content.click({ position: { x: 100, y: 150 } });
+  await app.editor.content.click({ position: { x: 230, y: 100 } });
+  await app.editor.content.click({ position: { x: 200, y: 200 } });
+  await app.editor.content.click({ position: { x: 120, y: 200 } });
 
   // see the result
   // draw second quad
