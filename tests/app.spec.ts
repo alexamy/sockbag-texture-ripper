@@ -43,6 +43,9 @@ test("draws and makes the texture", async ({ page }) => {
   // clear the editor
   await app.buttons.clear.click();
   await app.editor.toHaveScreenshot();
+
+  // TODO clear the texture
+  // await app.texture.toHaveScreenshot();
 });
 
 test("editor", async ({ page }) => {
