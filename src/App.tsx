@@ -84,7 +84,7 @@ function TextureRipper() {
     >
       <Show when={store.blob}>
         <Region
-          testId="editor-region"
+          testId="editor"
           toolbar={<EditorToolbar />}
           width={resize.left()}
           resetTrigger={store.blob}
@@ -101,7 +101,7 @@ function TextureRipper() {
         </RegionBorder>
 
         <Region
-          testId="texture-region"
+          testId="texture"
           toolbar={<TextureToolbar />}
           width={resize.right()}
           resetTrigger={store.blob}
