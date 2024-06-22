@@ -22,6 +22,8 @@
   },
   "devDependencies": {
     "@macaron-css/vite": "^1.5.1",
+    "@playwright/test": "^1.44.1",
+    "@types/node": "^20.14.8",
     "@typescript-eslint/eslint-plugin": "^7.11.0",
     "eslint": "^8.57.0",
     "eslint-plugin-solid": "^0.14.0",
