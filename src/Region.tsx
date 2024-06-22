@@ -141,7 +141,7 @@ export function Region(props: {
         >
           {props.children}
         </Content>
-        <Footer>
+        <Footer data-testid={props.testId + "-footer"}>
           <Button
             onClick={move.resetView}
             onMouseDown={(e) => e.preventDefault()}

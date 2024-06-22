@@ -20,6 +20,12 @@ export class AppPage {
     texture: Locator;
   };
 
+  /** Region footer */
+  footers: {
+    editor: Locator;
+    texture: Locator;
+  };
+
   /** Buttons */
   buttons: {
     upload: Locator;
@@ -42,6 +48,11 @@ export class AppPage {
     this.elements = {
       editor: page.getByTestId("editor"),
       texture: page.getByTestId("texture"),
+    };
+
+    this.footers = {
+      editor: page.getByTestId("editor-region-footer"),
+      texture: page.getByTestId("texture-region-footer"),
     };
 
     this.buttons = {

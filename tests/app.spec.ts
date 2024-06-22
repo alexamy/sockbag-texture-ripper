@@ -18,7 +18,9 @@ test("draws and makes the texture", async ({ page }) => {
 
   // upload image
   await app.upload("./images/cat.png", import.meta.url);
-  await expect(app.editor).toHaveScreenshot("editor-upload.png");
+  await expect(app.editor).toHaveScreenshot("editor-upload.png", {
+    mask: [app.footers.editor],
+  });
 
   // draw first quad
   await app.editor.click({ position: { x: 100, y: 150 } });
