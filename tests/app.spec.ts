@@ -37,6 +37,8 @@ test("works", async ({ page }) => {
   // draw second quad
   // see the result
   // download the texture
+
+  // persist after the reload
   // clear the editor
 
   // pan the editor

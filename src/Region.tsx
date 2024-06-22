@@ -42,6 +42,8 @@ const Container = styled("div", {
 const Content = styled("div", {
   base: {
     transformOrigin: "0 0",
+    width: "100%",
+    height: "100%",
   },
 });
 
@@ -132,7 +134,11 @@ export function Region(props: {
       />
       <RegionContext.Provider value={move}>
         <Toolbar>{props.toolbar}</Toolbar>
-        <Content ref={move.setRef} style={move.style()}>
+        <Content
+          data-test-id={props.testId + "-content"}
+          ref={move.setRef}
+          style={move.style()}
+        >
           {props.children}
         </Content>
         <Footer>
