@@ -133,9 +133,11 @@ export function Region(props: {
         height={size().height}
       />
       <RegionContext.Provider value={move}>
-        <Toolbar>{props.toolbar}</Toolbar>
+        <Toolbar data-testid={props.testId + "-toolbar"}>
+          {props.toolbar}
+        </Toolbar>
         <Content
-          data-testid={props.testId + "-content"}
+          data-testid={props.testId}
           ref={move.setRef}
           style={move.style()}
         >

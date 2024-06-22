@@ -61,7 +61,7 @@ export function Editor() {
   );
 
   return (
-    <Container data-testid="editor">
+    <Container>
       <ImageBackground src={store.url} onLoadRef={setImageRef} />
       <Show when={imageRef()}>
         <DrawingBoard imageRef={imageRef()!} />
