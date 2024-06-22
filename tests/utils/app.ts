@@ -87,8 +87,8 @@ class Texture {
     this.footer = page.getByTestId("texture-footer");
   }
 
-  async toHaveScreenshot(name: string) {
-    await expect(this.content).toHaveScreenshot(name, {
+  async toHaveScreenshot() {
+    await expect(this.content).toHaveScreenshot({
       mask: [this.footer],
     });
   }

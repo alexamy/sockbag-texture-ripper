@@ -21,8 +21,9 @@ test("draws and makes the texture", async ({ page }) => {
   await app.editor.content.click({ position: { x: 230, y: 100 } });
   await app.editor.content.click({ position: { x: 200, y: 200 } });
   await app.editor.content.click({ position: { x: 120, y: 200 } });
-
   // see the result
+  await app.texture.toHaveScreenshot();
+
   // draw second quad
   // see the result
 
