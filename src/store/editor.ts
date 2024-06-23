@@ -5,6 +5,7 @@ import { createStore } from "solid-js/store";
 export type EditorStore = ReturnType<typeof createEditorStore>;
 
 type PointId = string;
+type QuadId = string;
 
 export interface Point {
   id: PointId;
@@ -12,7 +13,11 @@ export interface Point {
   y: number;
 }
 
-export type Quad = PointId[];
+export interface Quad {
+  id: QuadId;
+  points: PointId[];
+}
+
 export type QuadPoints = [Point, Point, Point, Point];
 
 interface StoreData {
@@ -40,8 +45,8 @@ export function createEditorStore(file: { blob: Blob }) {
   createEffect(on(() => store.buffer, (buffer) => {
     if(buffer.length < 4) return;
     const [p1, p2, p3, p4] = buffer;
-    const link = [p1.id, p2.id, p3.id, p4.id];
-    const quads = [...store.quads, link];
+    const quad = { id: getId(), points: [p1.id, p2.id, p3.id, p4.id] };
+    const quads = [...store.quads, quad];
     const points = [...store.points, ...buffer];
     setStore({ quads, points, buffer: [], });
   }));
@@ -93,7 +98,7 @@ export function createEditorStore(file: { blob: Blob }) {
 }
 
 function quadToPoints(quads: Quad, points: Point[]): QuadPoints {
-  const [p1, p2, p3, p4] = quads.map((id) => {
+  const [p1, p2, p3, p4] = quads.points.map((id) => {
     const point = points.find((p) => p.id === id);
     if (!point) throw new Error("Point not found.");
     return point;
