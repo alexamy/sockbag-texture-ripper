@@ -81,6 +81,6 @@ test("controls the texture region", async ({ page }) => {
   await page.keyboard.up("Space");
 
   // reset
-  await app.texture.resetView.click();
+  await app.texture.buttons.resetView.click();
   await app.texture.toHaveScreenshot();
 });
