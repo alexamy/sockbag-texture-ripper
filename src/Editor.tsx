@@ -162,17 +162,35 @@ function DrawingBoard(props: { imageRef: HTMLImageElement }) {
 }
 
 function Quad(props: { quad: Quad }) {
+  const [highlighted, setHighlighted] = createSignal(false);
+  const [dragging, setDragging] = createSignal(false);
+
   const top = createMemo(() => v.average(props.quad.slice(0, 2)));
   const center = createMemo(() => v.average(props.quad));
+
+  const points = createMemo(() =>
+    props.quad.map((point) => `${point.x},${point.y}`).join(" ")
+  );
+
+  function onMouseMove(e: MouseEvent) {
+    e.stopPropagation();
+  }
 
   return (
     <>
       <polygon
-        points={props.quad.map((point) => `${point.x},${point.y}`).join(" ")}
+        points={points()}
         stroke="greenyellow"
         stroke-width="1"
         fill="greenyellow"
-        fill-opacity={0.2}
+        fill-opacity={highlighted() ? 0.6 : 0.2}
+        style={{ cursor: highlighted() ? "pointer" : "default" }}
+        onMouseEnter={() => setHighlighted(true)}
+        onMouseLeave={() => setHighlighted(false)}
+        onClick={(e) => e.stopPropagation()}
+        onMouseDown={() => setDragging(true)}
+        onMouseUp={() => setDragging(false)}
+        onMouseMove={onMouseMove}
       />
       <Line from={center()} to={top()} withTip={true} color="darkred" />
       <For each={props.quad}>{(point) => <DragPoint p={point} />}</For>
