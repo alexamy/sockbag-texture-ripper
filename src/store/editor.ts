@@ -1,4 +1,4 @@
-import { v } from "#/vector";
+import { v } from "#/lib/vector";
 import { createEffect, on } from "solid-js";
 import { createStore } from "solid-js/store";
 

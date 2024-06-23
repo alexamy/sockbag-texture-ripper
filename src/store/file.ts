@@ -1,4 +1,4 @@
-import { createImageSource } from "#/helper";
+import { createImageSource } from "#/lib/helper";
 import { createEffect, on } from "solid-js";
 import { createStore } from "solid-js/store";
 

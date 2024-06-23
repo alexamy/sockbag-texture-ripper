@@ -1,4 +1,4 @@
-import { blobToDataURI, dataURItoBlob, tick } from "#/helper";
+import { blobToDataURI, dataURItoBlob, tick } from "#/lib/helper";
 import {
   JSXElement,
   createContext,

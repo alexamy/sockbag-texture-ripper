@@ -1,9 +1,9 @@
+import { v } from "#/lib/vector";
 import { styled } from "@macaron-css/solid";
 import { createMemo, createSignal, For, onMount, Show } from "solid-js";
 import { useRegionContext } from "./Region";
 import { useAppStore } from "./store";
 import { type Point as PointId, type Quad } from "./store/editor";
-import { v } from "./vector";
 
 type Point = { x: number; y: number };
 
