@@ -4,15 +4,15 @@ import { createStore } from "solid-js/store";
 
 export type EditorStore = ReturnType<typeof createEditorStore>;
 
-type Id = string;
+type PointId = string;
 
 export interface Point {
-  id: Id;
+  id: PointId;
   x: number;
   y: number;
 }
 
-export type Quad = Id[];
+export type Quad = PointId[];
 export type QuadPoints = [Point, Point, Point, Point];
 
 interface StoreData {
