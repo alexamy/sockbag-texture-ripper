@@ -1,10 +1,10 @@
-import { Quad } from "#/store/editor";
+import { QuadPoints } from "#/store/editor";
 import cv from "@techstark/opencv-js";
 import { v } from "./vector";
 
 export async function projectRectangles(
   image: HTMLImageElement,
-  quads: Quad[]
+  quads: QuadPoints[]
 ) {
   const src = cv.imread(image);
   const blobs: Blob[] = [];

@@ -1,9 +1,16 @@
 import { v } from "#/lib/vector";
 import { styled } from "@macaron-css/solid";
-import { createMemo, createSignal, For, onMount, Show } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  For,
+  onMount,
+  Show,
+} from "solid-js";
 import { useRegionContext } from "./Region";
 import { useAppStore } from "./store";
-import { type Point as PointId, type Quad } from "./store/editor";
+import { type Point as PointId, type QuadPoints } from "./store/editor";
 
 type Point = { x: number; y: number };
 
@@ -65,7 +72,7 @@ function DrawingBoard(props: { imageRef: HTMLImageElement }) {
     useAppStore().editor;
 
   const current = () => store.current;
-  const quads = () => store.quads;
+  const quads = () => store.quadPoints;
   const points = () => store.buffer;
 
   const first = createMemo(() => points()[0]);
@@ -161,21 +168,64 @@ function DrawingBoard(props: { imageRef: HTMLImageElement }) {
   );
 }
 
-function Quad(props: { quad: Quad }) {
-  const top = createMemo(() => v.average(props.quad.slice(0, 2)));
-  const center = createMemo(() => v.average(props.quad));
+function Quad(props: { quad: QuadPoints }) {
+  const [_, { updatePoints }] = useAppStore().editor;
+  const [highlighted, setHighlighted] = createSignal(false);
+  const [dragging, setDragging] = createSignal(false);
+
+  const [points, setPoints] = createSignal<PointId[]>([]);
+  createEffect(() => setPoints(props.quad));
+
+  const top = createMemo(() => v.average(points().slice(0, 2)));
+  const center = createMemo(() => v.average(points()));
+
+  const [mousePosition, setMousePosition] = createSignal<Point>({ x: 0, y: 0 });
+  const polygonPoints = createMemo(() =>
+    points()
+      .map((point) => `${point.x},${point.y}`)
+      .join(" ")
+  );
+
+  function onMouseDown(event: MouseEvent) {
+    event.stopPropagation();
+    setDragging(true);
+    setMousePosition({ x: event.clientX, y: event.clientY });
+  }
+
+  function onMouseMove(event: MouseEvent) {
+    if (!dragging()) return;
+    event.stopPropagation();
+    const newPosition = { x: event.clientX, y: event.clientY };
+    const delta = v.subtract(newPosition, mousePosition());
+    setPoints((points) =>
+      points.map((p) => ({ id: p.id, ...v.add(p, delta) }))
+    );
+    setMousePosition(newPosition);
+  }
+
+  function onMouseUp() {
+    updatePoints(points());
+    setDragging(false);
+  }
 
   return (
     <>
+      <Line from={center()} to={top()} withTip={true} color="red" />
       <polygon
-        points={props.quad.map((point) => `${point.x},${point.y}`).join(" ")}
+        points={polygonPoints()}
         stroke="greenyellow"
         stroke-width="1"
         fill="greenyellow"
-        fill-opacity={0.2}
+        fill-opacity={highlighted() ? 0.6 : 0.2}
+        style={{ cursor: highlighted() ? "pointer" : "default" }}
+        onMouseEnter={() => setHighlighted(true)}
+        onMouseLeave={() => setHighlighted(false)}
+        onClick={(e) => e.stopPropagation()}
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
+        onMouseUp={onMouseUp}
       />
-      <Line from={center()} to={top()} withTip={true} color="darkred" />
-      <For each={props.quad}>{(point) => <DragPoint p={point} />}</For>
+      <For each={points()}>{(point) => <DragPoint p={point} />}</For>
     </>
   );
 }

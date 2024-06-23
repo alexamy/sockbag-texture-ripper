@@ -3,7 +3,7 @@ import { projectRectangles } from "#/lib/projection";
 import potpack from "potpack";
 import { createEffect, on } from "solid-js";
 import { createStore } from "solid-js/store";
-import { Quad } from "./editor";
+import { QuadPoints } from "./editor";
 
 export type TextureStore = ReturnType<typeof createTextureStore>;
 
@@ -34,7 +34,7 @@ interface PackDimensions {
 
 export function createTextureStore(
   file: { image: HTMLImageElement },
-  editor: { quads: Quad[] }
+  editor: { quadPoints: QuadPoints[] }
 ) {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
   let projectTimeout: NodeJS.Timeout;
@@ -48,7 +48,7 @@ export function createTextureStore(
 
   // prettier-ignore
   createEffect(
-    on(() => [file.image, editor.quads] as const, async ([image, quads]) => {
+    on(() => [file.image, editor.quadPoints] as const, async ([image, quads]) => {
       if (image.width === 0 || quads.length === 0) return;
 
       // possibly there is a bug with slow opencv loading (or my own bug in the app logic)
