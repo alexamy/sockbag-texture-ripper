@@ -8,10 +8,12 @@ export class AppPage {
   editor: Editor;
   texture: Texture;
 
+  // TODO move to the texture
   inputs: {
     gap: Locator;
   };
 
+  // TODO split to the editor and the texture
   buttons: {
     upload: Locator;
     download: Locator;
@@ -72,6 +74,7 @@ class Editor {
 
   toolbar: Locator;
   footer: Locator;
+  resetView: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -79,11 +82,12 @@ class Editor {
     this.content = page.getByTestId("editor-content");
     this.toolbar = page.getByTestId("editor-toolbar");
     this.footer = page.getByTestId("editor-footer");
+    this.resetView = this.region.getByRole("button", { name: "Reset view" });
   }
 
   async toHaveScreenshot() {
     await expect(this.content).toHaveScreenshot({
-      mask: [this.footer],
+      mask: [this.toolbar, this.footer],
     });
   }
 }
@@ -98,6 +102,7 @@ class Texture {
 
   toolbar: Locator;
   footer: Locator;
+  resetView: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -105,11 +110,12 @@ class Texture {
     this.content = page.getByTestId("texture-content");
     this.toolbar = page.getByTestId("texture-toolbar");
     this.footer = page.getByTestId("texture-footer");
+    this.resetView = this.region.getByRole("button", { name: "Reset view" });
   }
 
   async toHaveScreenshot() {
     await expect(this.content).toHaveScreenshot({
-      mask: [this.footer],
+      mask: [this.toolbar, this.footer],
     });
   }
 }
