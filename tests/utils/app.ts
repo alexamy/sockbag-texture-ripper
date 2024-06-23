@@ -115,6 +115,9 @@ class Texture {
     this.buttons = {
       resetView: this.region.getByRole("button", { name: "Reset view" }),
     };
+    this.inputs = {
+      gap: this.region.getByLabel("Gap"),
+    };
   }
 
   async toHaveScreenshot() {
