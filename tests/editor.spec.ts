@@ -69,4 +69,6 @@ test("drags quad", async ({ page }) => {
   await page.mouse.move(115, 130);
   await page.mouse.up();
   await app.editor.toHaveScreenshot();
+
+  // TODO drag the older quad over the newer quad
 });
