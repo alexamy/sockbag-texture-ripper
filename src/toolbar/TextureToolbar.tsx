@@ -1,7 +1,7 @@
+import { useAppStore } from "#/store";
+import { TextureStore } from "#/store/texture";
+import { Button } from "#/styles";
 import { styled } from "@macaron-css/solid";
-import { useAppStore } from "../store";
-import { TextureStore } from "../store/texture";
-import { Button } from "../styles";
 
 const Toolbar = styled("div", {
   base: {

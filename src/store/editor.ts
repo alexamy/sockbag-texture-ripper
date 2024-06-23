@@ -1,6 +1,6 @@
+import { v } from "#/vector";
 import { createEffect, on } from "solid-js";
 import { createStore } from "solid-js/store";
-import { v } from "../vector";
 
 export type EditorStore = ReturnType<typeof createEditorStore>;
 

@@ -1,7 +1,7 @@
+import { Button } from "#/styles";
 import { styled } from "@macaron-css/solid";
 import { Show, createSignal } from "solid-js";
 import { Portal } from "solid-js/web";
-import { Button } from "../styles";
 
 const Backdrop = styled("div", {
   base: {

@@ -1,6 +1,6 @@
+import { useAppStore } from "#/store";
+import { Button } from "#/styles";
 import { createSignal } from "solid-js";
-import { useAppStore } from "../store";
-import { Button } from "../styles";
 
 export function Upload() {
   const [_, { setFile }] = useAppStore().file;
