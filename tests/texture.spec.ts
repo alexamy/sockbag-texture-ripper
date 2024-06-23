@@ -1,7 +1,7 @@
 import { test } from "@playwright/test";
 import { AppPage } from "./utils/app";
 
-test.skip("adds gap between rectangles", async ({ page }) => {
+test("adds gap between rectangles", async ({ page }) => {
   const app = new AppPage(page);
   await app.goto();
 
@@ -21,7 +21,8 @@ test.skip("adds gap between rectangles", async ({ page }) => {
   // see the result without gap
   await app.texture.toHaveScreenshot();
   // increase the gap
-  await app.inputs.gap.fill("10"); // BUG can't enter value into the input
+  await app.inputs.gap.fill("10");
+  await page.keyboard.press("Enter");
   // see the result with gap
   await app.texture.toHaveScreenshot();
 });

@@ -78,15 +78,15 @@ export function createRegionMovement() {
 
   // activation
   function onKeyDown(e: KeyboardEvent) {
-    e.preventDefault();
     if (e.key === " ") {
+      e.preventDefault();
       setActive(true);
     }
   }
 
   function onKeyUp(e: KeyboardEvent) {
-    e.preventDefault();
     if (e.key === " ") {
+      e.preventDefault();
       setActive(false);
     }
   }
