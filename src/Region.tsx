@@ -1,3 +1,4 @@
+import { createRegionMovement } from "#/hooks/createRegionMovement";
 import { styled } from "@macaron-css/solid";
 import {
   Accessor,
@@ -13,7 +14,6 @@ import {
   useContext,
 } from "solid-js";
 import { GridBackground } from "./GridBackground";
-import { createRegionMovement } from "./createRegionMovement";
 import { Button } from "./styles";
 
 interface Transform {
