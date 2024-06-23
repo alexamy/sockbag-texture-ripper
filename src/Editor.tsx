@@ -173,11 +173,11 @@ function Quad(props: { quad: QuadPoints }) {
   const [highlighted, setHighlighted] = createSignal(false);
   const [dragging, setDragging] = createSignal(false);
 
-  const top = createMemo(() => v.average(props.quad.slice(0, 2)));
-  const center = createMemo(() => v.average(props.quad));
-
   const [points, setPoints] = createSignal<PointId[]>([]);
   createEffect(() => setPoints(props.quad));
+
+  const top = createMemo(() => v.average(points().slice(0, 2)));
+  const center = createMemo(() => v.average(points()));
 
   const [mousePosition, setMousePosition] = createSignal<Point>({ x: 0, y: 0 });
   const polygonPoints = createMemo(() =>
@@ -210,6 +210,7 @@ function Quad(props: { quad: QuadPoints }) {
 
   return (
     <>
+      <Line from={center()} to={top()} withTip={true} color="red" />
       <polygon
         points={polygonPoints()}
         stroke="greenyellow"
@@ -224,8 +225,7 @@ function Quad(props: { quad: QuadPoints }) {
         onMouseMove={onMouseMove}
         onMouseUp={onMouseUp}
       />
-      <Line from={center()} to={top()} withTip={true} color="darkred" />
-      <For each={props.quad}>{(point) => <DragPoint p={point} />}</For>
+      <For each={points()}>{(point) => <DragPoint p={point} />}</For>
     </>
   );
 }
