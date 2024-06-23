@@ -12,15 +12,15 @@ export interface Point {
   y: number;
 }
 
-export type QuadLink = Id[];
-export type Quad = [Point, Point, Point, Point];
+export type Quad = Id[];
+export type QuadPoints = [Point, Point, Point, Point];
 
 interface StoreData {
   current: Point;
   points: Point[];
   buffer: Point[];
-  quadLinks: QuadLink[]; // point ids to make quad from
-  quads: Quad[];
+  quads: Quad[]; // point ids to make quad from
+  quadPoints: QuadPoints[];
 }
 
 // TODO implement point drag
@@ -41,15 +41,15 @@ export function createEditorStore(file: { blob: Blob }) {
     if(buffer.length < 4) return;
     const [p1, p2, p3, p4] = buffer;
     const link = [p1.id, p2.id, p3.id, p4.id];
-    const quadLinks = [...store.quadLinks, link];
+    const quads = [...store.quads, link];
     const points = [...store.points, ...buffer];
-    setStore({ quadLinks, points, buffer: [], });
+    setStore({ quads, points, buffer: [], });
   }));
 
   // prettier-ignore
-  createEffect(on(() => [store.quadLinks, store.points] as const, ([links, points]) => {
-    const quads = links.map((link) => linksToQuad(link, points));
-    setStore({ quads });
+  createEffect(on(() => [store.quads, store.points] as const, ([links, points]) => {
+    const quadPoints = links.map((link) => linksToQuad(link, points));
+    setStore({ quadPoints });
   }));
 
   function updateCurrent(coordinates: { x: number; y: number }) {
@@ -92,14 +92,14 @@ export function createEditorStore(file: { blob: Blob }) {
   return [store, methods, setStore] as const;
 }
 
-function linksToQuad(links: QuadLink, points: Point[]): Quad {
+function linksToQuad(links: Quad, points: Point[]): QuadPoints {
   const [p1, p2, p3, p4] = links.map((id) => {
     const point = points.find((p) => p.id === id);
     if (!point) throw new Error("Point not found.");
     return point;
   });
 
-  const quad: Quad = [p1, p2, p3, p4];
+  const quad: QuadPoints = [p1, p2, p3, p4];
   return quad;
 }
 
@@ -108,8 +108,8 @@ function getDefaultStore() {
     current: { x: 0, y: 0, id: getId() },
     points: [],
     buffer: [],
-    quadLinks: [],
     quads: [],
+    quadPoints: [],
   } satisfies StoreData;
 }
 

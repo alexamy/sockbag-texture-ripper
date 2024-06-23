@@ -3,7 +3,7 @@ import { styled } from "@macaron-css/solid";
 import { createMemo, createSignal, For, onMount, Show } from "solid-js";
 import { useRegionContext } from "./Region";
 import { useAppStore } from "./store";
-import { type Point as PointId, type Quad } from "./store/editor";
+import { type Point as PointId, type QuadPoints } from "./store/editor";
 
 type Point = { x: number; y: number };
 
@@ -65,7 +65,7 @@ function DrawingBoard(props: { imageRef: HTMLImageElement }) {
     useAppStore().editor;
 
   const current = () => store.current;
-  const quads = () => store.quads;
+  const quads = () => store.quadPoints;
   const points = () => store.buffer;
 
   const first = createMemo(() => points()[0]);
@@ -161,7 +161,7 @@ function DrawingBoard(props: { imageRef: HTMLImageElement }) {
   );
 }
 
-function Quad(props: { quad: Quad }) {
+function Quad(props: { quad: QuadPoints }) {
   const [highlighted, setHighlighted] = createSignal(false);
   const [dragging, setDragging] = createSignal(false);
 
