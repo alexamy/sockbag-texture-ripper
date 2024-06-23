@@ -1,6 +1,13 @@
 import { v } from "#/lib/vector";
 import { styled } from "@macaron-css/solid";
-import { createMemo, createSignal, For, onMount, Show } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  For,
+  onMount,
+  Show,
+} from "solid-js";
 import { useRegionContext } from "./Region";
 import { useAppStore } from "./store";
 import { type Point as PointId, type QuadPoints } from "./store/editor";
@@ -162,24 +169,49 @@ function DrawingBoard(props: { imageRef: HTMLImageElement }) {
 }
 
 function Quad(props: { quad: QuadPoints }) {
+  const [_, { updatePoints }] = useAppStore().editor;
   const [highlighted, setHighlighted] = createSignal(false);
   const [dragging, setDragging] = createSignal(false);
 
   const top = createMemo(() => v.average(props.quad.slice(0, 2)));
   const center = createMemo(() => v.average(props.quad));
 
-  const points = createMemo(() =>
-    props.quad.map((point) => `${point.x},${point.y}`).join(" ")
+  const [points, setPoints] = createSignal<PointId[]>([]);
+  createEffect(() => setPoints(props.quad));
+
+  const [mousePosition, setMousePosition] = createSignal<Point>({ x: 0, y: 0 });
+  const polygonPoints = createMemo(() =>
+    points()
+      .map((point) => `${point.x},${point.y}`)
+      .join(" ")
   );
 
-  function onMouseMove(e: MouseEvent) {
-    e.stopPropagation();
+  function onMouseDown(event: MouseEvent) {
+    event.stopPropagation();
+    setDragging(true);
+    setMousePosition({ x: event.clientX, y: event.clientY });
+  }
+
+  function onMouseMove(event: MouseEvent) {
+    if (!dragging()) return;
+    event.stopPropagation();
+    const newPosition = { x: event.clientX, y: event.clientY };
+    const delta = v.subtract(newPosition, mousePosition());
+    setPoints((points) =>
+      points.map((p) => ({ id: p.id, ...v.add(p, delta) }))
+    );
+    setMousePosition(newPosition);
+  }
+
+  function onMouseUp() {
+    updatePoints(points());
+    setDragging(false);
   }
 
   return (
     <>
       <polygon
-        points={points()}
+        points={polygonPoints()}
         stroke="greenyellow"
         stroke-width="1"
         fill="greenyellow"
@@ -188,9 +220,9 @@ function Quad(props: { quad: QuadPoints }) {
         onMouseEnter={() => setHighlighted(true)}
         onMouseLeave={() => setHighlighted(false)}
         onClick={(e) => e.stopPropagation()}
-        onMouseDown={() => setDragging(true)}
-        onMouseUp={() => setDragging(false)}
+        onMouseDown={onMouseDown}
         onMouseMove={onMouseMove}
+        onMouseUp={onMouseUp}
       />
       <Line from={center()} to={top()} withTip={true} color="darkred" />
       <For each={props.quad}>{(point) => <DragPoint p={point} />}</For>
