@@ -48,7 +48,7 @@ export function createEditorStore(file: { blob: Blob }) {
 
   // prettier-ignore
   createEffect(on(() => [store.quads, store.points] as const, ([links, points]) => {
-    const quadPoints = links.map((link) => linksToQuad(link, points));
+    const quadPoints = links.map((link) => quadToPoints(link, points));
     setStore({ quadPoints });
   }));
 
@@ -92,8 +92,8 @@ export function createEditorStore(file: { blob: Blob }) {
   return [store, methods, setStore] as const;
 }
 
-function linksToQuad(links: Quad, points: Point[]): QuadPoints {
-  const [p1, p2, p3, p4] = links.map((id) => {
+function quadToPoints(quads: Quad, points: Point[]): QuadPoints {
+  const [p1, p2, p3, p4] = quads.map((id) => {
     const point = points.find((p) => p.id === id);
     if (!point) throw new Error("Point not found.");
     return point;
