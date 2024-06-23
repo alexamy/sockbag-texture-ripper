@@ -8,12 +8,6 @@ export class AppPage {
   editor: Editor;
   texture: Texture;
 
-  // TODO move to the texture
-  inputs: {
-    gap: Locator;
-  };
-
-  // TODO split to the editor and the texture
   buttons: {
     upload: Locator;
     download: Locator;
@@ -32,10 +26,6 @@ export class AppPage {
       download: page.getByRole("button", { name: "Download" }),
       clear: page.getByRole("button", { name: "Clear" }),
       help: page.getByRole("button", { name: "Help" }),
-    };
-
-    this.inputs = {
-      gap: page.getByLabel("Gap"),
     };
   }
 
@@ -74,7 +64,10 @@ class Editor {
 
   toolbar: Locator;
   footer: Locator;
-  resetView: Locator;
+
+  buttons: {
+    resetView: Locator;
+  };
 
   constructor(page: Page) {
     this.page = page;
@@ -82,7 +75,9 @@ class Editor {
     this.content = page.getByTestId("editor-content");
     this.toolbar = page.getByTestId("editor-toolbar");
     this.footer = page.getByTestId("editor-footer");
-    this.resetView = this.region.getByRole("button", { name: "Reset view" });
+    this.buttons = {
+      resetView: this.region.getByRole("button", { name: "Reset view" }),
+    };
   }
 
   async toHaveScreenshot() {
@@ -102,7 +97,14 @@ class Texture {
 
   toolbar: Locator;
   footer: Locator;
-  resetView: Locator;
+
+  buttons: {
+    resetView: Locator;
+  };
+
+  inputs: {
+    gap: Locator;
+  };
 
   constructor(page: Page) {
     this.page = page;
@@ -110,7 +112,12 @@ class Texture {
     this.content = page.getByTestId("texture-content");
     this.toolbar = page.getByTestId("texture-toolbar");
     this.footer = page.getByTestId("texture-footer");
-    this.resetView = this.region.getByRole("button", { name: "Reset view" });
+    this.buttons = {
+      resetView: this.region.getByRole("button", { name: "Reset view" }),
+    };
+    this.inputs = {
+      gap: this.region.getByLabel("Gap"),
+    };
   }
 
   async toHaveScreenshot() {
