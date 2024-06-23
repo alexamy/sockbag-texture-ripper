@@ -1,6 +1,6 @@
+import { createImageSource } from "#/lib/helper";
 import { createEffect, on } from "solid-js";
 import { createStore } from "solid-js/store";
-import { createImageSource } from "../helper";
 
 export type FileStore = ReturnType<typeof createFileStore>;
 

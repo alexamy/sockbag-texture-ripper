@@ -1,3 +1,4 @@
+import { blobToDataURI, dataURItoBlob, tick } from "#/lib/helper";
 import {
   JSXElement,
   createContext,
@@ -5,7 +6,6 @@ import {
   onMount,
   useContext,
 } from "solid-js";
-import { blobToDataURI, dataURItoBlob, tick } from "../helper";
 import { EditorStore, Point, QuadLink, createEditorStore } from "./editor";
 import { FileStore, createFileStore } from "./file";
 import { TextureStore, createTextureStore } from "./texture";

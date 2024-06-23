@@ -1,5 +1,5 @@
+import { v } from "#/lib/vector";
 import { createEffect, createMemo, createSignal, on, type JSX } from "solid-js";
-import { v } from "./vector";
 
 export function createRegionMovement() {
   const [ref, setRef] = createSignal<HTMLElement>();

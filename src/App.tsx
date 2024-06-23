@@ -1,10 +1,13 @@
 import { styled } from "@macaron-css/solid";
 import { Show } from "solid-js";
-import { Editor, EditorToolbar } from "./Editor";
+import { Editor } from "./Editor";
 import { Region } from "./Region";
-import { Texture, TextureToolbar } from "./Texture";
-import { createDnd, createResize } from "./hooks";
+import { Texture } from "./Texture";
+import { createDnd } from "./hooks/createDnd";
+import { createResize } from "./hooks/createResize";
 import { AppStoreProvider, useAppStore } from "./store";
+import { EditorToolbar } from "./toolbar/EditorToolbar";
+import { TextureToolbar } from "./toolbar/TextureToolbar";
 
 // default export because of lazy loading in <Loader>
 export default App;
