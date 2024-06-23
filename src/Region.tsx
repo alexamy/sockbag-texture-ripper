@@ -42,6 +42,8 @@ const Container = styled("div", {
 const Content = styled("div", {
   base: {
     transformOrigin: "0 0",
+    width: "100%",
+    height: "100%",
   },
 });
 
@@ -82,6 +84,7 @@ export function Region(props: {
   toolbar?: JSXElement;
   width: number;
   resetTrigger: unknown;
+  testId?: string;
 }) {
   const move = createRegionMovement();
   const [parent, setParent] = createSignal<HTMLElement>();
@@ -113,6 +116,7 @@ export function Region(props: {
   return (
     <Container
       ref={setParent}
+      data-testid={props.testId + "-region"}
       style={{ width: `${props.width}%`, cursor: cursor() }}
       onMouseEnter={onMouseEnter}
       onMouseMove={move.onMouseMove}
@@ -129,11 +133,17 @@ export function Region(props: {
         height={size().height}
       />
       <RegionContext.Provider value={move}>
-        <Toolbar>{props.toolbar}</Toolbar>
-        <Content ref={move.setRef} style={move.style()}>
+        <Toolbar data-testid={props.testId + "-toolbar"}>
+          {props.toolbar}
+        </Toolbar>
+        <Content
+          data-testid={props.testId + "-content"}
+          ref={move.setRef}
+          style={move.style()}
+        >
           {props.children}
         </Content>
-        <Footer>
+        <Footer data-testid={props.testId + "-footer"}>
           <Button
             onClick={move.resetView}
             onMouseDown={(e) => e.preventDefault()}
