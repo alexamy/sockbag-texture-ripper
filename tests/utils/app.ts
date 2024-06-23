@@ -64,7 +64,10 @@ class Editor {
 
   toolbar: Locator;
   footer: Locator;
-  resetView: Locator;
+
+  buttons: {
+    resetView: Locator;
+  };
 
   constructor(page: Page) {
     this.page = page;
@@ -72,7 +75,9 @@ class Editor {
     this.content = page.getByTestId("editor-content");
     this.toolbar = page.getByTestId("editor-toolbar");
     this.footer = page.getByTestId("editor-footer");
-    this.resetView = this.region.getByRole("button", { name: "Reset view" });
+    this.buttons = {
+      resetView: this.region.getByRole("button", { name: "Reset view" }),
+    };
   }
 
   async toHaveScreenshot() {

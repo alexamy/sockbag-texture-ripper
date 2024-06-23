@@ -34,7 +34,7 @@ test("controls the editor region", async ({ page }) => {
   await page.keyboard.up("Space");
 
   // reset
-  await app.editor.resetView.click();
+  await app.editor.buttons.resetView.click();
   await app.editor.toHaveScreenshot();
 });
 
