@@ -30,7 +30,7 @@ export class AppPage {
   }
 
   async goto() {
-    await this.page.goto("/");
+    await this.page.goto("/sockbag-texture-ripper");
   }
 
   async upload(name: string, meta: string) {

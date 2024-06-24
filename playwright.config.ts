@@ -8,14 +8,23 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: "line",
   use: {
-    baseURL: "http://localhost:5173/sockbag-texture-ripper",
     trace: "on-first-retry",
   },
 
   projects: [
     {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      name: "development",
+      use: {
+        ...devices["Desktop Chrome"],
+        baseURL: "http://localhost:5173",
+      },
+    },
+    {
+      name: "production",
+      use: {
+        ...devices["Desktop Chrome"],
+        baseURL: "https://alexamy.github.io",
+      },
     },
   ],
 });
