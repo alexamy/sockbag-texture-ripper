@@ -1,8 +1,8 @@
 import { styled } from "@macaron-css/solid";
 import { Show } from "solid-js";
-import { Editor } from "./Editor";
 import { Region } from "./Region";
 import { Texture } from "./Texture";
+import { Editor } from "./editor/Editor";
 import { createDnd } from "./hooks/createDnd";
 import { createResize } from "./hooks/createResize";
 import { AppStoreProvider, useAppStore } from "./store";
