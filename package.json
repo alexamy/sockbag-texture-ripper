@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "homepage": "https://alexamy.github.io/sockbag-texture-ripper/",
+  "homepage": "https://alexamy.github.io/sockbag-texture-ripper",
   "author": {
     "name": "alexamy",
     "email": "achasch@gmail.com"
@@ -12,7 +12,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "test": "playwright test --ui",
+    "test": "playwright test --project development --ui",
+    "test:pages": "playwright test --project production",
     "playwright:prepare": "npx playwright install chromium"
   },
   "engines": {
