@@ -13,7 +13,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "playwright test --project development --ui",
-    "test:pages": "playwright test --project production --ui",
+    "test:pages": "playwright test --project production",
     "playwright:prepare": "npx playwright install chromium"
   },
   "engines": {
