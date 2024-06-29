@@ -1,9 +1,8 @@
 import { useRegionContext } from "#/Region";
-import { v } from "#/lib/vector";
 import { useAppStore } from "#/store";
 import { styled } from "@macaron-css/solid";
-import { For, Show, createMemo, createSignal, onMount } from "solid-js";
-import { Line, Quad } from "./Elements";
+import { For, JSX, createMemo, createSignal, onMount } from "solid-js";
+import { Point, Quad } from "./Elements";
 
 const Canvas = styled("svg", {
   base: {
@@ -16,19 +15,28 @@ const Canvas = styled("svg", {
 });
 
 export function DrawingBoard(props: { imageRef: HTMLImageElement }) {
+  const [store] = useAppStore().editor;
+
+  return (
+    <DrawingCanvas imageRef={props.imageRef}>
+      <For each={store.quadPoints}>{(quad) => <Quad points={quad} />}</For>
+      <Quad points={store.currentQuad} />
+
+      <For each={store.points}>{(point) => <Point p={point} />}</For>
+      <For each={store.buffer}>{(point) => <Point p={point} />}</For>
+    </DrawingCanvas>
+  );
+}
+
+// TODO move current point to DrawingCanvas
+
+function DrawingCanvas(props: {
+  imageRef: HTMLImageElement;
+  children: JSX.Element;
+}) {
   const region = useRegionContext();
-  const [store, { updateCurrent, addPoint, deleteLastPoint }] =
+  const [_, { updateCurrent, addPoint, deleteLastPoint }] =
     useAppStore().editor;
-
-  const current = () => store.current;
-  const quads = () => store.quadPoints;
-  const points = () => store.buffer;
-
-  const first = createMemo(() => points()[0]);
-  const last = createMemo(() => points()[points().length - 1]);
-
-  const top = createMemo(() => v.average(points().slice(0, 2)));
-  const bottom = createMemo(() => v.average([last() ?? v.Zero(), current()]));
 
   // style
   const dimensions = createMemo(() => {
@@ -48,20 +56,8 @@ export function DrawingBoard(props: { imageRef: HTMLImageElement }) {
   // handlers
   function onMouseMove(e: MouseEvent) {
     const rect = props.imageRef.getBoundingClientRect();
-    let x = (e.clientX - rect.left) / region.scale();
-    let y = (e.clientY - rect.top) / region.scale();
-
-    // only straight lines with shift
-    if (e.shiftKey && last()) {
-      const current = v.make(x, y);
-      const vec = v.abs(v.fromTo(current, last()));
-      if (vec.x > vec.y) {
-        y = last().y;
-      } else {
-        x = last().x;
-      }
-    }
-
+    const x = (e.clientX - rect.left) / region.scale();
+    const y = (e.clientY - rect.top) / region.scale();
     updateCurrent({ x, y });
   }
 
@@ -86,33 +82,7 @@ export function DrawingBoard(props: { imageRef: HTMLImageElement }) {
       onContextMenu={onClick}
       onMouseMove={onMouseMove}
     >
-      {/* Already drawn quads */}
-      <For each={quads()}>{(quad) => <Quad quad={quad} />}</For>
-
-      {/* Currently drawn quad */}
-      <For each={points()}>
-        {(point, i) => (
-          <>
-            <Line from={point} to={points()[i() + 1] ?? point} />
-          </>
-        )}
-      </For>
-
-      {/* Helpers for currently drawn quad */}
-      <Show when={points().length >= 1}>
-        <Line from={last()} to={current()} />
-      </Show>
-      <Show when={points().length >= 2}>
-        <Line from={first()} to={current()} />
-      </Show>
-
-      {/* Normal line */}
-      <Show when={points().length === 2}>
-        <Line from={current()} to={top()} withTip={true} color="darkred" />
-      </Show>
-      <Show when={points().length === 3}>
-        <Line from={bottom()} to={top()} withTip={true} color="darkred" />
-      </Show>
+      {props.children}
     </Canvas>
   );
 }
