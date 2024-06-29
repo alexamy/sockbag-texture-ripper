@@ -1,8 +1,6 @@
 import { v } from "#/lib/vector";
 import { Point as PointId, QuadPoints } from "#/store/editor";
-import { Show, createEffect, createMemo, createSignal } from "solid-js";
-
-type Point = { x: number; y: number };
+import { createEffect, createMemo, createSignal } from "solid-js";
 
 export function Quad(props: { points: QuadPoints }) {
   const [points, setPoints] = createSignal<PointId[]>([]);
@@ -19,7 +17,7 @@ export function Quad(props: { points: QuadPoints }) {
 
   return (
     <>
-      <Line from={center()} to={top()} withTip={true} color="red" />
+      <ArrowLine from={center()} to={top()} color="red" />
       <polygon
         points={polygonPoints()}
         stroke="greenyellow"
@@ -31,10 +29,9 @@ export function Quad(props: { points: QuadPoints }) {
   );
 }
 
-export function Line(props: {
-  from: Point;
-  to: Point;
-  withTip?: boolean;
+function ArrowLine(props: {
+  from: { x: number; y: number };
+  to: { x: number; y: number };
   color?: string;
 }) {
   const vec = () => v.normalize(v.fromTo(props.from, props.to));
@@ -66,13 +63,7 @@ export function Line(props: {
         stroke={color()}
         stroke-width="1.5"
       />
-      <Show when={props.withTip}>
-        <polygon points={tip()} fill={color()} />
-      </Show>
+      <polygon points={tip()} fill={color()} />
     </>
   );
-}
-
-function DragPoint(props: { p: PointId }) {
-  return <circle cx={props.p.x} cy={props.p.y} r={2} fill="black" />;
 }
