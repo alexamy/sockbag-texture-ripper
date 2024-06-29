@@ -25,6 +25,9 @@ interface StoreData {
   buffer: Point[];
   points: Point[];
   quads: Quad[]; // point ids to make quad from
+
+  // calculated
+  currentQuad: QuadPoints;
   quadPoints: QuadPoints[];
 }
 
@@ -51,12 +54,20 @@ export function createEditorStore(file: { blob: Blob }) {
     setStore({ quads, points, buffer: [], });
   }));
 
+  // calculated
+  // prettier-ignore
+  createEffect(on(() => [store.buffer, store.current] as const, ([buffer, current]) => {
+    const currentQuad = buffer.concat(current);
+    setStore({ currentQuad });
+  }));
+
   // prettier-ignore
   createEffect(on(() => [store.quads, store.points] as const, ([links, points]) => {
     const quadPoints = links.map((link) => quadToPoints(link, points));
     setStore({ quadPoints });
   }));
 
+  // methods
   function updateCurrent(coordinates: { x: number; y: number }) {
     const point = { ...store.current, ...coordinates };
     setStore({ current: point });
@@ -123,6 +134,7 @@ function getDefaultStore() {
     points: [],
     buffer: [],
     quads: [],
+    currentQuad: [],
     quadPoints: [],
   } satisfies StoreData;
 }
