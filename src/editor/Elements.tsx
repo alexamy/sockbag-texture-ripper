@@ -5,8 +5,6 @@ import { Show, createEffect, createMemo, createSignal } from "solid-js";
 type Point = { x: number; y: number };
 
 export function Quad(props: { points: QuadPoints }) {
-  const [highlighted, setHighlighted] = createSignal(false);
-
   const [points, setPoints] = createSignal<PointId[]>([]);
   createEffect(() => setPoints(props.points));
 
@@ -27,10 +25,7 @@ export function Quad(props: { points: QuadPoints }) {
         stroke="greenyellow"
         stroke-width="1"
         fill="greenyellow"
-        fill-opacity={highlighted() ? 0.6 : 0.2}
-        style={{ cursor: highlighted() ? "pointer" : "default" }}
-        onMouseEnter={() => setHighlighted(true)}
-        onMouseLeave={() => setHighlighted(false)}
+        fill-opacity={0.2}
       />
     </>
   );

@@ -17,9 +17,13 @@ const Canvas = styled("svg", {
 export function DrawingBoard(props: { imageRef: HTMLImageElement }) {
   const [store] = useAppStore().editor;
 
+  const currentQuad = createMemo(() => store.buffer.concat(store.current));
+
   return (
     <DrawingCanvas imageRef={props.imageRef}>
       <For each={store.quadPoints}>{(quad) => <Quad points={quad} />}</For>
+      <Quad points={currentQuad()} />
+
       <For each={store.points}>{(point) => <Point p={point} />}</For>
       <For each={store.buffer}>{(point) => <Point p={point} />}</For>
     </DrawingCanvas>

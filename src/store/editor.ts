@@ -18,7 +18,7 @@ export interface Quad {
   points: PointId[];
 }
 
-export type QuadPoints = [Point, Point, Point, Point];
+export type QuadPoints = Point[];
 
 interface StoreData {
   current: Point;
