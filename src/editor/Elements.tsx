@@ -1,16 +1,11 @@
 import { v } from "#/lib/vector";
-import { useAppStore } from "#/store";
 import { Point as PointId, QuadPoints } from "#/store/editor";
-import { For, Show, createEffect, createMemo, createSignal } from "solid-js";
+import { Show, createEffect, createMemo, createSignal } from "solid-js";
 
 type Point = { x: number; y: number };
 
-export function QuadDrawn(props: { quad: QuadPoints }) {}
-
 export function Quad(props: { quad: QuadPoints }) {
-  const [_, { updatePoints }] = useAppStore().editor;
   const [highlighted, setHighlighted] = createSignal(false);
-  const [dragging, setDragging] = createSignal(false);
 
   const [points, setPoints] = createSignal<PointId[]>([]);
   createEffect(() => setPoints(props.quad));
@@ -18,34 +13,11 @@ export function Quad(props: { quad: QuadPoints }) {
   const top = createMemo(() => v.average(points().slice(0, 2)));
   const center = createMemo(() => v.average(points()));
 
-  const [mousePosition, setMousePosition] = createSignal<Point>({ x: 0, y: 0 });
-  const polygonPoints = createMemo(() =>
-    points()
+  const polygonPoints = createMemo(() => {
+    return points()
       .map((point) => `${point.x},${point.y}`)
-      .join(" ")
-  );
-
-  function onMouseDown(event: MouseEvent) {
-    event.stopPropagation();
-    setDragging(true);
-    setMousePosition({ x: event.clientX, y: event.clientY });
-  }
-
-  function onMouseMove(event: MouseEvent) {
-    if (!dragging()) return;
-    event.stopPropagation();
-    const newPosition = { x: event.clientX, y: event.clientY };
-    const delta = v.subtract(newPosition, mousePosition());
-    setPoints((points) =>
-      points.map((p) => ({ id: p.id, ...v.add(p, delta) }))
-    );
-    setMousePosition(newPosition);
-  }
-
-  function onMouseUp() {
-    updatePoints(points());
-    setDragging(false);
-  }
+      .join(" ");
+  });
 
   return (
     <>
@@ -59,12 +31,7 @@ export function Quad(props: { quad: QuadPoints }) {
         style={{ cursor: highlighted() ? "pointer" : "default" }}
         onMouseEnter={() => setHighlighted(true)}
         onMouseLeave={() => setHighlighted(false)}
-        onClick={(e) => e.stopPropagation()}
-        onMouseDown={onMouseDown}
-        onMouseMove={onMouseMove}
-        onMouseUp={onMouseUp}
       />
-      <For each={points()}>{(point) => <DragPoint p={point} />}</For>
     </>
   );
 }
