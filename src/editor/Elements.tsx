@@ -1,6 +1,6 @@
 import { v } from "#/lib/vector";
 import { Point as PointId, QuadPoints } from "#/store/editor";
-import { createEffect, createMemo, createSignal } from "solid-js";
+import { Show, createEffect, createMemo, createSignal } from "solid-js";
 
 export function Quad(props: { points: QuadPoints }) {
   const [points, setPoints] = createSignal<PointId[]>([]);
@@ -17,7 +17,6 @@ export function Quad(props: { points: QuadPoints }) {
 
   return (
     <>
-      <ArrowLine from={center()} to={top()} color="red" />
       <polygon
         points={polygonPoints()}
         stroke="greenyellow"
@@ -25,6 +24,9 @@ export function Quad(props: { points: QuadPoints }) {
         fill="greenyellow"
         fill-opacity={0.2}
       />
+      <Show when={points().length > 2}>
+        <ArrowLine from={center()} to={top()} color="red" />
+      </Show>
     </>
   );
 }
