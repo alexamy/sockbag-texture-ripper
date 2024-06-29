@@ -2,6 +2,7 @@ import { useRegionContext } from "#/Region";
 import { useAppStore } from "#/store";
 import { styled } from "@macaron-css/solid";
 import { For, JSX, createMemo, createSignal, onMount } from "solid-js";
+import { Quad } from "./Elements";
 
 const Canvas = styled("svg", {
   base: {
@@ -15,14 +16,17 @@ const Canvas = styled("svg", {
 
 export function DrawingBoard(props: { imageRef: HTMLImageElement }) {
   const [store] = useAppStore().editor;
-  const points = createMemo(() => store.buffer.concat(store.points));
 
   return (
     <DrawingCanvas imageRef={props.imageRef}>
-      <For each={points()}>{(point) => <Point p={point} />}</For>
+      <For each={store.quadPoints}>{(quad) => <Quad quad={quad} />}</For>
+      <For each={store.points}>{(point) => <Point p={point} />}</For>
+      <For each={store.buffer}>{(point) => <Point p={point} />}</For>
     </DrawingCanvas>
   );
 }
+
+// TODO move current point to DrawingCanvas
 
 function DrawingCanvas(props: {
   imageRef: HTMLImageElement;
