@@ -67,3 +67,7 @@ function ArrowLine(props: {
     </>
   );
 }
+
+export function Point(props: { p: { x: number; y: number } }) {
+  return <circle cx={props.p.x} cy={props.p.y} r={2} fill="black" />;
+}

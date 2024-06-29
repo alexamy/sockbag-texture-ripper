@@ -2,7 +2,7 @@ import { useRegionContext } from "#/Region";
 import { useAppStore } from "#/store";
 import { styled } from "@macaron-css/solid";
 import { For, JSX, createMemo, createSignal, onMount } from "solid-js";
-import { Quad } from "./Elements";
+import { Point, Quad } from "./Elements";
 
 const Canvas = styled("svg", {
   base: {
@@ -84,8 +84,4 @@ function DrawingCanvas(props: {
       {props.children}
     </Canvas>
   );
-}
-
-function Point(props: { p: { x: number; y: number } }) {
-  return <circle cx={props.p.x} cy={props.p.y} r={2} fill="black" />;
 }
