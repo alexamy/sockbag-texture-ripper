@@ -19,7 +19,7 @@ export function DrawingBoard(props: { imageRef: HTMLImageElement }) {
 
   return (
     <DrawingCanvas imageRef={props.imageRef}>
-      <For each={store.quadPoints}>{(quad) => <Quad quad={quad} />}</For>
+      <For each={store.quadPoints}>{(quad) => <Quad points={quad} />}</For>
       <For each={store.points}>{(point) => <Point p={point} />}</For>
       <For each={store.buffer}>{(point) => <Point p={point} />}</For>
     </DrawingCanvas>

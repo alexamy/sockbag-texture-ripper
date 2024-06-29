@@ -4,11 +4,11 @@ import { Show, createEffect, createMemo, createSignal } from "solid-js";
 
 type Point = { x: number; y: number };
 
-export function Quad(props: { quad: QuadPoints }) {
+export function Quad(props: { points: QuadPoints }) {
   const [highlighted, setHighlighted] = createSignal(false);
 
   const [points, setPoints] = createSignal<PointId[]>([]);
-  createEffect(() => setPoints(props.quad));
+  createEffect(() => setPoints(props.points));
 
   const top = createMemo(() => v.average(points().slice(0, 2)));
   const center = createMemo(() => v.average(points()));
