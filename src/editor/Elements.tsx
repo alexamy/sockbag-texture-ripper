@@ -5,6 +5,8 @@ import { For, Show, createEffect, createMemo, createSignal } from "solid-js";
 
 type Point = { x: number; y: number };
 
+export function QuadDrawn(props: { quad: QuadPoints }) {}
+
 export function Quad(props: { quad: QuadPoints }) {
   const [_, { updatePoints }] = useAppStore().editor;
   const [highlighted, setHighlighted] = createSignal(false);

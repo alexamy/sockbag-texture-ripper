@@ -22,12 +22,12 @@ export function DrawingBoard(props: { imageRef: HTMLImageElement }) {
 
   const current = () => store.current;
   const quads = () => store.quadPoints;
-  const points = () => store.buffer;
+  const buffer = () => store.buffer;
 
-  const first = createMemo(() => points()[0]);
-  const last = createMemo(() => points()[points().length - 1]);
+  const first = createMemo(() => buffer()[0]);
+  const last = createMemo(() => buffer()[buffer().length - 1]);
 
-  const top = createMemo(() => v.average(points().slice(0, 2)));
+  const top = createMemo(() => v.average(buffer().slice(0, 2)));
   const bottom = createMemo(() => v.average([last() ?? v.Zero(), current()]));
 
   // style
@@ -90,27 +90,27 @@ export function DrawingBoard(props: { imageRef: HTMLImageElement }) {
       <For each={quads()}>{(quad) => <Quad quad={quad} />}</For>
 
       {/* Currently drawn quad */}
-      <For each={points()}>
+      <For each={buffer()}>
         {(point, i) => (
           <>
-            <Line from={point} to={points()[i() + 1] ?? point} />
+            <Line from={point} to={buffer()[i() + 1] ?? point} />
           </>
         )}
       </For>
 
       {/* Helpers for currently drawn quad */}
-      <Show when={points().length >= 1}>
+      <Show when={buffer().length >= 1}>
         <Line from={last()} to={current()} />
       </Show>
-      <Show when={points().length >= 2}>
+      <Show when={buffer().length >= 2}>
         <Line from={first()} to={current()} />
       </Show>
 
       {/* Normal line */}
-      <Show when={points().length === 2}>
+      <Show when={buffer().length === 2}>
         <Line from={current()} to={top()} withTip={true} color="darkred" />
       </Show>
-      <Show when={points().length === 3}>
+      <Show when={buffer().length === 3}>
         <Line from={bottom()} to={top()} withTip={true} color="darkred" />
       </Show>
     </Canvas>
