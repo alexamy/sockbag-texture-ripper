@@ -28,6 +28,9 @@ const sToolbar = style({
 });
 
 const sList = style({
+  display: "flex",
+  flexDirection: "column",
+  gap: 8,
   paddingTop: "1rem",
   minWidth: 200,
 });
