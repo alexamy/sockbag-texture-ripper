@@ -63,8 +63,8 @@ function Group(props: {
         {(story) => (
           <Link
             onClick={() => props.selectStory(story.name)}
-            data-selected={story.name === props.currentStory!.name}
-            selected={story.name === props.currentStory!.name}
+            data-selected={story.name === props.currentStory?.name}
+            selected={story.name === props.currentStory?.name}
           >
             {story.displayName}
           </Link>
