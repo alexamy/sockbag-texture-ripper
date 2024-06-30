@@ -1,5 +1,6 @@
 import { createResize } from "@/hooks/createResize";
 import { style } from "@macaron-css/core";
+import { For, JSXElement, createSignal } from "solid-js";
 
 const sRoot = style({
   display: "flex",
@@ -48,32 +49,49 @@ const sStory = style({
   width: "100%",
 });
 
+interface Story {
+  name: string;
+  render: () => JSXElement;
+}
+
+const stories = [
+  {
+    name: "Point",
+    render: () => <div>Point</div>,
+  },
+  {
+    name: "Line",
+    render: () => <div>Line</div>,
+  },
+] satisfies Story[];
+
 export function Root() {
   const resize = createResize(20);
+  const [selected, setSelected] = createSignal<Story>();
 
   return (
     <div class={sRoot}>
       <div class={sToolbar}>Stories</div>
       <div class={sMain}>
         <ul class={sList} style={{ width: `${resize.left()}%` }}>
-          <li class={sLink}>Item 1</li>
-          <li class={sLink}>Item 2</li>
-          <li class={sLink}>Item 3</li>
+          <For each={stories}>
+            {(story) => (
+              <li class={sLink} onClick={() => setSelected(story)}>
+                {story.name}
+              </li>
+            )}
+          </For>
         </ul>
+
         <div
           class={sSeparator}
           onMouseDown={resize.activate}
           onMouseUp={resize.deactivate}
           onDblClick={resize.reset}
         />
+
         <div class={sStory} style={{ width: `${resize.right()}%` }}>
-          <div
-            style={{
-              "background-color": "green",
-              width: "200px",
-              height: "200px",
-            }}
-          />
+          {selected()?.render()}
         </div>
       </div>
     </div>
