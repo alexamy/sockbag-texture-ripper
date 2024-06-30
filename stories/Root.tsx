@@ -30,7 +30,7 @@ const sLink = style({
 });
 
 const sStory = style({
-  padding: "1rem",
+  padding: "2rem",
   width: "100%",
 });
 
