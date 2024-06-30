@@ -49,7 +49,7 @@ export const StoryContainer = styled("div", {
   base: {
     padding: "2rem",
     width: "100%",
-    height: "100%",
+    flexGrow: 1,
   },
 });
 
@@ -61,6 +61,8 @@ export const Left = styled("div", {
 
 export const Right = styled("div", {
   base: {
+    display: "flex",
+    flexDirection: "column",
     minWidth: 200,
   },
 });

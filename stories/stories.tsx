@@ -9,7 +9,8 @@ export interface Story {
 
 const Svg = styled("svg", {
   base: {
-    border: "1px solid grey",
+    width: "100%",
+    height: "100%",
   },
 });
 
@@ -17,7 +18,7 @@ export const stories = [
   {
     name: "Point",
     render: () => (
-      <Svg width={200} height={200}>
+      <Svg>
         <Point x={50} y={50} r={8} fill="darkred" />
       </Svg>
     ),
