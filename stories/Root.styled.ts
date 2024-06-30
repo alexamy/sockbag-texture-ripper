@@ -52,8 +52,10 @@ export const Link = styled("li", {
     padding: "0.2rem 1rem",
     cursor: "pointer",
     transition: "background-color 0.2s",
-    ":hover": {
-      backgroundColor: vars.darkBlue,
+    selectors: {
+      "&[data-selected=false]:hover": {
+        backgroundColor: vars.darkBlue,
+      },
     },
   },
   variants: {
