@@ -1,5 +1,5 @@
 import { createResize } from "@/hooks/createResize";
-import { For, createSignal } from "solid-js";
+import { For, createEffect, createMemo, createSignal } from "solid-js";
 import {
   Container,
   Header,
@@ -15,7 +15,7 @@ import { Story } from "./stories";
 
 export function Root(props: { stories: Story[] }) {
   const resize = createResize(15);
-  const [selected, setSelected] = createSignal<Story>();
+  const [selected, setSelected] = createSelectStory(() => props.stories);
 
   return (
     <Container>
@@ -28,7 +28,7 @@ export function Root(props: { stories: Story[] }) {
           <For each={props.stories}>
             {(story) => (
               <Link
-                onClick={() => setSelected(story)}
+                onClick={() => setSelected(story.name)}
                 selected={story === selected()}
               >
                 {story.name}
@@ -46,4 +46,20 @@ export function Root(props: { stories: Story[] }) {
       </Right>
     </Container>
   );
+}
+
+function createSelectStory(stories: () => Story[]) {
+  const [selected, setSelected] = createSignal("");
+  const story = createMemo(() => {
+    return stories().find((s) => s.name === selected());
+  });
+
+  const name = localStorage.getItem("selected");
+  if (name) setSelected(name);
+
+  createEffect(() => {
+    localStorage.setItem("selected", selected());
+  });
+
+  return [story, setSelected] as const;
 }
