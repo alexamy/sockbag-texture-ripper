@@ -24,14 +24,13 @@ export const List = styled("ul", {
   base: {
     display: "flex",
     flexDirection: "column",
-    gap: 8,
     paddingTop: "1rem",
   },
 });
 
 export const Link = styled("li", {
   base: {
-    padding: "0 1rem",
+    padding: "0.2rem 1rem",
     cursor: "pointer",
     ":hover": {
       backgroundColor: "grey",
