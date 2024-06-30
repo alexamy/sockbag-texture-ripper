@@ -44,7 +44,7 @@ export function Root(props: { stories: Story[] }) {
 
       <Right style={{ width: `${resize.right()}%` }}>
         <Toolbar />
-        <StoryContainer>{selected()?.render()}</StoryContainer>
+        <StoryContainer>{selected()?.component()}</StoryContainer>
       </Right>
     </Container>
   );

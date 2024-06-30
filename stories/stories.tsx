@@ -4,7 +4,7 @@ import { Toggler } from "./Toggler";
 
 export interface Story {
   name: string;
-  render: () => JSXElement;
+  component: () => JSXElement;
 }
 
 function PointStory() {
@@ -26,14 +26,14 @@ function TogglerStory() {
 export const stories = [
   {
     name: "Editor/Point",
-    render: PointStory,
+    component: PointStory,
   },
   {
     name: "Editor/Line",
-    render: () => <div>Line</div>,
+    component: () => <div>Line</div>,
   },
   {
     name: "Helper/Toggler",
-    render: TogglerStory,
+    component: TogglerStory,
   },
 ] satisfies Story[];
