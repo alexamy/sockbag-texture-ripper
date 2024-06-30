@@ -27,7 +27,12 @@ export function Root(props: { stories: Story[] }) {
         <List>
           <For each={props.stories}>
             {(story) => (
-              <Link onClick={() => setSelected(story)}>{story.name}</Link>
+              <Link
+                onClick={() => setSelected(story)}
+                selected={story === selected()}
+              >
+                {story.name}
+              </Link>
             )}
           </For>
         </List>

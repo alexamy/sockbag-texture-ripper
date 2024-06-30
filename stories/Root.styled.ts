@@ -37,12 +37,20 @@ export const Link = styled("li", {
       backgroundColor: "grey",
     },
   },
+  variants: {
+    selected: {
+      true: {
+        backgroundColor: "grey",
+      },
+    },
+  },
 });
 
 export const StoryContainer = styled("div", {
   base: {
     padding: "2rem",
     width: "100%",
+    height: "100%",
   },
 });
 
