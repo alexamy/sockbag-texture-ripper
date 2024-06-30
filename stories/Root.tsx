@@ -1,57 +1,72 @@
 import { createResize } from "@/hooks/createResize";
-import { style } from "@macaron-css/core";
 import { styled } from "@macaron-css/solid";
 import { For, createSignal } from "solid-js";
 import { Story, stories } from "./stories";
 
-const sRoot = style({
-  display: "flex",
-  flexDirection: "column",
-  width: "100%",
-  height: "100vh",
-});
-
-const sMain = style({
-  display: "flex",
-  width: "100%",
-  height: "100vh",
-});
-
-const sToolbar = style({
-  display: "flex",
-  alignItems: "center",
-  gap: 10,
-  padding: "0.5rem 1rem",
-  borderBottom: "2px solid grey",
-  fontWeight: "bold",
-  height: 50,
-});
-
-const sList = style({
-  display: "flex",
-  flexDirection: "column",
-  gap: 8,
-  paddingTop: "1rem",
-});
-
-const sLink = style({
-  padding: "0 1rem",
-  cursor: "pointer",
-  ":hover": {
-    backgroundColor: "grey",
+const Container = styled("div", {
+  base: {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    height: "100vh",
   },
 });
 
-const sStory = style({
-  padding: "2rem",
-  width: "100%",
+const Main = styled("div", {
+  base: {
+    display: "flex",
+    width: "100%",
+    height: "100vh",
+  },
 });
 
-const sLeft = style({
-  minWidth: 200,
+const Toolbar = styled("div", {
+  base: {
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
+    padding: "0.5rem 1rem",
+    borderBottom: "2px solid grey",
+    fontWeight: "bold",
+    height: 50,
+  },
 });
 
-const sRight = style({});
+const List = styled("ul", {
+  base: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 8,
+    paddingTop: "1rem",
+  },
+});
+
+const Link = styled("li", {
+  base: {
+    padding: "0 1rem",
+    cursor: "pointer",
+    ":hover": {
+      backgroundColor: "grey",
+    },
+  },
+});
+
+const StoryContainer = styled("div", {
+  base: {
+    padding: "2rem",
+    width: "100%",
+  },
+});
+
+const Left = styled("div", {
+  base: {
+    minWidth: 200,
+  },
+});
+
+const Right = styled("div", {
+  base: {},
+});
 
 const Header = styled("h1", {
   base: {
@@ -80,30 +95,29 @@ export function Root() {
   const [selected, setSelected] = createSignal<Story>();
 
   return (
-    <div class={sRoot}>
-      <div class={sMain}>
-        <div class={sLeft} style={{ width: `${resize.left()}%` }}>
-          <div class={sToolbar}>
+    <Container>
+      <Main>
+        <Left style={{ width: `${resize.left()}%` }}>
+          <Toolbar>
             <Header>Stories</Header>
-          </div>
-          <ul class={sList}>
+          </Toolbar>
+
+          <List>
             <For each={stories}>
               {(story) => (
-                <li class={sLink} onClick={() => setSelected(story)}>
-                  {story.name}
-                </li>
+                <Link onClick={() => setSelected(story)}>{story.name}</Link>
               )}
             </For>
-          </ul>
-        </div>
+          </List>
+        </Left>
 
         <Separator onMouseDown={resize.activate} onDblClick={resize.reset} />
 
-        <div class={sRight} style={{ width: `${resize.right()}%` }}>
-          <div class={sToolbar} />
-          <div class={sStory}>{selected()?.render()}</div>
-        </div>
-      </div>
-    </div>
+        <Right style={{ width: `${resize.right()}%` }}>
+          <Toolbar />
+          <StoryContainer>{selected()?.render()}</StoryContainer>
+        </Right>
+      </Main>
+    </Container>
   );
 }
