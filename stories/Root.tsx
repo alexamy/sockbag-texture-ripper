@@ -1,6 +1,7 @@
 import { createResize } from "@/hooks/createResize";
 import { For, createEffect, createMemo, createSignal } from "solid-js";
 import {
+  Button,
   Container,
   Header,
   Left,
@@ -19,6 +20,11 @@ export function Root(props: { stories: Story[] }) {
   const resize = createResize(15);
   const groups = createMemo(() => Object.entries(groupStories(props.stories)));
   const [selected, setSelected] = createSelectStory(() => props.stories);
+
+  const [background, setBackground] = createSignal<"dark" | "light">("dark");
+  function toggleBackground() {
+    setBackground(background() === "dark" ? "light" : "dark");
+  }
 
   return (
     <Container class={themeClass}>
@@ -44,8 +50,12 @@ export function Root(props: { stories: Story[] }) {
       <Separator onMouseDown={resize.activate} onDblClick={resize.reset} />
 
       <Right style={{ width: `${resize.right()}%` }}>
-        <Toolbar />
-        <StoryContainer>{selected()?.component()}</StoryContainer>
+        <Toolbar>
+          <Button onClick={toggleBackground}>Toggle BG</Button>
+        </Toolbar>
+        <StoryContainer mode={background()}>
+          {selected()?.component()}
+        </StoryContainer>
       </Right>
     </Container>
   );

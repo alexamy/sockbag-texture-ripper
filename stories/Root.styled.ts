@@ -16,7 +16,7 @@ export const Toolbar = styled("div", {
     display: "flex",
     alignItems: "center",
     gap: 10,
-    padding: "0.5rem 1rem",
+    padding: "0.5rem 0",
     fontWeight: "bold",
     height: 50,
   },
@@ -52,12 +52,25 @@ export const Link = styled("li", {
 
 export const StoryContainer = styled("div", {
   base: {
-    color: "black",
-    backgroundColor: vars.light,
     padding: "1rem",
     width: "100%",
     flexGrow: 1,
     overflow: "hidden",
+  },
+  variants: {
+    mode: {
+      dark: {
+        backgroundColor: vars.background,
+        color: vars.text,
+      },
+      light: {
+        backgroundColor: vars.light,
+        color: "black",
+      },
+    },
+  },
+  defaultVariants: {
+    mode: "dark",
   },
 });
 
@@ -77,8 +90,9 @@ export const Right = styled("div", {
 
 export const Header = styled("h1", {
   base: {
-    fontSize: "1.5rem",
+    fontSize: "1.2rem",
     fontWeight: "bold",
+    paddingLeft: "1rem",
   },
 });
 
