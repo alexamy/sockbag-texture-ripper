@@ -21,6 +21,11 @@
   padding: 0;
 }
 
+ul,
+ol {
+  list-style-type: none;
+}
+
 body {
   margin: 0;
   display: flex;
