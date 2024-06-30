@@ -7,14 +7,26 @@ export interface Story {
   render: () => JSXElement;
 }
 
+function PointStory() {
+  return (
+    <svg>
+      <Point x={50} y={50} r={8} fill="darkred" />
+    </svg>
+  );
+}
+
+function TogglerStory() {
+  return (
+    <Toggler header={<div>Toggle</div>}>
+      <div>Content</div>
+    </Toggler>
+  );
+}
+
 export const stories = [
   {
     name: "Editor/Point",
-    render: () => (
-      <svg>
-        <Point x={50} y={50} r={8} fill="darkred" />
-      </svg>
-    ),
+    render: PointStory,
   },
   {
     name: "Editor/Line",
@@ -22,10 +34,6 @@ export const stories = [
   },
   {
     name: "Helper/Toggler",
-    render: () => (
-      <Toggler header={<div>Toggle</div>}>
-        <div>Content</div>
-      </Toggler>
-    ),
+    render: TogglerStory,
   },
 ] satisfies Story[];
