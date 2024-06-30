@@ -71,7 +71,6 @@ export function Root() {
         <div
           class={sSeparator}
           onMouseDown={resize.activate}
-          onMouseUp={resize.deactivate}
           onDblClick={resize.reset}
         />
 

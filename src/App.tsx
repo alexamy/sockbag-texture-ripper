@@ -94,11 +94,7 @@ function TextureRipper() {
           <Editor />
         </Region>
 
-        <RegionBorder
-          onMouseDown={resize.activate}
-          onMouseUp={resize.deactivate}
-          onDblClick={resize.reset}
-        >
+        <RegionBorder onMouseDown={resize.activate} onDblClick={resize.reset}>
           <RegionBorderHandler />
         </RegionBorder>
 

@@ -8,9 +8,12 @@ export function createResize(initialWidth = 50) {
 
   createEffect(() => {
     document.body.addEventListener("mousemove", onMouseMove);
-    onCleanup(() =>
-      document.body.removeEventListener("mousemove", onMouseMove)
-    );
+    document.body.addEventListener("mouseup", onMouseUp);
+
+    onCleanup(() => {
+      document.body.removeEventListener("mousemove", onMouseMove);
+      document.body.removeEventListener("mouseup", onMouseUp);
+    });
   });
 
   function onMouseMove(e: MouseEvent) {
@@ -18,6 +21,10 @@ export function createResize(initialWidth = 50) {
       const width = (e.clientX / window.innerWidth) * 100;
       setWidth(width);
     }
+  }
+
+  function onMouseUp() {
+    setDragging(false);
   }
 
   function reset() {
