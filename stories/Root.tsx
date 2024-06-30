@@ -1,7 +1,7 @@
 import { createResize } from "@/hooks/createResize";
 import { styled } from "@macaron-css/solid";
 import { For, createSignal } from "solid-js";
-import { Story, stories } from "./stories";
+import { Story } from "./stories";
 
 const Container = styled("div", {
   base: {
@@ -81,7 +81,7 @@ const Separator = styled("div", {
   },
 });
 
-export function Root() {
+export function Root(props: { stories: Story[] }) {
   const resize = createResize(15);
   const [selected, setSelected] = createSignal<Story>();
 
@@ -93,7 +93,7 @@ export function Root() {
         </Toolbar>
 
         <List>
-          <For each={stories}>
+          <For each={props.stories}>
             {(story) => (
               <Link onClick={() => setSelected(story)}>{story.name}</Link>
             )}
