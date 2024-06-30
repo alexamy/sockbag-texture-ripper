@@ -10,6 +10,7 @@ import {
   Separator,
   StoryContainer,
   Toolbar,
+  themeClass,
 } from "./Root.styled.ts";
 import { Story } from "./stories";
 
@@ -18,7 +19,7 @@ export function Root(props: { stories: Story[] }) {
   const [selected, setSelected] = createSelectStory(() => props.stories);
 
   return (
-    <Container>
+    <Container class={themeClass}>
       <Left style={{ width: `${resize.left()}%` }}>
         <Toolbar>
           <Header>Stories</Header>

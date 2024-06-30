@@ -1,14 +1,14 @@
-import { createVar } from "@macaron-css/core";
+import { createTheme } from "@macaron-css/core";
 import { styled } from "@macaron-css/solid";
 
-const vars = {
-  background: createVar(),
-  text: createVar(),
-  gray: createVar(),
-  blue: createVar(),
-  darkBlue: createVar(),
-  pink: createVar(),
-};
+export const [themeClass, vars] = createTheme({
+  background: "#1E1E1E",
+  text: "#E0E0E0",
+  gray: "#606060",
+  blue: "#00B8D4",
+  darkBlue: "#008A9F",
+  pink: "#FF4081",
+});
 
 export const Container = styled("div", {
   base: {
@@ -17,14 +17,6 @@ export const Container = styled("div", {
     display: "flex",
     width: "100%",
     height: "100vh",
-    vars: {
-      [vars.background]: "#1E1E1E",
-      [vars.text]: "#E0E0E0",
-      [vars.gray]: "#606060",
-      [vars.blue]: "#00B8D4",
-      [vars.darkBlue]: "#008A9F",
-      [vars.pink]: "#FF4081",
-    },
   },
 });
 
