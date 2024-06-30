@@ -11,11 +11,13 @@ import {
   StoryContainer,
   Toolbar,
 } from "./Root.styled.ts";
+import { Toggler } from "./Toggler.tsx";
 import { Story } from "./stories";
 import { themeClass } from "./theme.ts";
 
 export function Root(props: { stories: Story[] }) {
   const resize = createResize(15);
+  const groups = createMemo(() => Object.entries(groupStories(props.stories)));
   const [selected, setSelected] = createSelectStory(() => props.stories);
 
   return (
@@ -26,15 +28,21 @@ export function Root(props: { stories: Story[] }) {
         </Toolbar>
 
         <List>
-          <For each={props.stories}>
-            {(story) => (
-              <Link
-                onClick={() => setSelected(story.name)}
-                data-selected={story === selected()}
-                selected={story === selected()}
-              >
-                {story.name}
-              </Link>
+          <For each={groups()}>
+            {([name, stories]) => (
+              <Toggler header={<div>{name}</div>}>
+                <For each={stories}>
+                  {(story) => (
+                    <Link
+                      onClick={() => setSelected(story.name)}
+                      data-selected={story === selected()}
+                      selected={story === selected()}
+                    >
+                      {story.displayName}
+                    </Link>
+                  )}
+                </For>
+              </Toggler>
             )}
           </For>
         </List>
@@ -64,4 +72,16 @@ function createSelectStory(stories: () => Story[]) {
   });
 
   return [story, setSelected] as const;
+}
+
+function groupStories(stories: Story[]) {
+  const groups: Record<string, Story[]> = {};
+
+  for (const story of stories) {
+    const [group, displayName] = story.name.split("/");
+    if (!groups[group]) groups[group] = [];
+    groups[group].push({ ...story, displayName });
+  }
+
+  return groups;
 }

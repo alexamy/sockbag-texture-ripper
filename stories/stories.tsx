@@ -4,6 +4,7 @@ import { Toggler } from "./Toggler";
 
 export interface Story {
   name: string;
+  displayName?: string;
   component: () => JSXElement;
 }
 
