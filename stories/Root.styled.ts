@@ -1,10 +1,30 @@
+import { createVar } from "@macaron-css/core";
 import { styled } from "@macaron-css/solid";
+
+const vars = {
+  background: createVar(),
+  text: createVar(),
+  gray: createVar(),
+  blue: createVar(),
+  darkBlue: createVar(),
+  pink: createVar(),
+};
 
 export const Container = styled("div", {
   base: {
+    backgroundColor: vars.background,
+    color: vars.text,
     display: "flex",
     width: "100%",
     height: "100vh",
+    vars: {
+      [vars.background]: "#1E1E1E",
+      [vars.text]: "#E0E0E0",
+      [vars.gray]: "#606060",
+      [vars.blue]: "#00B8D4",
+      [vars.darkBlue]: "#008A9F",
+      [vars.pink]: "#FF4081",
+    },
   },
 });
 
@@ -14,7 +34,6 @@ export const Toolbar = styled("div", {
     alignItems: "center",
     gap: 10,
     padding: "0.5rem 1rem",
-    borderBottom: "2px solid grey",
     fontWeight: "bold",
     height: 50,
   },
@@ -32,14 +51,15 @@ export const Link = styled("li", {
   base: {
     padding: "0.2rem 1rem",
     cursor: "pointer",
+    transition: "background-color 0.2s",
     ":hover": {
-      backgroundColor: "grey",
+      backgroundColor: vars.darkBlue,
     },
   },
   variants: {
     selected: {
       true: {
-        backgroundColor: "grey",
+        backgroundColor: vars.blue,
       },
     },
   },
@@ -83,8 +103,8 @@ export const Button = styled("button", {
 
 export const Separator = styled("div", {
   base: {
-    width: 2,
-    backgroundColor: "grey",
+    width: 1,
+    backgroundColor: vars.gray,
     cursor: "col-resize",
   },
 });
