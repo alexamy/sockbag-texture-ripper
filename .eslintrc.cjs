@@ -19,12 +19,24 @@ module.exports = {
     "plugin:@typescript-eslint/recommended",
     "plugin:solid/typescript",
   ],
-  plugins: ["@typescript-eslint", "solid"],
+  plugins: ["@typescript-eslint", "solid", "import"],
   rules: {
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
+    "import/no-restricted-paths": [
+      "error",
+      {
+        zones: [
+          {
+            target: "src",
+            from: "stories",
+            message: "Stories can not be imported by the app.",
+          },
+        ],
+      },
+    ],
   },
 };
