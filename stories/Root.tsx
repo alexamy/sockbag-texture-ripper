@@ -16,13 +16,17 @@ const sToolbar = style({
 });
 
 const sList = style({
-  padding: "1rem",
+  paddingTop: "1rem",
   minWidth: 200,
   borderRight: "2px solid grey",
 });
 
 const sLink = style({
+  padding: "0 1rem",
   cursor: "pointer",
+  ":hover": {
+    backgroundColor: "grey",
+  },
 });
 
 const sStory = style({
