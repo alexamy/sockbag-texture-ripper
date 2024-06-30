@@ -10,9 +10,9 @@ import {
   Separator,
   StoryContainer,
   Toolbar,
-  themeClass,
 } from "./Root.styled.ts";
 import { Story } from "./stories";
+import { themeClass } from "./theme.ts";
 
 export function Root(props: { stories: Story[] }) {
   const resize = createResize(15);
