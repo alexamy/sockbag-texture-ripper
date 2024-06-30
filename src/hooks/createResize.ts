@@ -1,10 +1,20 @@
-import { createSignal } from "solid-js";
+import { createEffect, createSignal, onCleanup } from "solid-js";
 
-export function createResize() {
+export function createResize(initialWidth = 50) {
   const [dragging, setDragging] = createSignal(false);
-  const [width, setWidth] = createSignal(50);
+  const [width, setWidth] = createSignal(initialWidth);
   const left = () => width();
   const right = () => 100 - width();
+
+  createEffect(() => {
+    document.body.addEventListener("mousemove", onMouseMove);
+    document.body.addEventListener("mouseup", onMouseUp);
+
+    onCleanup(() => {
+      document.body.removeEventListener("mousemove", onMouseMove);
+      document.body.removeEventListener("mouseup", onMouseUp);
+    });
+  });
 
   function onMouseMove(e: MouseEvent) {
     if (dragging()) {
@@ -13,8 +23,12 @@ export function createResize() {
     }
   }
 
+  function onMouseUp() {
+    setDragging(false);
+  }
+
   function reset() {
-    setWidth(50);
+    setWidth(initialWidth);
   }
 
   function activate() {
@@ -25,5 +39,5 @@ export function createResize() {
     setDragging(false);
   }
 
-  return { width, left, right, onMouseMove, reset, activate, deactivate };
+  return { width, left, right, activate, deactivate, reset };
 }

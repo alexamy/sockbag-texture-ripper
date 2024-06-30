@@ -1,5 +1,5 @@
-import { useRegionContext } from "#/Region";
-import { useAppStore } from "#/store";
+import { useRegionContext } from "@/Region";
+import { useAppStore } from "@/store";
 import { styled } from "@macaron-css/solid";
 import { Clear } from "./Clear";
 import { Header } from "./Header";

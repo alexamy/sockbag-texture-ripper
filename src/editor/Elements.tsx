@@ -1,6 +1,12 @@
-import { v } from "#/lib/vector";
-import { Point as PointId, QuadPoints } from "#/store/editor";
-import { Show, createEffect, createMemo, createSignal } from "solid-js";
+import { v } from "@/lib/vector";
+import { Point as PointId, QuadPoints } from "@/store/editor";
+import {
+  Show,
+  createEffect,
+  createMemo,
+  createSignal,
+  mergeProps,
+} from "solid-js";
 
 export function Quad(props: { points: QuadPoints }) {
   const [points, setPoints] = createSignal<PointId[]>([]);
@@ -70,6 +76,13 @@ function ArrowLine(props: {
   );
 }
 
-export function Point(props: { p: { x: number; y: number } }) {
-  return <circle cx={props.p.x} cy={props.p.y} r={2} fill="black" />;
+export function Point(_props: {
+  x: number;
+  y: number;
+  r?: number;
+  fill?: string;
+}) {
+  const props = mergeProps({ r: 2, fill: "black" }, _props);
+
+  return <circle cx={props.x} cy={props.y} r={props.r} fill={props.fill} />;
 }

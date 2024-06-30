@@ -1,5 +1,5 @@
-import { useAppStore } from "#/store";
-import { Button } from "#/styles";
+import { useAppStore } from "@/store";
+import { Button } from "@/styles";
 import { createSignal } from "solid-js";
 
 export function Upload() {

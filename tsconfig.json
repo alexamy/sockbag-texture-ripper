@@ -9,7 +9,7 @@
     /* Aliases */
     "baseUrl": ".",
     "paths": {
-      "#/*": ["src/*"]
+      "@/*": ["src/*"]
     },
 
     /* Bundler mode */
@@ -27,6 +27,6 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": ["src", "stories"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
