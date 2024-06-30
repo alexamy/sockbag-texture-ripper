@@ -52,9 +52,12 @@ export const Link = styled("li", {
 
 export const StoryContainer = styled("div", {
   base: {
-    padding: "0 1rem",
+    color: "black",
+    backgroundColor: vars.light,
+    padding: "1rem",
     width: "100%",
     flexGrow: 1,
+    overflow: "hidden",
   },
 });
 
@@ -88,8 +91,8 @@ export const Button = styled("button", {
 
 export const Separator = styled("div", {
   base: {
-    width: 1,
-    backgroundColor: vars.gray,
+    width: 2,
+    backgroundColor: "transparent",
     cursor: "col-resize",
   },
 });
