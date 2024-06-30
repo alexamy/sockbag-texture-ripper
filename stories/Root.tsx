@@ -17,12 +17,6 @@ const sMain = style({
   height: "100vh",
 });
 
-const sSeparator = style({
-  width: 2,
-  backgroundColor: "grey",
-  cursor: "ew-resize",
-});
-
 const sToolbar = style({
   display: "flex",
   alignItems: "center",
@@ -73,6 +67,14 @@ const Button = styled("button", {
   },
 });
 
+const Separator = styled("div", {
+  base: {
+    width: 2,
+    backgroundColor: "grey",
+    cursor: "ew-resize",
+  },
+});
+
 export function Root() {
   const resize = createResize(15);
   const [selected, setSelected] = createSignal<Story>();
@@ -95,11 +97,7 @@ export function Root() {
           </ul>
         </div>
 
-        <div
-          class={sSeparator}
-          onMouseDown={resize.activate}
-          onDblClick={resize.reset}
-        />
+        <Separator onMouseDown={resize.activate} onDblClick={resize.reset} />
 
         <div class={sRight} style={{ width: `${resize.right()}%` }}>
           <div class={sToolbar} />
