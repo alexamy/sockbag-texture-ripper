@@ -53,7 +53,9 @@ export const Left = styled("div", {
 });
 
 export const Right = styled("div", {
-  base: {},
+  base: {
+    minWidth: 200,
+  },
 });
 
 export const Header = styled("h1", {
@@ -74,6 +76,6 @@ export const Separator = styled("div", {
   base: {
     width: 2,
     backgroundColor: "grey",
-    cursor: "ew-resize",
+    cursor: "col-resize",
   },
 });
