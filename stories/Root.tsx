@@ -6,15 +6,6 @@ import { Story, stories } from "./stories";
 const Container = styled("div", {
   base: {
     display: "flex",
-    flexDirection: "column",
-    width: "100%",
-    height: "100vh",
-  },
-});
-
-const Main = styled("div", {
-  base: {
-    display: "flex",
     width: "100%",
     height: "100vh",
   },
@@ -96,28 +87,26 @@ export function Root() {
 
   return (
     <Container>
-      <Main>
-        <Left style={{ width: `${resize.left()}%` }}>
-          <Toolbar>
-            <Header>Stories</Header>
-          </Toolbar>
+      <Left style={{ width: `${resize.left()}%` }}>
+        <Toolbar>
+          <Header>Stories</Header>
+        </Toolbar>
 
-          <List>
-            <For each={stories}>
-              {(story) => (
-                <Link onClick={() => setSelected(story)}>{story.name}</Link>
-              )}
-            </For>
-          </List>
-        </Left>
+        <List>
+          <For each={stories}>
+            {(story) => (
+              <Link onClick={() => setSelected(story)}>{story.name}</Link>
+            )}
+          </For>
+        </List>
+      </Left>
 
-        <Separator onMouseDown={resize.activate} onDblClick={resize.reset} />
+      <Separator onMouseDown={resize.activate} onDblClick={resize.reset} />
 
-        <Right style={{ width: `${resize.right()}%` }}>
-          <Toolbar />
-          <StoryContainer>{selected()?.render()}</StoryContainer>
-        </Right>
-      </Main>
+      <Right style={{ width: `${resize.right()}%` }}>
+        <Toolbar />
+        <StoryContainer>{selected()?.render()}</StoryContainer>
+      </Right>
     </Container>
   );
 }
