@@ -30,19 +30,12 @@ export function Root(props: { stories: Story[] }) {
         <List>
           <For each={groups()}>
             {([name, stories]) => (
-              <Toggler header={<div>{name}</div>}>
-                <For each={stories}>
-                  {(story) => (
-                    <Link
-                      onClick={() => setSelected(story.name)}
-                      data-selected={story.name === selected()!.name}
-                      selected={story.name === selected()!.name}
-                    >
-                      {story.displayName}
-                    </Link>
-                  )}
-                </For>
-              </Toggler>
+              <Group
+                name={name}
+                stories={stories}
+                selectStory={setSelected}
+                currentStory={selected()}
+              />
             )}
           </For>
         </List>
@@ -55,6 +48,29 @@ export function Root(props: { stories: Story[] }) {
         <StoryContainer>{selected()?.component()}</StoryContainer>
       </Right>
     </Container>
+  );
+}
+
+function Group(props: {
+  name: string;
+  stories: Story[];
+  selectStory: (name: string) => void;
+  currentStory?: Story;
+}) {
+  return (
+    <Toggler header={<div>{props.name}</div>}>
+      <For each={props.stories}>
+        {(story) => (
+          <Link
+            onClick={() => props.selectStory(story.name)}
+            data-selected={story.name === props.currentStory!.name}
+            selected={story.name === props.currentStory!.name}
+          >
+            {story.displayName}
+          </Link>
+        )}
+      </For>
+    </Toggler>
   );
 }
 
