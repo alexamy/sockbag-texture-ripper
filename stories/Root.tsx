@@ -1,3 +1,4 @@
+import { createResize } from "@/hooks/createResize";
 import { style } from "@macaron-css/core";
 
 const sRoot = style({
@@ -16,6 +17,7 @@ const sMain = style({
 const sSeparator = style({
   width: 2,
   backgroundColor: "grey",
+  cursor: "ew-resize",
 });
 
 const sToolbar = style({
@@ -44,17 +46,24 @@ const sStory = style({
 });
 
 export function Root() {
+  const resize = createResize(20);
+
   return (
     <div class={sRoot}>
       <div class={sToolbar}>Stories</div>
       <div class={sMain}>
-        <ul class={sList}>
+        <ul class={sList} style={{ width: `${resize.left()}%` }}>
           <li class={sLink}>Item 1</li>
           <li class={sLink}>Item 2</li>
           <li class={sLink}>Item 3</li>
         </ul>
-        <div class={sSeparator} />
-        <div class={sStory}>
+        <div
+          class={sSeparator}
+          onMouseDown={resize.activate}
+          onMouseUp={resize.deactivate}
+          onDblClick={resize.reset}
+        />
+        <div class={sStory} style={{ width: `${resize.right()}%` }}>
           <div
             style={{
               "background-color": "green",

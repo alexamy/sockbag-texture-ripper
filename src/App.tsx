@@ -83,7 +83,6 @@ function TextureRipper() {
       onDragEnter={dnd.onDragEnter}
       onDragOver={dnd.onDragOver}
       onDragLeave={dnd.onDragLeave}
-      onMouseMove={resize.onMouseMove}
     >
       <Show when={store.blob}>
         <Region
