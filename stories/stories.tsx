@@ -7,6 +7,21 @@ export interface Story {
   component: () => JSXElement;
 }
 
+export const stories = [
+  {
+    name: "Editor/Point",
+    component: PointStory,
+  },
+  {
+    name: "Editor/Line",
+    component: () => <div>Line</div>,
+  },
+  {
+    name: "Helper/Toggler",
+    component: TogglerStory,
+  },
+] satisfies Story[];
+
 function PointStory() {
   return (
     <svg>
@@ -22,18 +37,3 @@ function TogglerStory() {
     </Toggler>
   );
 }
-
-export const stories = [
-  {
-    name: "Editor/Point",
-    component: PointStory,
-  },
-  {
-    name: "Editor/Line",
-    component: () => <div>Line</div>,
-  },
-  {
-    name: "Helper/Toggler",
-    component: TogglerStory,
-  },
-] satisfies Story[];
