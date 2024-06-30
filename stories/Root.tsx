@@ -30,19 +30,7 @@ const sToolbar = style({
   padding: "0.5rem 1rem",
   borderBottom: "2px solid grey",
   fontWeight: "bold",
-});
-
-const Header = styled("h1", {
-  base: {
-    fontSize: "1.5rem",
-    fontWeight: "bold",
-  },
-});
-
-const Button = styled("button", {
-  base: {
-    padding: 4,
-  },
+  height: 50,
 });
 
 const sList = style({
@@ -50,7 +38,6 @@ const sList = style({
   flexDirection: "column",
   gap: 8,
   paddingTop: "1rem",
-  minWidth: 200,
 });
 
 const sLink = style({
@@ -66,26 +53,47 @@ const sStory = style({
   width: "100%",
 });
 
+const sLeft = style({
+  minWidth: 200,
+});
+
+const sRight = style({});
+
+const Header = styled("h1", {
+  base: {
+    fontSize: "1.5rem",
+    fontWeight: "bold",
+  },
+});
+
+const Button = styled("button", {
+  base: {
+    padding: 4,
+    userSelect: "none",
+  },
+});
+
 export function Root() {
-  const resize = createResize(20);
+  const resize = createResize(15);
   const [selected, setSelected] = createSignal<Story>();
 
   return (
     <div class={sRoot}>
-      <div class={sToolbar}>
-        <Header>Stories</Header>
-        <Button>Switch background</Button>
-      </div>
       <div class={sMain}>
-        <ul class={sList} style={{ width: `${resize.left()}%` }}>
-          <For each={stories}>
-            {(story) => (
-              <li class={sLink} onClick={() => setSelected(story)}>
-                {story.name}
-              </li>
-            )}
-          </For>
-        </ul>
+        <div class={sLeft} style={{ width: `${resize.left()}%` }}>
+          <div class={sToolbar}>
+            <Header>Stories</Header>
+          </div>
+          <ul class={sList}>
+            <For each={stories}>
+              {(story) => (
+                <li class={sLink} onClick={() => setSelected(story)}>
+                  {story.name}
+                </li>
+              )}
+            </For>
+          </ul>
+        </div>
 
         <div
           class={sSeparator}
@@ -93,8 +101,11 @@ export function Root() {
           onDblClick={resize.reset}
         />
 
-        <div class={sStory} style={{ width: `${resize.right()}%` }}>
-          {selected()?.render()}
+        <div class={sRight} style={{ width: `${resize.right()}%` }}>
+          <div class={sToolbar}>
+            <Button>Switch background</Button>
+          </div>
+          <div class={sStory}>{selected()?.render()}</div>
         </div>
       </div>
     </div>
