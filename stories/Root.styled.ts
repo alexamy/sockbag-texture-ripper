@@ -43,7 +43,6 @@ export const List = styled("ul", {
   base: {
     display: "flex",
     flexDirection: "column",
-    paddingTop: "1rem",
   },
 });
 
@@ -69,7 +68,7 @@ export const Link = styled("li", {
 
 export const StoryContainer = styled("div", {
   base: {
-    padding: "2rem",
+    padding: "0 1rem",
     width: "100%",
     flexGrow: 1,
   },

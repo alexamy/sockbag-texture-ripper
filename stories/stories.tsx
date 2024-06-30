@@ -1,5 +1,4 @@
 import { Point } from "@/editor/Elements";
-import { styled } from "@macaron-css/solid";
 import { JSXElement } from "solid-js";
 
 export interface Story {
@@ -7,20 +6,13 @@ export interface Story {
   render: () => JSXElement;
 }
 
-const Svg = styled("svg", {
-  base: {
-    width: "100%",
-    height: "100%",
-  },
-});
-
 export const stories = [
   {
     name: "Point",
     render: () => (
-      <Svg>
+      <svg>
         <Point x={50} y={50} r={8} fill="darkred" />
-      </Svg>
+      </svg>
     ),
   },
   {
