@@ -1,6 +1,7 @@
 import { createResize } from "@/hooks/createResize";
 import { style } from "@macaron-css/core";
-import { For, JSXElement, createSignal } from "solid-js";
+import { For, createSignal } from "solid-js";
+import { Story, stories } from "./stories";
 
 const sRoot = style({
   display: "flex",
@@ -48,22 +49,6 @@ const sStory = style({
   padding: "2rem",
   width: "100%",
 });
-
-interface Story {
-  name: string;
-  render: () => JSXElement;
-}
-
-const stories = [
-  {
-    name: "Point",
-    render: () => <div>Point</div>,
-  },
-  {
-    name: "Line",
-    render: () => <div>Line</div>,
-  },
-] satisfies Story[];
 
 export function Root() {
   const resize = createResize(20);
