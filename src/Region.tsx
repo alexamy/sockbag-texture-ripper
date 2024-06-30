@@ -1,4 +1,4 @@
-import { createRegionMovement } from "#/hooks/createRegionMovement";
+import { createRegionMovement } from "@/hooks/createRegionMovement";
 import { styled } from "@macaron-css/solid";
 import {
   Accessor,

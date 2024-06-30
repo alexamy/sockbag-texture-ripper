@@ -1,5 +1,5 @@
-import { v } from "#/lib/vector";
-import { Point as PointId, QuadPoints } from "#/store/editor";
+import { v } from "@/lib/vector";
+import { Point as PointId, QuadPoints } from "@/store/editor";
 import { Show, createEffect, createMemo, createSignal } from "solid-js";
 
 export function Quad(props: { points: QuadPoints }) {

@@ -9,7 +9,7 @@
     /* Aliases */
     "baseUrl": ".",
     "paths": {
-      "#/*": ["src/*"]
+      "@/*": ["src/*"]
     },
 
     /* Bundler mode */

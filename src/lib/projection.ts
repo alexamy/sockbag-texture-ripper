@@ -1,4 +1,4 @@
-import { QuadPoints } from "#/store/editor";
+import { QuadPoints } from "@/store/editor";
 import cv from "@techstark/opencv-js";
 import { v } from "./vector";
 

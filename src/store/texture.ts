@@ -1,5 +1,5 @@
-import { createImageSource } from "#/lib/helper";
-import { projectRectangles } from "#/lib/projection";
+import { createImageSource } from "@/lib/helper";
+import { projectRectangles } from "@/lib/projection";
 import potpack from "potpack";
 import { createEffect, on } from "solid-js";
 import { createStore } from "solid-js/store";
