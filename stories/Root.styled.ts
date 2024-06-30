@@ -26,12 +26,13 @@ export const List = styled("ul", {
   base: {
     display: "flex",
     flexDirection: "column",
+    paddingLeft: "1rem",
   },
 });
 
 export const Link = styled("li", {
   base: {
-    padding: "0.2rem 1rem",
+    padding: "0.3rem 1.5rem",
     cursor: "pointer",
     transition: "background-color 0.2s",
     selectors: {

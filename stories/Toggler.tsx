@@ -15,6 +15,7 @@ const Header = styled("div", {
     alignItems: "center",
     cursor: "pointer",
     userSelect: "none",
+    padding: "0.2rem",
   },
 });
 
@@ -33,7 +34,7 @@ const Child = styled("div", {
 
 const Icon = styled("div", {
   base: {
-    marginRight: 5,
+    marginRight: 10,
     width: 0,
     height: 0,
     borderLeft: "5px solid",
