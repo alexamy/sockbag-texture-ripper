@@ -2,8 +2,8 @@ import { style } from "@macaron-css/core";
 
 const sRoot = style({
   display: "grid",
-  gridTemplateColumns: "200px 1fr",
-  gridTemplateRows: "20 1fr",
+  gridTemplateColumns: "20% 80%",
+  gridTemplateRows: "auto 1fr",
   width: "100%",
   height: "100vh",
 });
