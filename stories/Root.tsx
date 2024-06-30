@@ -102,9 +102,7 @@ export function Root() {
         />
 
         <div class={sRight} style={{ width: `${resize.right()}%` }}>
-          <div class={sToolbar}>
-            <Button>Switch background</Button>
-          </div>
+          <div class={sToolbar} />
           <div class={sStory}>{selected()?.render()}</div>
         </div>
       </div>
