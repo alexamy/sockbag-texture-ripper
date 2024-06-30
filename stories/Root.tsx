@@ -35,8 +35,8 @@ export function Root(props: { stories: Story[] }) {
                   {(story) => (
                     <Link
                       onClick={() => setSelected(story.name)}
-                      data-selected={story === selected()}
-                      selected={story === selected()}
+                      data-selected={story.name === selected()!.name}
+                      selected={story.name === selected()!.name}
                     >
                       {story.displayName}
                     </Link>
