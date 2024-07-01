@@ -76,7 +76,7 @@ function Group(props: {
             data-selected={story.name === props.currentStory?.name}
             selected={story.name === props.currentStory?.name}
           >
-            {story.displayName}
+            {story.name}
           </Link>
         )}
       </For>
@@ -104,9 +104,9 @@ function groupStories(stories: Story[]) {
   const groups: Record<string, Story[]> = {};
 
   for (const story of stories) {
-    const [group, displayName] = story.name.split("/");
-    if (!groups[group]) groups[group] = [];
-    groups[group].push({ ...story, displayName });
+    const { category } = story;
+    if (!groups[category]) groups[category] = [];
+    groups[category].push(story);
   }
 
   return groups;

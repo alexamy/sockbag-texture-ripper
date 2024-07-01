@@ -3,22 +3,25 @@ import { JSXElement } from "solid-js";
 import { Toggler } from "./Toggler";
 
 export interface Story {
+  category: string;
   name: string;
-  displayName?: string;
   component: () => JSXElement;
 }
 
 export const stories = [
   {
-    name: "Editor/Point",
+    category: "Editor",
+    name: "Point",
     component: PointStory,
   },
   {
-    name: "Editor/Line",
+    category: "Editor",
+    name: "Line",
     component: () => <div>Line</div>,
   },
   {
-    name: "Helper/Toggler",
+    category: "Helper",
+    name: "Toggler",
     component: TogglerStory,
   },
 ] satisfies Story[];
