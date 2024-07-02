@@ -88,6 +88,13 @@ export const Right = styled("div", {
   },
 });
 
+export const Description = styled("p", {
+  base: {
+    paddingBottom: "0.5rem",
+    whiteSpace: "pre",
+  },
+});
+
 export const Header = styled("h1", {
   base: {
     fontSize: "1.2rem",
