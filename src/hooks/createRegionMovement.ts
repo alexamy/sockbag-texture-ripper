@@ -1,5 +1,5 @@
 import { v } from "@/lib/vector";
-import { createEffect, createMemo, createSignal, on, type JSX } from "solid-js";
+import { createMemo, createSignal, type JSX } from "solid-js";
 
 export function createRegionMovement() {
   const [ref, setRef] = createSignal<HTMLElement>();
@@ -10,28 +10,14 @@ export function createRegionMovement() {
   const [origin, setOrigin] = createSignal({ x: 0, y: 0 });
   const [scale, setScale] = createSignal(3);
 
-  // prettier-ignore
-  createEffect(on([current, scale], ([current, scale]) => {
-    const rect = ref()!.getBoundingClientRect();
-    const parent = { x: rect.left, y: rect.top };
-    const position = v.subtract(current, parent);
-    const scaled = v.scale(position, 1 / scale);
-    const rounded = v.map(scaled, Math.round);
-    setOrigin(rounded);
-  }));
-
   const style = createMemo(() => {
-    const scaled = v.scale(origin(), scale() - 1);
-    const shift = ""; //`translate(${scaled.x}px, ${scaled.y}px)`;
     const move = `translate(${translate().x}px, ${translate().y}px)`;
     const zoom = `scale(${scale()})`;
 
-    const transform = `${move} ${shift} ${zoom}`;
-    const transformOrigin = ""; //`${origin().x}px ${origin().y}px`;
+    const transform = `${move} ${zoom}`;
 
     return {
       transform,
-      "transform-origin": transformOrigin,
     } satisfies JSX.CSSProperties;
   });
 
@@ -64,8 +50,18 @@ export function createRegionMovement() {
     event.preventDefault();
     event.stopPropagation();
 
-    const next = getScale(event);
-    setScale(next);
+    const mousePosition = { x: event.clientX, y: event.clientY };
+
+    const prevScale = scale();
+    const newScale = getScale(event);
+    setScale(newScale);
+
+    const scaleDiff = newScale - prevScale;
+    const newTranslate = v.subtract(
+      translate(),
+      v.scale(v.subtract(mousePosition, translate()), scaleDiff / prevScale)
+    );
+    setTranslate(newTranslate);
   }
 
   function getScale(event: WheelEvent) {
