@@ -3,6 +3,7 @@ import { For, createEffect, createMemo, createSignal } from "solid-js";
 import {
   Button,
   Container,
+  Description,
   Header,
   Left,
   Link,
@@ -25,6 +26,11 @@ export function Root(props: { stories: Story[] }) {
   function toggleBackground() {
     setBackground(background() === "dark" ? "light" : "dark");
   }
+
+  createEffect(() => {
+    const background = selected()?.options?.background ?? "dark";
+    setBackground(background);
+  });
 
   return (
     <Container class={themeClass}>
@@ -53,6 +59,7 @@ export function Root(props: { stories: Story[] }) {
         <Toolbar>
           <Button onClick={toggleBackground}>Toggle BG</Button>
         </Toolbar>
+        <Description>{selected()?.description}</Description>
         <StoryContainer mode={background()}>
           {selected()?.component()}
         </StoryContainer>
@@ -76,7 +83,7 @@ function Group(props: {
             data-selected={story.name === props.currentStory?.name}
             selected={story.name === props.currentStory?.name}
           >
-            {story.name}
+            {story.displayName}
           </Link>
         )}
       </For>
@@ -104,9 +111,13 @@ function groupStories(stories: Story[]) {
   const groups: Record<string, Story[]> = {};
 
   for (const story of stories) {
-    const { category } = story;
+    const [category, displayName] = story.name.split("/");
     if (!groups[category]) groups[category] = [];
-    groups[category].push(story);
+
+    groups[category].push({
+      ...story,
+      displayName,
+    });
   }
 
   return groups;
