@@ -1,10 +1,9 @@
 import { v } from "@/lib/vector";
-import { Point as PointId, QuadPoints } from "@/store/editor";
-import { Show, createEffect, createMemo, createSignal } from "solid-js";
+import { QuadPoints } from "@/store/editor";
+import { Show, createMemo } from "solid-js";
 
 export function Quad(props: { points: QuadPoints }) {
-  const [points, setPoints] = createSignal<PointId[]>([]);
-  createEffect(() => setPoints(props.points));
+  const points = () => props.points;
 
   const top = createMemo(() => v.average(points().slice(0, 2)));
   const center = createMemo(() => v.average(points()));
