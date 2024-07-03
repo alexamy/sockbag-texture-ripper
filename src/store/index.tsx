@@ -36,11 +36,6 @@ export function useAppStore() {
   return store;
 }
 
-/* TODO
-1. Merge file and texture store?
-2. Merge computed store?
-*/
-
 export function AppStoreProvider(props: { children: JSXElement }) {
   const file = createFileStore();
   const editor = createEditorStore();

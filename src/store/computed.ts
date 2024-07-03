@@ -28,6 +28,7 @@ export async function createComputedState(stores: {
     }
   );
 
+  // TODO merge this memos in single async resource?
   const urls = createMemo(() =>
     rects()?.map((blob) => URL.createObjectURL(blob))
   );
