@@ -97,8 +97,8 @@ function quadToPoints(quads: Quad, points: PointId[]) {
 function getDefaultStore() {
   return {
     current: { x: 0, y: 0 },
-    points: [],
     buffer: [],
+    points: [],
     quads: [],
   } satisfies StoreData;
 }
