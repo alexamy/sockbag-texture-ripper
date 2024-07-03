@@ -3,6 +3,7 @@ import {
   JSXElement,
   createContext,
   createEffect,
+  on,
   onMount,
   useContext,
 } from "solid-js";
@@ -41,6 +42,13 @@ export function AppStoreProvider(props: { children: JSXElement }) {
 
   onMount(() => loadFromLocalStorage(state));
   createEffect(() => saveToLocalStorage(state));
+
+  createEffect(
+    on(
+      () => file[0].blob,
+      () => editor[1].clear()
+    )
+  );
 
   return (
     <StoreContext.Provider value={state}>
