@@ -6,9 +6,9 @@ import { EditorStore } from "./editor";
 import { FileStore } from "./file";
 import { TextureStore } from "./texture";
 
-export type ComputedStore = ReturnType<typeof createComputedStore>;
+export type ComputedState = ReturnType<typeof createComputedState>;
 
-export async function createComputedStore(stores: {
+export async function createComputedState(stores: {
   file: FileStore;
   editor: EditorStore;
   texture: TextureStore;

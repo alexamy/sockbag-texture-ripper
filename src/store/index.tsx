@@ -7,7 +7,7 @@ import {
   onMount,
   useContext,
 } from "solid-js";
-import { ComputedStore, createComputedStore } from "./computed";
+import { ComputedState, createComputedState } from "./computed";
 import { EditorStore, Point, Quad, createEditorStore } from "./editor";
 import { FileStore, createFileStore } from "./file";
 import { TextureStore, createTextureStore } from "./texture";
@@ -16,7 +16,7 @@ interface Stores {
   file: FileStore;
   editor: EditorStore;
   texture: TextureStore;
-  computed: ComputedStore;
+  computed: ComputedState;
 }
 
 interface PersistState {
@@ -36,11 +36,16 @@ export function useAppStore() {
   return store;
 }
 
+/* TODO
+1. Merge file and texture store?
+2. Merge computed store?
+*/
+
 export function AppStoreProvider(props: { children: JSXElement }) {
   const file = createFileStore();
   const editor = createEditorStore();
   const texture = createTextureStore();
-  const computed = createComputedStore({ file, editor, texture });
+  const computed = createComputedState({ file, editor, texture });
 
   const state = { file, editor, texture, computed } satisfies Stores;
 
