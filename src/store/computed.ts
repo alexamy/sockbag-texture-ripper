@@ -8,6 +8,14 @@ import { TextureStore } from "./texture";
 
 export type ComputedState = ReturnType<typeof createComputedState>;
 
+const defaultImages = {
+  urls: [],
+  images: [],
+  packs: [],
+  dimensions: { w: 0, h: 0, fill: 0 },
+  transforms: [],
+};
+
 export async function createComputedState(stores: {
   file: FileStore;
   editor: EditorStore;
@@ -20,22 +28,20 @@ export async function createComputedState(stores: {
   const [rects] = createResource(
     () => [fileApi.image(), editorApi.quadPoints()] as const,
     async ([image, quads]) => {
-      if (image) {
-        const canvases = projectRectangles(image, quads);
-        const blobs = await toBlobs(canvases);
-        return blobs;
-      }
+      if (!image) return [];
+      const canvases = projectRectangles(image, quads);
+      const blobs = await toBlobs(canvases);
+      return blobs;
     }
   );
 
   const images = createResource(rects, async (rects) => {
-    if (rects) {
-      const urls = rects.map((blob) => URL.createObjectURL(blob));
-      const images = await Promise.all(urls.map(createImageSource));
-      const { packs, dimensions } = autopack(images, texture.gap);
-      const transforms = packs.map(({ x, y }) => `translate(${x}px, ${y}px)`);
-      return { urls, images, packs, dimensions, transforms };
-    }
+    if (!rects) return defaultImages;
+    const urls = rects.map((blob) => URL.createObjectURL(blob));
+    const images = await Promise.all(urls.map(createImageSource));
+    const { packs, dimensions } = autopack(images, texture.gap);
+    const transforms = packs.map(({ x, y }) => `translate(${x}px, ${y}px)`);
+    return { urls, images, packs, dimensions, transforms };
   });
 
   return { rects, images } as const;
