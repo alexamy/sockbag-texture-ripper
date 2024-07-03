@@ -59,7 +59,7 @@ export function createEditorStore(file: { blob: Blob }) {
   // prettier-ignore
   createEffect(() => {
     const quadPoints = store.quads.map((quad) => quadToPoints(quad, store.points));
-    console.log(quadPoints);
+    console.log("qp", quadPoints); // TODO remove
     setStore({ quadPoints });
   });
 
