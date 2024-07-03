@@ -4,13 +4,6 @@ import { createSignal } from "solid-js";
 
 const Circle = styled("circle", {
   base: {},
-  variants: {
-    fallthrough: {
-      true: {
-        pointerEvents: "none",
-      },
-    },
-  },
 });
 
 export function Point(props: {
@@ -28,6 +21,7 @@ export function Point(props: {
 
   return (
     <>
+      <Circle cx={props.x} cy={props.y} r={2} fill="black" />
       <Circle
         ref={setRef}
         onMouseDown={onMouseDown}
@@ -36,14 +30,6 @@ export function Point(props: {
         cy={props.y}
         r={8}
         fill="transparent"
-      />
-      <Circle
-        onClick={(e) => e.stopPropagation()}
-        fallthrough={true}
-        cx={props.x}
-        cy={props.y}
-        r={2}
-        fill="black"
       />
     </>
   );
