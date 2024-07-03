@@ -59,11 +59,13 @@ export function createEditorStore(file: { blob: Blob }) {
   }));
 
   // prettier-ignore
-  createEffect(on(() => [store.quads, trackStore(store.points)] as const, debounce(([quads, points]: readonly [Quad[], Point[]]) => {
+  createEffect(on(
+    () => [store.quads, trackStore(store.points)] as const,
+    debounce(([quads, points]: readonly [Quad[], Point[]]) => {
       const quadPoints = quads.map((quad) => quadToPoints(quad, points));
       setStore({ quadPoints });
-    }, 200
-  )));
+    }, 200),
+  ));
 
   // methods
   function updateCurrent(coordinates: { x: number; y: number }) {
