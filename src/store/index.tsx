@@ -7,6 +7,7 @@ import {
   onMount,
   useContext,
 } from "solid-js";
+import { ComputedStore, createComputedStore } from "./computed";
 import { EditorStore, Point, Quad, createEditorStore } from "./editor";
 import { FileStore, createFileStore } from "./file";
 import { TextureStore, createTextureStore } from "./texture";
@@ -15,6 +16,7 @@ interface Stores {
   file: FileStore;
   editor: EditorStore;
   texture: TextureStore;
+  computed: ComputedStore;
 }
 
 interface PersistState {
@@ -38,7 +40,9 @@ export function AppStoreProvider(props: { children: JSXElement }) {
   const file = createFileStore();
   const editor = createEditorStore();
   const texture = createTextureStore();
-  const state = { file, editor, texture } satisfies Stores;
+  const computed = createComputedStore({ file, editor });
+
+  const state = { file, editor, texture, computed } satisfies Stores;
 
   onMount(() => loadFromLocalStorage(state));
   createEffect(() => saveToLocalStorage(state));

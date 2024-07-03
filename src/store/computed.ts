@@ -3,6 +3,8 @@ import { createResource } from "solid-js";
 import { EditorStore } from "./editor";
 import { FileStore } from "./file";
 
+export type ComputedStore = ReturnType<typeof createComputedStore>;
+
 // store
 export function createComputedStore(stores: {
   file: FileStore;
