@@ -1,14 +1,11 @@
 import { createImageSource } from "@/lib/helper";
-import { projectRectangles } from "@/lib/projection";
 import potpack from "potpack";
 import { createEffect, on } from "solid-js";
 import { createStore } from "solid-js/store";
-import { QuadPoints } from "./editor";
 
 export type TextureStore = ReturnType<typeof createTextureStore>;
 
 interface StoreData {
-  rects: Blob[];
   urls: string[];
   images: HTMLImageElement[];
   packs: PackEntry[];
@@ -32,42 +29,10 @@ interface PackDimensions {
   fill: number;
 }
 
-export function createTextureStore(
-  file: { image: HTMLImageElement },
-  editor: { quadPoints: QuadPoints[] }
-) {
+export function createTextureStore() {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
-  let projectTimeout: NodeJS.Timeout;
 
   // prettier-ignore
-  createEffect(
-    on(() => file.image, () => {
-      setStore({ ...getDefaultStore(), gap: store.gap });
-    })
-  );
-
-  // prettier-ignore
-  createEffect(
-    on(() => [file.image, editor.quadPoints] as const, async ([image, quads]) => {
-      if (image.width === 0 || quads.length === 0) return;
-
-      // possibly there is a bug with slow opencv loading (or my own bug in the app logic)
-      // which causes the "cv2.Mat is not a constructor" error
-      // when projecting texture from image stored in local storage on app load
-      // so we need to try to project the texture repeatedly until opencv is working
-      async function project() {
-        try {
-          const rects = await projectRectangles(image, quads);
-          setStore({ rects });
-        } catch {
-          projectTimeout = setTimeout(project, 300);
-        }
-      }
-
-      if(projectTimeout) clearTimeout(projectTimeout);
-      project();
-    })
-  );
 
   // prettier-ignore
   createEffect(
@@ -93,7 +58,13 @@ export function createTextureStore(
     })
   );
 
-  return [store, setStore] as const;
+  function reset() {
+    setStore({ ...getDefaultStore(), gap: store.gap });
+  }
+
+  const api = { reset };
+
+  return [store, api, setStore] as const;
 }
 
 async function makeImages(blobs: Blob[]) {

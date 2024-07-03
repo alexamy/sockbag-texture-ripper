@@ -36,8 +36,8 @@ export function useAppStore() {
 
 export function AppStoreProvider(props: { children: JSXElement }) {
   const file = createFileStore();
-  const editor = createEditorStore(file[0]);
-  const texture = createTextureStore(file[0], editor[0]);
+  const editor = createEditorStore();
+  const texture = createTextureStore();
   const state = { file, editor, texture } satisfies Stores;
 
   onMount(() => loadFromLocalStorage(state));
@@ -46,7 +46,10 @@ export function AppStoreProvider(props: { children: JSXElement }) {
   createEffect(
     on(
       () => file[0].blob,
-      () => editor[1].clear()
+      () => {
+        editor[1].reset();
+        texture[1].reset();
+      }
     )
   );
 
