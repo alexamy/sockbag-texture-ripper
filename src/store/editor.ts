@@ -5,26 +5,28 @@ import { createStore } from "solid-js/store";
 
 export type EditorStore = ReturnType<typeof createEditorStore>;
 
-type PointId = string;
-type QuadId = string;
-
 export interface Point {
-  id: PointId;
+  x: number;
+  y: number;
+}
+
+export interface PointId {
+  id: string;
   x: number;
   y: number;
 }
 
 export interface Quad {
-  id: QuadId;
-  points: PointId[];
+  id: string;
+  points: string[];
 }
 
-export type QuadPoints = Point[];
+export type QuadPoints = PointId[];
 
 interface StoreData {
   current: Point;
   buffer: Point[];
-  points: Point[];
+  points: PointId[];
   quads: Quad[];
 }
 
@@ -35,17 +37,13 @@ export function createEditorStore() {
   const quadPoints = createMemo(
     on(
       () => [store.quads, trackStore(store.points)] as const,
-      ([quads, points]) => {
-        const quadPoints = quads.map((quad) => quadToPoints(quad, points));
-        return quadPoints;
-      }
+      ([quads, points]) => quads.map((quad) => quadToPoints(quad, points))
     )
   );
 
   // methods
-  function updateCurrent(coordinates: { x: number; y: number }) {
-    const current = { ...store.current, ...coordinates };
-    setStore({ current });
+  function setCurrent(point: { x: number; y: number }) {
+    setStore({ current: point });
   }
 
   function addPoint() {
@@ -53,14 +51,15 @@ export function createEditorStore() {
     if (isEqualSome) return;
 
     const buffer = [...store.buffer, store.current];
-    const current = { ...store.current, id: getId() };
-    setStore({ buffer, current });
 
     if (buffer.length === 4) {
-      const quad = { id: getId(), points: store.buffer.map((p) => p.id) };
+      const newPoints: PointId[] = buffer.map((p) => ({ ...p, id: getId() }));
+      const quad = { id: getId(), points: newPoints.map((p) => p.id) };
+      const points = [...store.points, ...newPoints];
       const quads = [...store.quads, quad];
-      const points = [...store.points, ...store.buffer];
-      setStore({ quads, points, buffer: [] });
+      setStore({ points, quads, buffer: [] });
+    } else {
+      setStore({ buffer });
     }
   }
 
@@ -69,17 +68,17 @@ export function createEditorStore() {
     setStore({ buffer });
   }
 
-  function clear() {
+  function reset() {
     setStore(getDefaultStore());
   }
 
   const api = {
     currentQuad,
     quadPoints,
-    updateCurrent,
+    setCurrent,
     addPoint,
     deleteLastPoint,
-    clear,
+    reset,
   };
 
   return [store, api, setStore] as const;
