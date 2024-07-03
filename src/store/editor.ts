@@ -31,15 +31,19 @@ interface StoreData {
 export function createEditorStore() {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
 
-  // prettier-ignore
-  createEffect(on(() => store.buffer, (buffer) => {
-    if(buffer.length < 4) return;
-    const [p1, p2, p3, p4] = buffer;
-    const quad = { id: getId(), points: [p1.id, p2.id, p3.id, p4.id] };
-    const quads = [...store.quads, quad];
-    const points = [...store.points, ...buffer];
-    setStore({ quads, points, buffer: [], });
-  }));
+  createEffect(
+    on(
+      () => store.buffer,
+      (buffer) => {
+        if (buffer.length < 4) return;
+        const [p1, p2, p3, p4] = buffer;
+        const quad = { id: getId(), points: [p1.id, p2.id, p3.id, p4.id] };
+        const quads = [...store.quads, quad];
+        const points = [...store.points, ...buffer];
+        setStore({ quads, points, buffer: [] });
+      }
+    )
+  );
 
   const currentQuad = createMemo(() => store.buffer.concat(store.current));
   const quadPoints = createMemo(
