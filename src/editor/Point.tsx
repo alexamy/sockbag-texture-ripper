@@ -5,9 +5,9 @@ import { createSignal } from "solid-js";
 const Circle = styled("circle", {
   base: {},
   variants: {
-    draggable: {
+    fallthrough: {
       true: {
-        cursor: "pointer",
+        pointerEvents: "none",
       },
     },
   },
@@ -27,15 +27,24 @@ export function Point(props: {
   });
 
   return (
-    <Circle
-      ref={setRef}
-      onMouseDown={onMouseDown}
-      onClick={(e) => e.stopPropagation()}
-      draggable={props.draggable}
-      cx={props.x}
-      cy={props.y}
-      r={2}
-      fill={"black"}
-    />
+    <>
+      <Circle
+        ref={setRef}
+        onMouseDown={onMouseDown}
+        onClick={(e) => e.stopPropagation()}
+        cx={props.x}
+        cy={props.y}
+        r={8}
+        fill="transparent"
+      />
+      <Circle
+        onClick={(e) => e.stopPropagation()}
+        fallthrough={true}
+        cx={props.x}
+        cy={props.y}
+        r={2}
+        fill="black"
+      />
+    </>
   );
 }
