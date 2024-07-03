@@ -1,4 +1,5 @@
-import { Point, Quad } from "@/editor/Elements";
+import { Point } from "@/editor/Point";
+import { Quad } from "@/editor/Quad";
 import { styled } from "@macaron-css/solid";
 import { createSignal } from "solid-js";
 import type { Story } from "../stories";

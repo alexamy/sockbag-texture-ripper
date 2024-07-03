@@ -2,7 +2,8 @@ import { useRegionContext } from "@/Region";
 import { useAppStore } from "@/store";
 import { styled } from "@macaron-css/solid";
 import { For, JSX, createMemo, createSignal, onMount } from "solid-js";
-import { Point, Quad } from "./Elements";
+import { Point } from "./Point";
+import { Quad } from "./Quad";
 
 const Canvas = styled("svg", {
   base: {

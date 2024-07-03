@@ -1,7 +1,5 @@
-import { createDrag } from "@/hooks/createDrag";
 import { v } from "@/lib/vector";
 import { Point as PointId, QuadPoints } from "@/store/editor";
-import { styled } from "@macaron-css/solid";
 import { Show, createEffect, createMemo, createSignal } from "solid-js";
 
 export function Quad(props: { points: QuadPoints }) {
@@ -69,42 +67,5 @@ function ArrowLine(props: {
       />
       <polygon points={tip()} fill={color()} />
     </>
-  );
-}
-
-const Circle = styled("circle", {
-  base: {},
-  variants: {
-    draggable: {
-      true: {
-        cursor: "pointer",
-      },
-    },
-  },
-});
-
-export function Point(props: {
-  x: number;
-  y: number;
-  draggable?: boolean;
-  update?: (coords: { dx: number; dy: number }) => void;
-}) {
-  const [ref, setRef] = createSignal<SVGCircleElement>();
-  const [dragging, onMouseDown] = createDrag(ref, (coords) => {
-    if (props.draggable) {
-      props.update?.(coords);
-    }
-  });
-
-  return (
-    <Circle
-      ref={setRef}
-      onMouseDown={onMouseDown}
-      draggable={props.draggable}
-      cx={props.x}
-      cy={props.y}
-      r={2}
-      fill={"black"}
-    />
   );
 }
