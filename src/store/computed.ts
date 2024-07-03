@@ -1,19 +1,20 @@
+import { createImageSource } from "@/lib/helper";
 import { projectRectangles, toBlobs } from "@/lib/projection";
-import { createResource } from "solid-js";
+import { createMemo, createResource } from "solid-js";
 import { EditorStore } from "./editor";
 import { FileStore } from "./file";
 
 export type ComputedStore = ReturnType<typeof createComputedStore>;
 
 // store
-export function createComputedStore(stores: {
+export async function createComputedStore(stores: {
   file: FileStore;
   editor: EditorStore;
 }) {
   const [file, fileApi] = stores.file;
   const [editor, editorApi] = stores.editor;
 
-  const rects = createResource(
+  const [rects] = createResource(
     () => [fileApi.image(), editorApi.quadPoints()] as const,
     async ([image, quads]) => {
       if (image) {
@@ -24,5 +25,14 @@ export function createComputedStore(stores: {
     }
   );
 
-  return { rects } as const;
+  const urls = createMemo(() =>
+    rects()?.map((blob) => URL.createObjectURL(blob))
+  );
+
+  const [images] = createResource(
+    urls,
+    async (urls) => await Promise.all(urls.map(createImageSource))
+  );
+
+  return { rects, urls, images } as const;
 }

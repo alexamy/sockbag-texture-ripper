@@ -1,4 +1,3 @@
-import { createImageSource } from "@/lib/helper";
 import potpack from "potpack";
 import { createEffect, on } from "solid-js";
 import { createStore } from "solid-js/store";
@@ -6,8 +5,6 @@ import { createStore } from "solid-js/store";
 export type TextureStore = ReturnType<typeof createTextureStore>;
 
 interface StoreData {
-  urls: string[];
-  images: HTMLImageElement[];
   packs: PackEntry[];
   dimensions: PackDimensions;
   transform: string[];
@@ -33,16 +30,6 @@ export function createTextureStore() {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
 
   // prettier-ignore
-
-  // prettier-ignore
-  createEffect(
-    on(() => store.rects, async (rects) => {
-      const { urls, images } = await makeImages(rects);
-      setStore({ urls, images });
-    })
-  );
-
-  // prettier-ignore
   createEffect(
     on(() => [store.images, store.gap] as const, ([images, gap]) => {
       const { packs, dimensions } = autopack(images, gap);
@@ -65,12 +52,6 @@ export function createTextureStore() {
   const api = { reset };
 
   return [store, api, setStore] as const;
-}
-
-async function makeImages(blobs: Blob[]) {
-  const urls = blobs.map((blob) => URL.createObjectURL(blob));
-  const images = await Promise.all(urls.map(createImageSource));
-  return { urls, images };
 }
 
 function autopack(images: HTMLImageElement[], gap = 0) {
