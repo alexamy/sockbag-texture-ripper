@@ -54,8 +54,8 @@ export function createEditorStore() {
 
   // methods
   function updateCurrent(coordinates: { x: number; y: number }) {
-    const point = { ...store.current, ...coordinates };
-    setStore({ current: point });
+    const current = { ...store.current, ...coordinates };
+    setStore({ current });
   }
 
   function addPoint() {
@@ -88,15 +88,14 @@ export function createEditorStore() {
   return [store, api, setStore] as const;
 }
 
-function quadToPoints(quads: Quad, points: Point[]): QuadPoints {
-  const [p1, p2, p3, p4] = quads.points.map((id) => {
+function quadToPoints(quads: Quad, points: Point[]) {
+  const quadPoints = quads.points.map((id) => {
     const point = points.find((p) => p.id === id);
     if (!point) throw new Error("Point not found.");
     return point;
   });
 
-  const quad: QuadPoints = [p1, p2, p3, p4];
-  return quad;
+  return quadPoints;
 }
 
 function getDefaultStore() {
