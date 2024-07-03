@@ -1,7 +1,7 @@
 import { createImageSource } from "@/lib/helper";
 import { projectRectangles, toBlobs } from "@/lib/projection";
 import potpack from "potpack";
-import { createMemo, createResource } from "solid-js";
+import { createResource } from "solid-js";
 import { EditorStore } from "./editor";
 import { FileStore } from "./file";
 import { TextureStore } from "./texture";
@@ -28,27 +28,17 @@ export async function createComputedState(stores: {
     }
   );
 
-  // TODO merge this memos in single async resource?
-  const urls = createMemo(() =>
-    rects()?.map((blob) => URL.createObjectURL(blob))
-  );
-
-  const [images] = createResource(
-    urls,
-    async (urls) => await Promise.all(urls.map(createImageSource))
-  );
-
-  const packInfo = createMemo(() => {
-    if (images()) {
-      return autopack(images()!, texture.gap);
+  const images = createResource(rects, async (rects) => {
+    if (rects) {
+      const urls = rects.map((blob) => URL.createObjectURL(blob));
+      const images = await Promise.all(urls.map(createImageSource));
+      const { packs, dimensions } = autopack(images, texture.gap);
+      const transforms = packs.map(({ x, y }) => `translate(${x}px, ${y}px)`);
+      return { urls, images, packs, dimensions, transforms };
     }
   });
 
-  const transforms = createMemo(() =>
-    packInfo()?.packs.map(({ x, y }) => `translate(${x}px, ${y}px)`)
-  );
-
-  return { rects, urls, images, packInfo, transforms } as const;
+  return { rects, images } as const;
 }
 
 function autopack(images: HTMLImageElement[], gap = 0) {
