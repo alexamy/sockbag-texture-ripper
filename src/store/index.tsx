@@ -40,7 +40,7 @@ export function AppStoreProvider(props: { children: JSXElement }) {
   const file = createFileStore();
   const editor = createEditorStore();
   const texture = createTextureStore();
-  const computed = createComputedStore({ file, editor });
+  const computed = createComputedStore({ file, editor, texture });
 
   const state = { file, editor, texture, computed } satisfies Stores;
 
