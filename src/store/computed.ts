@@ -8,21 +8,6 @@ import { TextureStore } from "./texture";
 
 export type ComputedStore = ReturnType<typeof createComputedStore>;
 
-interface PackEntry {
-  image: HTMLImageElement;
-  i: number;
-  w: number;
-  h: number;
-  x: number;
-  y: number;
-}
-
-interface PackDimensions {
-  w: number;
-  h: number;
-  fill: number;
-}
-
 export async function createComputedStore(stores: {
   file: FileStore;
   editor: EditorStore;
