@@ -1,4 +1,5 @@
 import { v } from "@/lib/vector";
+import { trackStore } from "@solid-primitives/deep";
 import { createEffect, on } from "solid-js";
 import { createStore } from "solid-js/store";
 
@@ -57,11 +58,18 @@ export function createEditorStore(file: { blob: Blob }) {
   }));
 
   // prettier-ignore
-  createEffect(() => {
+  createEffect(on(() => store.quads, () => {
     const quadPoints = store.quads.map((quad) => quadToPoints(quad, store.points));
-    console.log("qp", quadPoints); // TODO remove
+    console.log("qp1", quadPoints); // TODO remove
     setStore({ quadPoints });
-  });
+  }));
+
+  // prettier-ignore
+  createEffect(on(() => trackStore(store.points), () => {
+    const quadPoints = store.quads.map((quad) => quadToPoints(quad, store.points));
+    console.log("qp2", quadPoints); // TODO remove
+    setStore({ quadPoints });
+  }));
 
   // methods
   function updateCurrent(coordinates: { x: number; y: number }) {
