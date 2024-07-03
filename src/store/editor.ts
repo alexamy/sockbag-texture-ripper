@@ -84,7 +84,7 @@ export function createEditorStore() {
   return [store, api, setStore] as const;
 }
 
-function quadToPoints(quads: Quad, points: Point[]) {
+function quadToPoints(quads: Quad, points: PointId[]) {
   const quadPoints = quads.points.map((id) => {
     const point = points.find((p) => p.id === id);
     if (!point) throw new Error("Point not found.");
@@ -96,7 +96,7 @@ function quadToPoints(quads: Quad, points: Point[]) {
 
 function getDefaultStore() {
   return {
-    current: { x: 0, y: 0, id: getId() },
+    current: { x: 0, y: 0 },
     points: [],
     buffer: [],
     quads: [],
