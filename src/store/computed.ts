@@ -16,10 +16,11 @@ export function createComputedStore(stores: {
   const rects = createResource(
     () => [fileApi.image(), editorApi.quadPoints()] as const,
     async ([image, quads]) => {
-      if (!image) return;
-      const canvases = projectRectangles(image, quads);
-      const blobs = await toBlobs(canvases);
-      return blobs;
+      if (image) {
+        const canvases = projectRectangles(image, quads);
+        const blobs = await toBlobs(canvases);
+        return blobs;
+      }
     }
   );
 
