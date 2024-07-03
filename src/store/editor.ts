@@ -31,11 +31,6 @@ interface StoreData {
   quadPoints: QuadPoints[];
 }
 
-// TODO implement point drag
-// currently new points are created each time,
-// so event listener won't work
-// needed to implement stable points
-
 export function createEditorStore(file: { blob: Blob }) {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
 
@@ -62,10 +57,11 @@ export function createEditorStore(file: { blob: Blob }) {
   }));
 
   // prettier-ignore
-  createEffect(on(() => [store.quads, store.points] as const, ([links, points]) => {
-    const quadPoints = links.map((link) => quadToPoints(link, points));
+  createEffect(() => {
+    const quadPoints = store.quads.map((quad) => quadToPoints(quad, store.points));
+    console.log(quadPoints);
     setStore({ quadPoints });
-  }));
+  });
 
   // methods
   function updateCurrent(coordinates: { x: number; y: number }) {
