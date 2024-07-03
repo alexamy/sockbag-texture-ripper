@@ -22,6 +22,7 @@
   "dependencies": {
     "@macaron-css/core": "^1.5.2",
     "@macaron-css/solid": "^1.5.3",
+    "@solid-primitives/deep": "^0.2.8",
     "@techstark/opencv-js": "^4.9.0-release.3",
     "potpack": "^2.0.0",
     "solid-js": "^1.8.15"

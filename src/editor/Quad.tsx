@@ -1,24 +1,12 @@
 import { v } from "@/lib/vector";
-import { Point as PointId, QuadPoints } from "@/store/editor";
-import {
-  Show,
-  createEffect,
-  createMemo,
-  createSignal,
-  mergeProps,
-} from "solid-js";
+import { QuadPoints } from "@/store/editor";
+import { Show, createMemo } from "solid-js";
 
 export function Quad(props: { points: QuadPoints }) {
-  const [points, setPoints] = createSignal<PointId[]>([]);
-  createEffect(() => setPoints(props.points));
-
-  const top = createMemo(() => v.average(points().slice(0, 2)));
-  const center = createMemo(() => v.average(points()));
-
+  const top = createMemo(() => v.average(props.points.slice(0, 2)));
+  const center = createMemo(() => v.average(props.points));
   const polygonPoints = createMemo(() => {
-    return points()
-      .map((point) => `${point.x},${point.y}`)
-      .join(" ");
+    return props.points.map((point) => `${point.x},${point.y}`).join(" ");
   });
 
   return (
@@ -30,7 +18,7 @@ export function Quad(props: { points: QuadPoints }) {
         fill="greenyellow"
         fill-opacity={0.2}
       />
-      <Show when={points().length > 2}>
+      <Show when={props.points.length > 2}>
         <ArrowLine from={center()} to={top()} color="red" />
       </Show>
     </>
@@ -74,15 +62,4 @@ function ArrowLine(props: {
       <polygon points={tip()} fill={color()} />
     </>
   );
-}
-
-export function Point(_props: {
-  x: number;
-  y: number;
-  r?: number;
-  fill?: string;
-}) {
-  const props = mergeProps({ r: 2, fill: "black" }, _props);
-
-  return <circle cx={props.x} cy={props.y} r={props.r} fill={props.fill} />;
 }

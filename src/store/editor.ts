@@ -1,4 +1,6 @@
+import { debounce } from "@/lib/fn";
 import { v } from "@/lib/vector";
+import { trackStore } from "@solid-primitives/deep";
 import { createEffect, on } from "solid-js";
 import { createStore } from "solid-js/store";
 
@@ -31,11 +33,6 @@ interface StoreData {
   quadPoints: QuadPoints[];
 }
 
-// TODO implement point drag
-// currently new points are created each time,
-// so event listener won't work
-// needed to implement stable points
-
 export function createEditorStore(file: { blob: Blob }) {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
 
@@ -62,10 +59,13 @@ export function createEditorStore(file: { blob: Blob }) {
   }));
 
   // prettier-ignore
-  createEffect(on(() => [store.quads, store.points] as const, ([links, points]) => {
-    const quadPoints = links.map((link) => quadToPoints(link, points));
-    setStore({ quadPoints });
-  }));
+  createEffect(on(
+    () => [store.quads, trackStore(store.points)] as const,
+    debounce(([quads, points]: readonly [Quad[], Point[]]) => {
+      const quadPoints = quads.map((quad) => quadToPoints(quad, points));
+      setStore({ quadPoints });
+    }, 200),
+  ));
 
   // methods
   function updateCurrent(coordinates: { x: number; y: number }) {
