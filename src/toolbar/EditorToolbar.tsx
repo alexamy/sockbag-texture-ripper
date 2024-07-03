@@ -26,9 +26,9 @@ const Buttons = styled("div", {
 });
 
 export function EditorToolbar() {
-  const [store] = useAppStore().file;
-  const width = () => store.image.naturalWidth;
-  const height = () => store.image.naturalHeight;
+  const [store, api] = useAppStore().file;
+  const width = () => api.image()?.naturalWidth;
+  const height = () => api.image()?.naturalHeight;
 
   // TODO remove
   const move = useRegionContext();

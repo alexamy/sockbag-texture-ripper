@@ -1,12 +1,11 @@
 import { createImageSource } from "@/lib/helper";
+import { createMemo, createResource } from "solid-js";
 import { createStore } from "solid-js/store";
 
 export type FileStore = ReturnType<typeof createFileStore>;
 
 interface StoreData {
   blob: Blob;
-  url: string;
-  image: HTMLImageElement;
 }
 
 // store
@@ -14,20 +13,19 @@ export function createFileStore() {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
 
   async function setFile(blob: Blob) {
-    const url = URL.createObjectURL(blob);
-    const image = await createImageSource(url);
-    setStore({ blob, url, image });
+    setStore({ blob });
   }
 
-  const methods = { setFile };
+  const url = createMemo(() => URL.createObjectURL(store.blob));
+  const [image] = createResource(url, createImageSource);
 
-  return [store, methods, setStore] as const;
+  const api = { setFile, url, image };
+
+  return [store, api, setStore] as const;
 }
 
 function getDefaultStore() {
   return {
-    url: "",
     blob: new Blob(),
-    image: new Image(),
   } satisfies StoreData;
 }
