@@ -58,16 +58,8 @@ export function createEditorStore(file: { blob: Blob }) {
   }));
 
   // prettier-ignore
-  createEffect(on(() => store.quads, () => {
-    const quadPoints = store.quads.map((quad) => quadToPoints(quad, store.points));
-    console.log("qp1", quadPoints); // TODO remove
-    setStore({ quadPoints });
-  }));
-
-  // prettier-ignore
-  createEffect(on(() => trackStore(store.points), () => {
-    const quadPoints = store.quads.map((quad) => quadToPoints(quad, store.points));
-    console.log("qp2", quadPoints); // TODO remove
+  createEffect(on(() => [store.quads, trackStore(store.points)] as const, ([quads, points]) => {
+    const quadPoints = quads.map((quad) => quadToPoints(quad, points));
     setStore({ quadPoints });
   }));
 
