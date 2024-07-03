@@ -17,11 +17,12 @@ const Canvas = styled("svg", {
 
 export function DrawingBoard(props: { imageRef: HTMLImageElement }) {
   const [store, _, setStore] = useAppStore().editor;
+  const region = useRegionContext();
 
   function updatePoint(i: number, delta: { dx: number; dy: number }) {
     setStore("points", i, (point) => ({
-      x: point.x + delta.dx,
-      y: point.y + delta.dy,
+      x: point.x + delta.dx / region.scale(),
+      y: point.y + delta.dy / region.scale(),
     }));
   }
 
