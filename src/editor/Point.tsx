@@ -30,6 +30,7 @@ export function Point(props: {
     <Circle
       ref={setRef}
       onMouseDown={onMouseDown}
+      onClick={(e) => e.stopPropagation()}
       draggable={props.draggable}
       cx={props.x}
       cy={props.y}
