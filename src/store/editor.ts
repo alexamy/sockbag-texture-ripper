@@ -1,6 +1,6 @@
 import { v } from "@/lib/vector";
 import { trackStore } from "@solid-primitives/deep";
-import { createEffect, createMemo, on } from "solid-js";
+import { createMemo, on } from "solid-js";
 import { createStore } from "solid-js/store";
 
 export type EditorStore = ReturnType<typeof createEditorStore>;
@@ -31,20 +31,6 @@ interface StoreData {
 export function createEditorStore() {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
 
-  createEffect(
-    on(
-      () => store.buffer,
-      (buffer) => {
-        if (buffer.length < 4) return;
-        const [p1, p2, p3, p4] = buffer;
-        const quad = { id: getId(), points: [p1.id, p2.id, p3.id, p4.id] };
-        const quads = [...store.quads, quad];
-        const points = [...store.points, ...buffer];
-        setStore({ quads, points, buffer: [] });
-      }
-    )
-  );
-
   const currentQuad = createMemo(() => store.buffer.concat(store.current));
   const quadPoints = createMemo(
     on(
@@ -69,6 +55,13 @@ export function createEditorStore() {
     const buffer = [...store.buffer, store.current];
     const current = { ...store.current, id: getId() };
     setStore({ buffer, current });
+
+    if (buffer.length === 4) {
+      const quad = { id: getId(), points: store.buffer.map((p) => p.id) };
+      const quads = [...store.quads, quad];
+      const points = [...store.points, ...store.buffer];
+      setStore({ quads, points, buffer: [] });
+    }
   }
 
   function deleteLastPoint() {
