@@ -10,8 +10,11 @@ export function createComputedStore(stores: {
   file: FileStore;
   editor: EditorStore;
 }) {
+  const [file, fileApi] = stores.file;
+  const [editor, editorApi] = stores.editor;
+
   const rects = createResource(
-    () => [stores.file[1].image(), stores.editor[1].quadPoints()] as const,
+    () => [fileApi.image(), editorApi.quadPoints()] as const,
     async ([image, quads]) => {
       if (!image) return;
       const canvases = projectRectangles(image, quads);
