@@ -1,12 +1,8 @@
+import { createDrag } from "@/hooks/createDrag";
 import { v } from "@/lib/vector";
 import { Point as PointId, QuadPoints } from "@/store/editor";
-import {
-  Show,
-  createEffect,
-  createMemo,
-  createSignal,
-  mergeProps,
-} from "solid-js";
+import { styled } from "@macaron-css/solid";
+import { Show, createEffect, createMemo, createSignal } from "solid-js";
 
 export function Quad(props: { points: QuadPoints }) {
   const [points, setPoints] = createSignal<PointId[]>([]);
@@ -76,13 +72,39 @@ function ArrowLine(props: {
   );
 }
 
-export function Point(_props: {
+const Circle = styled("circle", {
+  base: {},
+  variants: {
+    draggable: {
+      true: {
+        cursor: "pointer",
+      },
+    },
+  },
+});
+
+export function Point(props: {
   x: number;
   y: number;
-  r?: number;
-  fill?: string;
+  draggable?: boolean;
+  update?: (coords: { dx: number; dy: number }) => void;
 }) {
-  const props = mergeProps({ r: 2, fill: "black" }, _props);
+  const [ref, setRef] = createSignal<SVGCircleElement>();
+  const [dragging, onMouseDown] = createDrag(ref, (coords) => {
+    if (props.draggable) {
+      props.update?.(coords);
+    }
+  });
 
-  return <circle cx={props.x} cy={props.y} r={props.r} fill={props.fill} />;
+  return (
+    <Circle
+      ref={setRef}
+      onMouseDown={onMouseDown}
+      draggable={props.draggable}
+      cx={props.x}
+      cy={props.y}
+      r={2}
+      fill={"black"}
+    />
+  );
 }

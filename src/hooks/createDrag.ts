@@ -1,8 +1,15 @@
 import { createEffect, createSignal, onCleanup } from "solid-js";
 
+interface Coordinates {
+  x: number;
+  y: number;
+  dx: number;
+  dy: number;
+}
+
 export function createDrag<T extends Element>(
   ref: () => T | undefined,
-  set: (coords: { x: number; y: number; dx: number; dy: number }) => void
+  set: (coordinates: Coordinates, e: MouseEvent) => void
 ) {
   const [previous, setPrevious] = createSignal<{ x: number; y: number }>();
   const [dragging, setDragging] = createSignal(false);
@@ -30,7 +37,7 @@ export function createDrag<T extends Element>(
       setPrevious({ x, y });
 
       if (dragging()) {
-        set({ x, y, dx, dy });
+        set({ x, y, dx, dy }, e);
       }
     }
 

@@ -15,14 +15,30 @@ const Canvas = styled("svg", {
 });
 
 export function DrawingBoard(props: { imageRef: HTMLImageElement }) {
-  const [store] = useAppStore().editor;
+  const [store, _, setStore] = useAppStore().editor;
+
+  function updatePoint(i: number, delta: { dx: number; dy: number }) {
+    setStore("points", i, (point) => ({
+      x: point.x + delta.dx,
+      y: point.y + delta.dy,
+    }));
+  }
 
   return (
     <DrawingCanvas imageRef={props.imageRef}>
       <For each={store.quadPoints}>{(quad) => <Quad points={quad} />}</For>
       <Quad points={store.currentQuad} />
 
-      <For each={store.points}>{(point) => <Point {...point} />}</For>
+      <For each={store.points}>
+        {(point, i) => (
+          <Point
+            {...point}
+            draggable
+            update={(delta) => updatePoint(i(), delta)}
+          />
+        )}
+      </For>
+
       <For each={store.buffer}>{(point) => <Point {...point} />}</For>
     </DrawingCanvas>
   );
