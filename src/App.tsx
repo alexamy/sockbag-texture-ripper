@@ -1,5 +1,5 @@
 import { styled } from "@macaron-css/solid";
-import { Show } from "solid-js";
+import { Show, Suspense } from "solid-js";
 import { Region } from "./Region";
 import { Texture } from "./Texture";
 import { Editor } from "./editor/Editor";
@@ -104,7 +104,9 @@ function TextureRipper() {
           width={resize.right()}
           resetTrigger={store.blob}
         >
-          <Texture />
+          <Suspense fallback={<div>Loading...</div>}>
+            <Texture />
+          </Suspense>
         </Region>
       </Show>
 
