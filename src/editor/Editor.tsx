@@ -14,7 +14,7 @@ const Container = styled("div", {
 });
 
 export function Editor() {
-  const [store] = useAppStore().file;
+  const [store, api] = useAppStore().file;
 
   // image reference is pointing at the same img element,
   // but we must retrigger each time the image is loaded
@@ -25,7 +25,7 @@ export function Editor() {
 
   return (
     <Container>
-      <ImageBackground src={store.url} onLoadRef={setImageRef} />
+      <ImageBackground src={api.url()} onLoadRef={setImageRef} />
       <Show when={imageRef()}>
         <DrawingBoard imageRef={imageRef()!} />
       </Show>

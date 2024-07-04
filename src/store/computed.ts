@@ -40,7 +40,7 @@ export function createComputedState(stores: {
     }
   );
 
-  return { data } as const;
+  return [data] as const;
 }
 
 function autopack(images: HTMLImageElement[], gap = 0) {

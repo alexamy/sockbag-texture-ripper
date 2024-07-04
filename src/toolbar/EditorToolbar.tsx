@@ -1,7 +1,7 @@
 import { useRegionContext } from "@/Region";
 import { useAppStore } from "@/store";
+import { Button } from "@/styles";
 import { styled } from "@macaron-css/solid";
-import { Clear } from "./Clear";
 import { Header } from "./Header";
 import { Help } from "./Help";
 import { Upload } from "./Upload";
@@ -27,6 +27,8 @@ const Buttons = styled("div", {
 
 export function EditorToolbar() {
   const [store, api] = useAppStore().file;
+  const [_, { reset }] = useAppStore().editor;
+
   const width = () => api.image()?.naturalWidth;
   const height = () => api.image()?.naturalHeight;
 
@@ -40,7 +42,7 @@ export function EditorToolbar() {
         {move.current().y} Origin: {move.origin().x}, {move.origin().y}
       </div>
       <Buttons>
-        <Clear />
+        <Button onClick={reset}>Clear</Button>
         <Upload />
         <Help />
         <Header />

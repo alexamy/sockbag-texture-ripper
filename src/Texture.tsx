@@ -17,15 +17,14 @@ const TextureRect = styled("img", {
 });
 
 export function Texture() {
-  const store = useAppStore().computed;
+  const [data] = useAppStore().computed;
   const transforms = createMemo(
-    () =>
-      store.data()?.packs.map(({ x, y }) => `translate(${x}px, ${y}px)`) ?? []
+    () => data()?.packs.map(({ x, y }) => `translate(${x}px, ${y}px)`) ?? []
   );
 
   return (
     <Container>
-      <For each={store.data()?.urls}>
+      <For each={data()?.urls}>
         {(url, i) => (
           <TextureRect
             src={url}

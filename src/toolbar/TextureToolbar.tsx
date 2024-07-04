@@ -22,7 +22,7 @@ const GapInputElement = styled("input", {
 });
 
 export function TextureToolbar() {
-  const [store] = useAppStore().texture;
+  const store = useAppStore().computed;
 
   return (
     <Toolbar>
