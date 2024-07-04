@@ -25,11 +25,19 @@ export function throttle<T extends (...args: any[]) => any>(
 
 export function debounce<T extends (...args: any[]) => any>(
   func: T,
-  delay: number
+  delay: number,
+  options: { initial: boolean } = { initial: false }
 ): (...args: Parameters<T>) => void {
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
+  let isInitial = true;
 
   return function (...args: Parameters<T>): void {
+    if (options.initial && isInitial) {
+      func(...args);
+      isInitial = false;
+      return;
+    }
+
     if (timeoutId !== null) {
       clearTimeout(timeoutId);
     }
