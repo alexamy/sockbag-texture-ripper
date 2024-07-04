@@ -1,6 +1,7 @@
 import { styled } from "@macaron-css/solid";
 import cv from "@techstark/opencv-js";
 import { createResource, Show, Suspense } from "solid-js";
+import { LoaderFallback } from "./LoaderFallback";
 import { Region } from "./Region";
 import { Texture } from "./Texture";
 import { Editor } from "./editor/Editor";
@@ -65,24 +66,10 @@ const ImageDrop = styled("div", {
 });
 
 function App() {
-  const [openCvLoaded] = createResource(() => {
-    return new Promise<boolean>((resolve) => {
-      function waitParse() {
-        if (cv.Mat) {
-          resolve(true);
-        } else {
-          setTimeout(waitParse, 100);
-        }
-      }
-
-      waitParse();
-    });
-  });
-
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<LoaderFallback />}>
       <AppStoreProvider>
-        <span style={{ display: "none" }}>{openCvLoaded()}</span>
+        <OpenCvLoadedHACK />
         <TextureRipper />
       </AppStoreProvider>
     </Suspense>
@@ -133,4 +120,26 @@ function TextureRipper() {
       </Show>
     </Container>
   );
+}
+
+// possibly there is a bug with slow opencv loading (or my own bug in the app logic)
+// which causes the "cv2.Mat is not a constructor" error
+// when projecting texture from image stored in local storage on app load
+// so we need to check for `cv.Mat` in a loop until it's available
+function OpenCvLoadedHACK() {
+  const [openCvLoaded] = createResource(() => {
+    return new Promise<boolean>((resolve) => {
+      function waitParse() {
+        if (cv.Mat) {
+          resolve(true);
+        } else {
+          setTimeout(waitParse, 100);
+        }
+      }
+
+      waitParse();
+    });
+  });
+
+  return <span style={{ display: "none" }}>{openCvLoaded()}</span>;
 }
