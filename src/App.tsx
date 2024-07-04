@@ -103,16 +103,16 @@ function TextureRipper() {
           <RegionBorderHandler />
         </RegionBorder>
 
-        <Region
-          testId="texture"
-          toolbar={<TextureToolbar />}
-          width={resize.right()}
-          resetTrigger={store.blob}
-        >
-          <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<LoaderFallback text="Projecting" />}>
+          <Region
+            testId="texture"
+            toolbar={<TextureToolbar />}
+            width={resize.right()}
+            resetTrigger={store.blob}
+          >
             <Texture />
-          </Suspense>
-        </Region>
+          </Region>
+        </Suspense>
       </Show>
 
       <Show when={dnd.isDragOver()}>
