@@ -5,7 +5,7 @@ export function Loader() {
   const App = lazy(() => import("./App"));
 
   return (
-    <Suspense fallback={<LoaderFallback />}>
+    <Suspense fallback={<LoaderFallback text="Loading app" />}>
       <App />
     </Suspense>
   );

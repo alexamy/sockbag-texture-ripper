@@ -67,7 +67,7 @@ const ImageDrop = styled("div", {
 
 function App() {
   return (
-    <Suspense fallback={<LoaderFallback />}>
+    <Suspense fallback={<LoaderFallback text="Loading OpenCV" />}>
       <AppStoreProvider>
         <OpenCvLoadedHACK />
         <TextureRipper />
