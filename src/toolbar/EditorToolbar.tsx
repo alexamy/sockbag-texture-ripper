@@ -26,8 +26,8 @@ const Buttons = styled("div", {
 });
 
 export function EditorToolbar() {
-  const [store, api] = useAppStore().file;
-  const [_, { reset }] = useAppStore().editor;
+  const [_1, api] = useAppStore().file;
+  const [_2, { reset }] = useAppStore().editor;
 
   const width = () => api.image()?.naturalWidth;
   const height = () => api.image()?.naturalHeight;

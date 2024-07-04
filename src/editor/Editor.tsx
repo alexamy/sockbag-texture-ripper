@@ -1,5 +1,5 @@
 import { styled } from "@macaron-css/solid";
-import { createSignal, Show } from "solid-js";
+import { createMemo, createSignal, Show } from "solid-js";
 import { useAppStore } from "../store";
 import { DrawingBoard } from "./DrawingBoard";
 
@@ -15,6 +15,7 @@ const Container = styled("div", {
 
 export function Editor() {
   const [store, api] = useAppStore().file;
+  const url = createMemo(() => URL.createObjectURL(store.blob));
 
   // image reference is pointing at the same img element,
   // but we must retrigger each time the image is loaded
@@ -25,7 +26,7 @@ export function Editor() {
 
   return (
     <Container>
-      <ImageBackground src={api.url()} onLoadRef={setImageRef} />
+      <ImageBackground src={url()} onLoadRef={setImageRef} />
       <Show when={imageRef()}>
         <DrawingBoard imageRef={imageRef()!} />
       </Show>
