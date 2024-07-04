@@ -1,5 +1,6 @@
 import { styled } from "@macaron-css/solid";
-import { Show, Suspense } from "solid-js";
+import cv from "@techstark/opencv-js";
+import { createResource, Show, Suspense } from "solid-js";
 import { Region } from "./Region";
 import { Texture } from "./Texture";
 import { Editor } from "./editor/Editor";
@@ -64,10 +65,27 @@ const ImageDrop = styled("div", {
 });
 
 function App() {
+  const [openCvLoaded] = createResource(() => {
+    return new Promise<boolean>((resolve) => {
+      function waitParse() {
+        if (cv.Mat) {
+          resolve(true);
+        } else {
+          setTimeout(waitParse, 100);
+        }
+      }
+
+      waitParse();
+    });
+  });
+
   return (
-    <AppStoreProvider>
-      <TextureRipper />
-    </AppStoreProvider>
+    <Suspense fallback={<div>Loading...</div>}>
+      <AppStoreProvider>
+        <span style={{ display: "none" }}>{openCvLoaded()}</span>
+        <TextureRipper />
+      </AppStoreProvider>
+    </Suspense>
   );
 }
 
