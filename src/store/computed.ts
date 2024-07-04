@@ -1,7 +1,7 @@
 import { createImageSource } from "@/lib/helper";
 import { projectRectangles, toBlobs } from "@/lib/projection";
 import potpack from "potpack";
-import { createResource } from "solid-js";
+import { createEffect, createResource, on, useTransition } from "solid-js";
 import { EditorStore } from "./editor";
 import { FileStore } from "./file";
 import { TextureStore } from "./texture";
@@ -41,21 +41,29 @@ export function createComputedState(stores: {
   const [editor, editorApi] = stores.editor;
   const [texture, textureApi] = stores.texture;
 
-  const [data] = createResource(
-    () => [fileApi.image(), editorApi.quadPoints()] as const,
-    async ([image, quads]) => {
-      if (!image) return defaultData;
-      const canvases = projectRectangles(image, quads);
-      const blobs = await toBlobs(canvases);
-      const urls = blobs.map((blob) => URL.createObjectURL(blob));
-      const images = await Promise.all(urls.map(createImageSource));
-      const { packs, dimensions } = autopack(images, texture.gap);
+  const [isProjecting, startProject] = useTransition();
+  const [data, { refetch }] = createResource(async () => {
+    const image = fileApi.image();
+    const quads = editorApi.quadPoints();
+    if (!image) return defaultData;
 
-      return { blobs, urls, images, packs, dimensions };
-    }
+    const canvases = projectRectangles(image, quads);
+    const blobs = await toBlobs(canvases);
+    const urls = blobs.map((blob) => URL.createObjectURL(blob));
+    const images = await Promise.all(urls.map(createImageSource));
+    const { packs, dimensions } = autopack(images, texture.gap);
+
+    return { blobs, urls, images, packs, dimensions };
+  });
+
+  createEffect(
+    on(
+      () => [fileApi.image(), editorApi.quadPoints()] as const,
+      () => startProject(() => refetch())
+    )
   );
 
-  return [data] as const;
+  return [data, isProjecting] as const;
 }
 
 function autopack(images: HTMLImageElement[], gap = 0) {
