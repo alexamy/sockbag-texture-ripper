@@ -17,7 +17,7 @@ const defaultData = {
   transforms: [],
 };
 
-export async function createComputedState(stores: {
+export function createComputedState(stores: {
   file: FileStore;
   editor: EditorStore;
   texture: TextureStore;
@@ -35,8 +35,8 @@ export async function createComputedState(stores: {
       const urls = blobs.map((blob) => URL.createObjectURL(blob));
       const images = await Promise.all(urls.map(createImageSource));
       const { packs, dimensions } = autopack(images, texture.gap);
-      const transforms = packs.map(({ x, y }) => `translate(${x}px, ${y}px)`);
-      return { blobs, urls, images, packs, dimensions, transforms };
+
+      return { blobs, urls, images, packs, dimensions };
     }
   );
 
