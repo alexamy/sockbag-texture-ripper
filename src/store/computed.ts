@@ -8,6 +8,21 @@ import { TextureStore } from "./texture";
 
 export type ComputedState = ReturnType<typeof createComputedState>;
 
+export interface PackEntry {
+  image: HTMLImageElement;
+  i: number;
+  w: number;
+  h: number;
+  x: number;
+  y: number;
+}
+
+export interface PackDimensions {
+  w: number;
+  h: number;
+  fill: number;
+}
+
 const defaultData = {
   blobs: [],
   urls: [],

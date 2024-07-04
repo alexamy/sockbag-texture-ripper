@@ -9,11 +9,15 @@ interface StoreData {
 export function createTextureStore() {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
 
+  function setGap(gap: number) {
+    setStore({ gap });
+  }
+
   function reset() {
     setStore({ ...getDefaultStore(), gap: store.gap });
   }
 
-  const api = { reset };
+  const api = { setGap, reset };
 
   return [store, api, setStore] as const;
 }
