@@ -59,7 +59,11 @@ export function createComputedState(stores: {
   createEffect(
     on(
       () => [fileApi.image(), editorApi.quadPoints()] as const,
-      () => startTransition(() => reproject())
+      () => {
+        if (!isProjecting()) {
+          startTransition(() => reproject());
+        }
+      }
     )
   );
 
