@@ -20,7 +20,7 @@ export function createFileStore() {
     () => store.blob,
     async (blob) => {
       if (blob.size === 0) return;
-      const url = URL.createObjectURL(store.blob);
+      const url = URL.createObjectURL(blob);
       const image = await createImageSource(url);
       return image;
     }
