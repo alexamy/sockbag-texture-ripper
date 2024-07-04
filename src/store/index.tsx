@@ -66,7 +66,7 @@ export function AppStoreProvider(props: { children: JSXElement }) {
 
 // persist
 const key = "sockbag-texture-ripper-state";
-const version = 1;
+const version = 2;
 
 async function loadFromLocalStorage(state: Stores) {
   const raw = localStorage.getItem(key);
