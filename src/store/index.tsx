@@ -1,4 +1,6 @@
 import { blobToDataURI, dataURItoBlob, tick } from "@/lib/helper";
+import { trackStore } from "@solid-primitives/deep";
+import debounce from "debounce";
 import {
   JSXElement,
   createContext,
@@ -43,9 +45,19 @@ export function AppStoreProvider(props: { children: JSXElement }) {
   const computed = createComputedState({ file, editor, texture });
 
   const state = { file, editor, texture, computed } satisfies Stores;
-
   onMount(() => loadFromLocalStorage(state));
-  createEffect(() => saveToLocalStorage(state));
+  createEffect(
+    on(
+      () => {
+        return [
+          file[0].blob,
+          editor[0].quads,
+          trackStore(editor[0].points),
+        ] as const;
+      },
+      debounce(() => saveToLocalStorage(state), 500)
+    )
+  );
 
   createEffect(
     on(
@@ -89,6 +101,8 @@ async function loadFromLocalStorage(state: Stores) {
 }
 
 async function saveToLocalStorage(state: Stores) {
+  trackStore(state.editor[0]);
+
   const { blob } = state.file[0];
   const { points, quads } = state.editor[0];
   const file = await blobToDataURI(blob);
