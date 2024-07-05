@@ -1,5 +1,6 @@
 import { createImageSource } from "@/lib/helper";
 import { projectRectangles, toBlobs } from "@/lib/projection";
+import debounce from "debounce";
 import potpack from "potpack";
 import { createEffect, createResource, on, useTransition } from "solid-js";
 import { EditorStore } from "./editor";
@@ -59,11 +60,7 @@ export function createComputedState(stores: {
   createEffect(
     on(
       () => [fileApi.image(), editorApi.quadPoints()] as const,
-      () => {
-        if (!isProjecting()) {
-          startTransition(() => reproject());
-        }
-      }
+      debounce(() => startTransition(() => reproject()))
     )
   );
 
