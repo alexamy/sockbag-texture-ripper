@@ -16,7 +16,7 @@ const Canvas = styled("svg", {
 });
 
 export function DrawingBoard(props: { imageRef: HTMLImageElement }) {
-  const [store, _, setStore] = useAppStore().editor;
+  const [store, api, setStore] = useAppStore().editor;
   const region = useRegionContext();
 
   function updatePoint(i: number, delta: { dx: number; dy: number }) {
@@ -28,8 +28,8 @@ export function DrawingBoard(props: { imageRef: HTMLImageElement }) {
 
   return (
     <DrawingCanvas imageRef={props.imageRef}>
-      <For each={store.quadPoints}>{(quad) => <Quad points={quad} />}</For>
-      <Quad points={store.currentQuad} />
+      <For each={api.quadPoints()}>{(quad) => <Quad points={quad} />}</For>
+      <Quad points={api.currentQuad()} />
 
       <For each={store.points}>
         {(point, i) => (
@@ -53,8 +53,7 @@ function DrawingCanvas(props: {
   children: JSX.Element;
 }) {
   const region = useRegionContext();
-  const [_, { updateCurrent, addPoint, deleteLastPoint }] =
-    useAppStore().editor;
+  const [_, { setCurrent, addPoint, deleteLastPoint }] = useAppStore().editor;
 
   // style
   const dimensions = createMemo(() => {
@@ -76,7 +75,7 @@ function DrawingCanvas(props: {
     const rect = props.imageRef.getBoundingClientRect();
     const x = (e.clientX - rect.left) / region.scale();
     const y = (e.clientY - rect.top) / region.scale();
-    updateCurrent({ x, y });
+    setCurrent({ x, y });
   }
 
   function onClick(e: MouseEvent) {

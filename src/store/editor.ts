@@ -1,82 +1,49 @@
-import { debounce } from "@/lib/fn";
 import { v } from "@/lib/vector";
 import { trackStore } from "@solid-primitives/deep";
-import { createEffect, on } from "solid-js";
+import { createMemo, on } from "solid-js";
 import { createStore } from "solid-js/store";
 
 export type EditorStore = ReturnType<typeof createEditorStore>;
 
-type PointId = string;
-type QuadId = string;
-
 export interface Point {
-  id: PointId;
+  x: number;
+  y: number;
+}
+
+export interface PointId {
+  id: string;
   x: number;
   y: number;
 }
 
 export interface Quad {
-  id: QuadId;
-  points: PointId[];
+  id: string;
+  points: string[];
 }
 
-export type QuadPoints = Point[];
+export type QuadPoints = PointId[];
 
 interface StoreData {
   current: Point;
   buffer: Point[];
-  points: Point[];
-  quads: Quad[]; // point ids to make quad from
-
-  // calculated
-  currentQuad: QuadPoints;
-  quadPoints: QuadPoints[];
+  points: PointId[];
+  quads: Quad[];
 }
 
-export function createEditorStore(file: { blob: Blob }) {
+export function createEditorStore() {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
 
-  // prettier-ignore
-  createEffect(on(() => file.blob, () => {
-    setStore(getDefaultStore());
-  }));
-
-  // prettier-ignore
-  createEffect(on(() => store.buffer, (buffer) => {
-    if(buffer.length < 4) return;
-    const [p1, p2, p3, p4] = buffer;
-    const quad = { id: getId(), points: [p1.id, p2.id, p3.id, p4.id] };
-    const quads = [...store.quads, quad];
-    const points = [...store.points, ...buffer];
-    setStore({ quads, points, buffer: [], });
-  }));
-
-  // calculated
-  // prettier-ignore
-  createEffect(on(() => [store.buffer, store.current] as const, ([buffer, current]) => {
-    const currentQuad = buffer.concat(current);
-    setStore({ currentQuad });
-  }));
-
-  // prettier-ignore
-  createEffect(on(
-    () => [store.quads, trackStore(store.points)] as const,
-    debounce(([quads, points]: readonly [Quad[], Point[]]) => {
-      const quadPoints = quads.map((quad) => quadToPoints(quad, points));
-      setStore({ quadPoints });
-    }, 200),
-  ));
+  const currentQuad = createMemo(() => store.buffer.concat(store.current));
+  const quadPoints = createMemo(
+    on(
+      () => [store.quads, trackStore(store.points)] as const,
+      ([quads, points]) => quads.map((quad) => quadToPoints(quad, points))
+    )
+  );
 
   // methods
-  function updateCurrent(coordinates: { x: number; y: number }) {
-    const point = { ...store.current, ...coordinates };
+  function setCurrent(point: { x: number; y: number }) {
     setStore({ current: point });
-  }
-
-  function updatePoint(id: string) {
-    const { x, y } = store.current;
-    const points = store.points.map((p) => (p.id === id ? { ...p, x, y } : p));
-    setStore({ points });
   }
 
   function addPoint() {
@@ -84,16 +51,16 @@ export function createEditorStore(file: { blob: Blob }) {
     if (isEqualSome) return;
 
     const buffer = [...store.buffer, store.current];
-    const current = { ...store.current, id: getId() };
-    setStore({ buffer, current });
-  }
 
-  function updatePoints(newPoints: Point[]) {
-    const points = store.points.map((point) => {
-      const newPoint = newPoints.find((p) => p.id === point.id);
-      return newPoint || point;
-    });
-    setStore({ points });
+    if (buffer.length === 4) {
+      const newPoints: PointId[] = buffer.map((p) => ({ ...p, id: getId() }));
+      const quad = { id: getId(), points: newPoints.map((p) => p.id) };
+      const points = [...store.points, ...newPoints];
+      const quads = [...store.quads, quad];
+      setStore({ points, quads, buffer: [] });
+    } else {
+      setStore({ buffer });
+    }
   }
 
   function deleteLastPoint() {
@@ -101,41 +68,38 @@ export function createEditorStore(file: { blob: Blob }) {
     setStore({ buffer });
   }
 
-  function clear() {
+  function reset() {
     setStore(getDefaultStore());
   }
 
-  const methods = {
-    updateCurrent,
-    updatePoint,
-    updatePoints,
+  const api = {
+    currentQuad,
+    quadPoints,
+    setCurrent,
     addPoint,
     deleteLastPoint,
-    clear,
+    reset,
   };
 
-  return [store, methods, setStore] as const;
+  return [store, api, setStore] as const;
 }
 
-function quadToPoints(quads: Quad, points: Point[]): QuadPoints {
-  const [p1, p2, p3, p4] = quads.points.map((id) => {
+function quadToPoints(quads: Quad, points: PointId[]) {
+  const quadPoints = quads.points.map((id) => {
     const point = points.find((p) => p.id === id);
     if (!point) throw new Error("Point not found.");
     return point;
   });
 
-  const quad: QuadPoints = [p1, p2, p3, p4];
-  return quad;
+  return quadPoints;
 }
 
 function getDefaultStore() {
   return {
-    current: { x: 0, y: 0, id: getId() },
-    points: [],
+    current: { x: 0, y: 0 },
     buffer: [],
+    points: [],
     quads: [],
-    currentQuad: [],
-    quadPoints: [],
   } satisfies StoreData;
 }
 

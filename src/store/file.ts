@@ -1,39 +1,38 @@
 import { createImageSource } from "@/lib/helper";
-import { createEffect, on } from "solid-js";
+import { createResource } from "solid-js";
 import { createStore } from "solid-js/store";
 
 export type FileStore = ReturnType<typeof createFileStore>;
 
 interface StoreData {
   blob: Blob;
-  url: string;
-  image: HTMLImageElement;
 }
 
 // store
 export function createFileStore() {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
 
-  // prettier-ignore
-  createEffect(on(() => store.blob, async (file) => {
-    const url = URL.createObjectURL(file);
-    const image = await createImageSource(url);
-    setStore({ url, image });
-  }));
-
-  function setFile(blob: Blob) {
-    setStore({ ...getDefaultStore(), blob });
+  async function setFile(blob: Blob) {
+    setStore({ blob });
   }
 
-  const methods = { setFile };
+  const [image] = createResource(
+    () => store.blob,
+    async (blob) => {
+      if (blob.size === 0) return;
+      const url = URL.createObjectURL(blob);
+      const image = await createImageSource(url);
+      return image;
+    }
+  );
 
-  return [store, methods, setStore] as const;
+  const api = { setFile, image };
+
+  return [store, api, setStore] as const;
 }
 
 function getDefaultStore() {
   return {
-    url: "",
     blob: new Blob(),
-    image: new Image(),
   } satisfies StoreData;
 }

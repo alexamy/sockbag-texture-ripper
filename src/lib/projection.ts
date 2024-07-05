@@ -2,12 +2,12 @@ import { QuadPoints } from "@/store/editor";
 import cv from "@techstark/opencv-js";
 import { v } from "./vector";
 
-export async function projectRectangles(
+export function projectRectangles(
   image: HTMLImageElement,
   quads: QuadPoints[]
-) {
+): HTMLCanvasElement[] {
   const src = cv.imread(image);
-  const blobs: Blob[] = [];
+  const canvases: HTMLCanvasElement[] = [];
 
   for (const quad of quads) {
     const [p1, p2, p3, p4] = quad;
@@ -41,11 +41,20 @@ export async function projectRectangles(
     const canvas = document.createElement("canvas");
     cv.imshow(canvas, dst);
 
+    canvases.push(canvas);
+  }
+
+  return canvases;
+}
+
+export async function toBlobs(canvases: HTMLCanvasElement[]) {
+  const blobs: Blob[] = [];
+
+  for (const canvas of canvases) {
     const blob = await new Promise<Blob | null>((resolve) =>
       canvas.toBlob(resolve)
     );
     if (!blob) throw new Error("Failed to extract image rectangle.");
-
     blobs.push(blob);
   }
 

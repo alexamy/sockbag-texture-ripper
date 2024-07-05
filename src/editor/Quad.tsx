@@ -1,8 +1,7 @@
 import { v } from "@/lib/vector";
-import { QuadPoints } from "@/store/editor";
 import { Show, createMemo } from "solid-js";
 
-export function Quad(props: { points: QuadPoints }) {
+export function Quad(props: { points: Array<{ x: number; y: number }> }) {
   const top = createMemo(() => v.average(props.points.slice(0, 2)));
   const center = createMemo(() => v.average(props.points));
   const polygonPoints = createMemo(() => {

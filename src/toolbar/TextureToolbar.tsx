@@ -1,5 +1,5 @@
 import { useAppStore } from "@/store";
-import { TextureStore } from "@/store/texture";
+import { PackDimensions, PackEntry } from "@/store/computed";
 import { Button } from "@/styles";
 import { styled } from "@macaron-css/solid";
 
@@ -22,14 +22,17 @@ const GapInputElement = styled("input", {
 });
 
 export function TextureToolbar() {
-  const [store] = useAppStore().texture;
+  const [data] = useAppStore().computed;
 
   return (
     <Toolbar>
       <GapInput />
       <Button
-        onClick={() => downloadTexture(store)}
-        disabled={store.urls.length === 0}
+        disabled={data()?.urls.length === 0}
+        onClick={() => {
+          if (!data()) return;
+          downloadTexture(data()!.packs, data()!.dimensions);
+        }}
       >
         Download
       </Button>
@@ -38,11 +41,11 @@ export function TextureToolbar() {
 }
 
 function GapInput() {
-  const [store, setStore] = useAppStore().texture;
+  const [store, { setGap }] = useAppStore().texture;
 
   function onGapChange(e: Event) {
     const gap = parseInt((e.target as HTMLInputElement).value);
-    setStore({ gap });
+    setGap(gap);
   }
 
   return (
@@ -60,13 +63,13 @@ function GapInput() {
   );
 }
 
-function downloadTexture(store: TextureStore[0]) {
+function downloadTexture(packs: PackEntry[], dimensions: PackDimensions) {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d")!;
-  canvas.width = store.dimensions.w;
-  canvas.height = store.dimensions.h;
+  canvas.width = dimensions.w;
+  canvas.height = dimensions.h;
 
-  for (const { image, x, y } of store.packs) {
+  for (const { image, x, y } of packs) {
     ctx.drawImage(image, x, y);
   }
 

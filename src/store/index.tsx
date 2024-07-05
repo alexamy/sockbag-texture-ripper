@@ -1,11 +1,15 @@
 import { blobToDataURI, dataURItoBlob, tick } from "@/lib/helper";
+import { trackStore } from "@solid-primitives/deep";
+import debounce from "debounce";
 import {
   JSXElement,
   createContext,
   createEffect,
+  on,
   onMount,
   useContext,
 } from "solid-js";
+import { ComputedState, createComputedState } from "./computed";
 import { EditorStore, Point, Quad, createEditorStore } from "./editor";
 import { FileStore, createFileStore } from "./file";
 import { TextureStore, createTextureStore } from "./texture";
@@ -14,6 +18,7 @@ interface Stores {
   file: FileStore;
   editor: EditorStore;
   texture: TextureStore;
+  computed: ComputedState;
 }
 
 interface PersistState {
@@ -35,12 +40,29 @@ export function useAppStore() {
 
 export function AppStoreProvider(props: { children: JSXElement }) {
   const file = createFileStore();
-  const editor = createEditorStore(file[0]);
-  const texture = createTextureStore(file[0], editor[0]);
-  const state = { file, editor, texture } satisfies Stores;
+  const editor = createEditorStore();
+  const texture = createTextureStore();
+  const computed = createComputedState({ file, editor, texture });
 
+  const state = { file, editor, texture, computed } satisfies Stores;
   onMount(() => loadFromLocalStorage(state));
-  createEffect(() => saveToLocalStorage(state));
+  createEffect(
+    on(
+      () =>
+        [file[0].blob, editor[0].quads, trackStore(editor[0].points)] as const,
+      debounce(() => saveToLocalStorage(state), 500)
+    )
+  );
+
+  createEffect(
+    on(
+      () => file[0].blob,
+      () => {
+        editor[1].reset();
+        texture[1].reset();
+      }
+    )
+  );
 
   return (
     <StoreContext.Provider value={state}>
@@ -51,7 +73,7 @@ export function AppStoreProvider(props: { children: JSXElement }) {
 
 // persist
 const key = "sockbag-texture-ripper-state";
-const version = 1;
+const version = 2;
 
 async function loadFromLocalStorage(state: Stores) {
   const raw = localStorage.getItem(key);

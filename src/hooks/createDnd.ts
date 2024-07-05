@@ -6,10 +6,11 @@ export function createDnd(setFile: (blob: Blob) => void) {
 
   function onDrop(e: DragEvent) {
     e.preventDefault();
+    setCounter(0);
+
     const file = e.dataTransfer?.files[0];
     if (file && file.type.startsWith("image/")) {
       setFile(file);
-      setCounter(0);
     }
   }
 

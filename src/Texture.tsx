@@ -1,5 +1,5 @@
 import { styled } from "@macaron-css/solid";
-import { For } from "solid-js";
+import { For, createMemo } from "solid-js";
 import { useAppStore } from "./store";
 
 const Container = styled("div", {
@@ -17,15 +17,18 @@ const TextureRect = styled("img", {
 });
 
 export function Texture() {
-  const [store] = useAppStore().texture;
+  const [data] = useAppStore().computed;
+  const transforms = createMemo(
+    () => data()?.packs.map(({ x, y }) => `translate(${x}px, ${y}px)`) ?? []
+  );
 
   return (
     <Container>
-      <For each={store.urls}>
+      <For each={data()?.urls}>
         {(url, i) => (
           <TextureRect
             src={url}
-            style={{ transform: store.transform[i()] }}
+            style={{ transform: transforms()[i()] }}
             onMouseDown={(e) => e.preventDefault()}
           />
         )}
