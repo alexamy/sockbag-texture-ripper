@@ -48,13 +48,8 @@ export function AppStoreProvider(props: { children: JSXElement }) {
   onMount(() => loadFromLocalStorage(state));
   createEffect(
     on(
-      () => {
-        return [
-          file[0].blob,
-          editor[0].quads,
-          trackStore(editor[0].points),
-        ] as const;
-      },
+      () =>
+        [file[0].blob, editor[0].quads, trackStore(editor[0].points)] as const,
       debounce(() => saveToLocalStorage(state), 500)
     )
   );
