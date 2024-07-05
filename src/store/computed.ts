@@ -60,7 +60,7 @@ export function createComputedState(stores: {
   createEffect(
     on(
       () => [fileApi.image(), editorApi.quadPoints()] as const,
-      debounce(() => startTransition(() => reproject()))
+      debounce(() => startTransition(() => reproject()), 200)
     )
   );
 
