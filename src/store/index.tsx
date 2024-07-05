@@ -96,8 +96,6 @@ async function loadFromLocalStorage(state: Stores) {
 }
 
 async function saveToLocalStorage(state: Stores) {
-  trackStore(state.editor[0]);
-
   const { blob } = state.file[0];
   const { points, quads } = state.editor[0];
   const file = await blobToDataURI(blob);
