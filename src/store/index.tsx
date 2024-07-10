@@ -5,8 +5,8 @@ import {
   JSXElement,
   createContext,
   createEffect,
+  createResource,
   on,
-  onMount,
   useContext,
 } from "solid-js";
 import { unwrap } from "solid-js/store";
@@ -49,18 +49,15 @@ export function AppStoreProvider(props: { children: JSXElement }) {
     name: "sockbag-texture-ripper",
   });
 
-  const state = { file, editor, texture, computed, storage } satisfies Stores;
-  const storageDependencies = () =>
-    [file[0].blob, editor[0].quads, trackStore(editor[0].points)] as const;
+  const state = {
+    file,
+    editor,
+    texture,
+    computed,
+    storage,
+  } satisfies Stores;
 
-  onMount(() => loadFromLocalStorage(state));
-
-  createEffect(
-    on(
-      storageDependencies,
-      debounce(() => saveToLocalStorage(state), 500, { immediate: true })
-    )
-  );
+  createPersistence(state);
 
   createEffect(
     on(
@@ -80,6 +77,29 @@ export function AppStoreProvider(props: { children: JSXElement }) {
 }
 
 // persist
+function createPersistence(state: Stores) {
+  const [loaded] = createResource(async () => {
+    await loadFromLocalStorage(state);
+    return true as const;
+  });
+
+  const storageDependencies = () =>
+    [
+      state.file[0].blob,
+      state.editor[0].quads,
+      trackStore(state.editor[0].points),
+    ] as const;
+
+  function save() {
+    if (!loaded()) return;
+    saveToLocalStorage(state);
+  }
+
+  createEffect(
+    on(storageDependencies, debounce(save, 500, { immediate: true }))
+  );
+}
+
 const key = "sockbag-texture-ripper-state";
 const version = 3;
 
@@ -94,7 +114,7 @@ async function loadFromLocalStorage(state: Stores) {
     state.file[2]({ blob });
     state.editor[2]({ points, quads });
   } catch (e) {
-    console.log(e);
+    console.error(e);
     return;
   }
 }
