@@ -77,7 +77,8 @@ function App() {
 }
 
 function TextureRipper() {
-  const [store, { setFile }] = useAppStore().file;
+  const { setFile } = useAppStore();
+  const [store] = useAppStore().file;
 
   const dnd = createDnd(setFile);
   const resize = createResize();

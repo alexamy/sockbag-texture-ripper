@@ -21,6 +21,7 @@ interface Stores {
   texture: TextureStore;
   computed: ComputedState;
   storage: LocalForage;
+  setFile(blob: Blob): void;
 }
 
 interface PersistState {
@@ -55,19 +56,16 @@ export function AppStoreProvider(props: { children: JSXElement }) {
     texture,
     computed,
     storage,
+    setFile,
   } satisfies Stores;
 
   createPersistence(state);
 
-  createEffect(
-    on(
-      () => file[0].blob,
-      () => {
-        editor[1].reset();
-        texture[1].reset();
-      }
-    )
-  );
+  function setFile(blob: Blob) {
+    file[2]({ blob });
+    editor[1].reset();
+    texture[1].reset();
+  }
 
   return (
     <StoreContext.Provider value={state}>
@@ -110,11 +108,9 @@ async function loadFromLocalStorage(state: Stores) {
   if (data.version !== version) return;
 
   try {
-    console.log("loading from local storage", data);
     const { blob, points, quads } = data;
     state.file[2]({ blob });
     state.editor[2]({ points, quads });
-    console.log("loaded from local storage", unwrap(state.editor[0]));
   } catch (e) {
     console.error(e);
     return;
@@ -132,6 +128,5 @@ async function saveToLocalStorage(state: Stores) {
     quads: unwrap(quads),
   } satisfies PersistState;
 
-  console.log("saving to local storage", data);
   state.storage.setItem<PersistState>(key, data);
 }
