@@ -26,7 +26,9 @@ export function Editor() {
 
   return (
     <Container>
-      <ImageBackground src={url()} onLoadRef={setImageRef} />
+      <Show when={store.blob.size > 0}>
+        <ImageBackground src={url()} onLoadRef={setImageRef} />
+      </Show>
       <Show when={imageRef()}>
         <DrawingBoard imageRef={imageRef()!} />
       </Show>
