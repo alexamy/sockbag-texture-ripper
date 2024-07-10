@@ -10,6 +10,7 @@ import {
   onMount,
   useContext,
 } from "solid-js";
+import { unwrap } from "solid-js/store";
 import { ComputedState, createComputedState } from "./computed";
 import { EditorStore, PointId, Quad, createEditorStore } from "./editor";
 import { FileStore, createFileStore } from "./file";
@@ -100,6 +101,12 @@ async function saveToLocalStorage(state: Stores) {
   const { blob } = state.file[0];
   const { points, quads } = state.editor[0];
 
-  const data = { version, blob, points, quads } satisfies PersistState;
+  const data = {
+    version,
+    blob,
+    points: unwrap(points),
+    quads: unwrap(quads),
+  } satisfies PersistState;
+
   state.storage.setItem<PersistState>(key, data);
 }
