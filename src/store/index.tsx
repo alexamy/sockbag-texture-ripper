@@ -83,12 +83,13 @@ function createPersistence(state: Stores) {
     return true as const;
   });
 
-  const storageDependencies = () =>
-    [
+  function storageDependencies() {
+    return [
       state.file[0].blob,
       state.editor[0].quads,
       trackStore(state.editor[0].points),
     ] as const;
+  }
 
   function save() {
     if (!loaded()) return;
@@ -113,6 +114,7 @@ async function loadFromLocalStorage(state: Stores) {
     const { blob, points, quads } = data;
     state.file[2]({ blob });
     state.editor[2]({ points, quads });
+    console.log("loaded from local storage", unwrap(state.editor[0]));
   } catch (e) {
     console.error(e);
     return;
