@@ -14,7 +14,7 @@ const Container = styled("div", {
 });
 
 export function Editor() {
-  const [store, api] = useAppStore().file;
+  const [store] = useAppStore().file;
   const url = createMemo(() => URL.createObjectURL(store.blob));
 
   // image reference is pointing at the same img element,
