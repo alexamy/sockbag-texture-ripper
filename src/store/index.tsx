@@ -1,4 +1,3 @@
-import { tick } from "@/lib/helper";
 import { trackStore } from "@solid-primitives/deep";
 import debounce from "debounce";
 import localforage from "localforage";
@@ -51,12 +50,15 @@ export function AppStoreProvider(props: { children: JSXElement }) {
   });
 
   const state = { file, editor, texture, computed, storage } satisfies Stores;
+  const storageDependencies = () =>
+    [file[0].blob, editor[0].quads, trackStore(editor[0].points)] as const;
+
   onMount(() => loadFromLocalStorage(state));
+
   createEffect(
     on(
-      () =>
-        [file[0].blob, editor[0].quads, trackStore(editor[0].points)] as const,
-      debounce(() => saveToLocalStorage(state), 500)
+      storageDependencies,
+      debounce(() => saveToLocalStorage(state), 500, { immediate: true })
     )
   );
 
@@ -87,9 +89,9 @@ async function loadFromLocalStorage(state: Stores) {
   if (data.version !== version) return;
 
   try {
+    console.log("loading from local storage", data);
     const { blob, points, quads } = data;
     state.file[2]({ blob });
-    await tick();
     state.editor[2]({ points, quads });
   } catch (e) {
     console.log(e);
@@ -108,5 +110,6 @@ async function saveToLocalStorage(state: Stores) {
     quads: unwrap(quads),
   } satisfies PersistState;
 
+  console.log("saving to local storage", data);
   state.storage.setItem<PersistState>(key, data);
 }
