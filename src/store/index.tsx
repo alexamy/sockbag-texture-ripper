@@ -1,16 +1,17 @@
-import { blobToDataURI, dataURItoBlob, tick } from "@/lib/helper";
 import { trackStore } from "@solid-primitives/deep";
 import debounce from "debounce";
+import localforage from "localforage";
 import {
   JSXElement,
   createContext,
   createEffect,
+  createResource,
   on,
-  onMount,
   useContext,
 } from "solid-js";
+import { unwrap } from "solid-js/store";
 import { ComputedState, createComputedState } from "./computed";
-import { EditorStore, Point, Quad, createEditorStore } from "./editor";
+import { EditorStore, PointId, Quad, createEditorStore } from "./editor";
 import { FileStore, createFileStore } from "./file";
 import { TextureStore, createTextureStore } from "./texture";
 
@@ -19,12 +20,14 @@ interface Stores {
   editor: EditorStore;
   texture: TextureStore;
   computed: ComputedState;
+  storage: LocalForage;
+  setFile(blob: Blob): void;
 }
 
 interface PersistState {
   version: number;
-  file: string;
-  points: Point[];
+  blob: Blob;
+  points: PointId[];
   quads: Quad[];
 }
 
@@ -43,26 +46,26 @@ export function AppStoreProvider(props: { children: JSXElement }) {
   const editor = createEditorStore();
   const texture = createTextureStore();
   const computed = createComputedState({ file, editor, texture });
+  const storage = localforage.createInstance({
+    name: "sockbag-texture-ripper",
+  });
 
-  const state = { file, editor, texture, computed } satisfies Stores;
-  onMount(() => loadFromLocalStorage(state));
-  createEffect(
-    on(
-      () =>
-        [file[0].blob, editor[0].quads, trackStore(editor[0].points)] as const,
-      debounce(() => saveToLocalStorage(state), 500)
-    )
-  );
+  const state = {
+    file,
+    editor,
+    texture,
+    computed,
+    storage,
+    setFile,
+  } satisfies Stores;
 
-  createEffect(
-    on(
-      () => file[0].blob,
-      () => {
-        editor[1].reset();
-        texture[1].reset();
-      }
-    )
-  );
+  createPersistence(state);
+
+  function setFile(blob: Blob) {
+    file[2]({ blob });
+    editor[1].reset();
+    texture[1].reset();
+  }
 
   return (
     <StoreContext.Provider value={state}>
@@ -72,25 +75,44 @@ export function AppStoreProvider(props: { children: JSXElement }) {
 }
 
 // persist
+function createPersistence(state: Stores) {
+  const [loaded] = createResource(async () => {
+    await loadFromLocalStorage(state);
+    return true as const;
+  });
+
+  function storageDependencies() {
+    return [
+      state.file[0].blob,
+      state.editor[0].quads,
+      trackStore(state.editor[0].points),
+    ] as const;
+  }
+
+  function save() {
+    if (!loaded()) return;
+    saveToLocalStorage(state);
+  }
+
+  createEffect(
+    on(storageDependencies, debounce(save, 500, { immediate: true }))
+  );
+}
+
 const key = "sockbag-texture-ripper-state";
-const version = 2;
+const version = 3;
 
 async function loadFromLocalStorage(state: Stores) {
-  const raw = localStorage.getItem(key);
-  if (!raw) return;
+  const data = await state.storage.getItem<PersistState>(key);
+  if (!data) return;
+  if (data.version !== version) return;
 
   try {
-    const data = JSON.parse(raw);
-    if (data.version !== version) return;
-
-    const { file, points, quads } = data;
-    const blob = dataURItoBlob(file);
-
+    const { blob, points, quads } = data;
     state.file[2]({ blob });
-    await tick();
     state.editor[2]({ points, quads });
   } catch (e) {
-    console.log(e);
+    console.error(e);
     return;
   }
 }
@@ -98,9 +120,13 @@ async function loadFromLocalStorage(state: Stores) {
 async function saveToLocalStorage(state: Stores) {
   const { blob } = state.file[0];
   const { points, quads } = state.editor[0];
-  const file = await blobToDataURI(blob);
 
-  const data = { version, file, points, quads } satisfies PersistState;
-  const raw = JSON.stringify(data);
-  localStorage.setItem(key, raw);
+  const data = {
+    version,
+    blob,
+    points: unwrap(points),
+    quads: unwrap(quads),
+  } satisfies PersistState;
+
+  state.storage.setItem<PersistState>(key, data);
 }

@@ -3,7 +3,7 @@ import { Button } from "@/styles";
 import { createSignal } from "solid-js";
 
 export function Upload() {
-  const [_, { setFile }] = useAppStore().file;
+  const { setFile } = useAppStore();
   const [input, setInput] = createSignal<HTMLInputElement>();
 
   function show() {

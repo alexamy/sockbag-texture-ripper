@@ -14,7 +14,7 @@ const Container = styled("div", {
 });
 
 export function Editor() {
-  const [store, api] = useAppStore().file;
+  const [store] = useAppStore().file;
   const url = createMemo(() => URL.createObjectURL(store.blob));
 
   // image reference is pointing at the same img element,
@@ -26,7 +26,9 @@ export function Editor() {
 
   return (
     <Container>
-      <ImageBackground src={url()} onLoadRef={setImageRef} />
+      <Show when={store.blob.size > 0}>
+        <ImageBackground src={url()} onLoadRef={setImageRef} />
+      </Show>
       <Show when={imageRef()}>
         <DrawingBoard imageRef={imageRef()!} />
       </Show>

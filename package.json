@@ -25,6 +25,7 @@
     "@solid-primitives/deep": "^0.2.8",
     "@techstark/opencv-js": "^4.9.0-release.3",
     "debounce": "^2.1.0",
+    "localforage": "^1.10.0",
     "potpack": "^2.0.0",
     "solid-js": "^1.8.15"
   },

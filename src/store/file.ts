@@ -12,10 +12,6 @@ interface StoreData {
 export function createFileStore() {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
 
-  async function setFile(blob: Blob) {
-    setStore({ blob });
-  }
-
   const [image] = createResource(
     () => store.blob,
     async (blob) => {
@@ -26,7 +22,7 @@ export function createFileStore() {
     }
   );
 
-  const api = { setFile, image };
+  const api = { image };
 
   return [store, api, setStore] as const;
 }
