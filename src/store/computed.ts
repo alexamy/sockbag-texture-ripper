@@ -44,7 +44,6 @@ export function createComputedState(stores: {
 
   const [isProjecting, startTransition] = useTransition();
   const [data, { refetch: reproject }] = createResource(async () => {
-    console.log("start");
     const image = fileApi.data()?.image;
     const quads = editorApi.quadPoints();
     if (!image) return defaultData;
@@ -55,7 +54,6 @@ export function createComputedState(stores: {
     const images = await Promise.all(urls.map(createImageSource));
     const { packs, dimensions } = autopack(images, texture.gap);
 
-    console.log("end");
     return { blobs, urls, images, packs, dimensions };
   });
 

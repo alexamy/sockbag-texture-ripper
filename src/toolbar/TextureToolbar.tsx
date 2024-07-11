@@ -29,7 +29,7 @@ const Warning = styled("div", {
 });
 
 export function TextureToolbar() {
-  const [data] = useAppStore().computed;
+  const [data, isLoading] = useAppStore().computed;
 
   return (
     <Toolbar>
@@ -43,7 +43,7 @@ export function TextureToolbar() {
       >
         Download
       </Button>
-      <Show when={data.loading}>
+      <Show when={isLoading()}>
         <Warning>Projecting...</Warning>
       </Show>
     </Toolbar>
