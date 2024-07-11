@@ -88,26 +88,26 @@ export function Region(props: {
 }) {
   const move = createRegionMovement();
   const [parent, setParent] = createSignal<HTMLElement>();
-  const [size, setSize] = createSignal({ width: 0, height: 0 });
 
   const cursor = createMemo(() => {
     if (move.active()) return "grabbing";
     return "default";
   });
 
-  onMount(updateSize);
   createEffect(on(() => props.resetTrigger, move.resetView));
 
-  createEffect(() => {
+  onMount(() => {
+    function updateSize() {
+      const rect = parent()!.getBoundingClientRect();
+      move.setRect(rect);
+    }
+
     const observer = new ResizeObserver(updateSize);
     observer.observe(parent()!);
     onCleanup(() => observer.disconnect());
-  });
 
-  function updateSize() {
-    const size = parent()!.getBoundingClientRect();
-    setSize(size);
-  }
+    updateSize();
+  });
 
   function onMouseEnter() {
     parent()?.focus({ preventScroll: true });
@@ -129,18 +129,14 @@ export function Region(props: {
     >
       <GridBackground
         scale={move.scale()}
-        width={size().width}
-        height={size().height}
+        width={move.rect().width}
+        height={move.rect().height}
       />
       <RegionContext.Provider value={move}>
         <Toolbar data-testid={props.testId + "-toolbar"}>
           {props.toolbar}
         </Toolbar>
-        <Content
-          data-testid={props.testId + "-content"}
-          ref={move.setRef}
-          style={move.style()}
-        >
+        <Content data-testid={props.testId + "-content"} style={move.style()}>
           {props.children}
         </Content>
         <Footer data-testid={props.testId + "-footer"}>

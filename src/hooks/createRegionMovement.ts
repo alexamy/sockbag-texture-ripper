@@ -2,13 +2,22 @@ import { v } from "@/lib/vector";
 import { createMemo, createSignal, type JSX } from "solid-js";
 
 export function createRegionMovement() {
-  const [ref, setRef] = createSignal<HTMLElement>();
   const [active, setActive] = createSignal(false);
   const [current, setCurrent] = createSignal({ x: 0, y: 0 });
+  const [rect, setRect] = createSignal({
+    left: 0,
+    top: 0,
+    width: 0,
+    height: 0,
+  });
 
   const [translate, setTranslate] = createSignal({ x: 0, y: 0 });
   const [origin, setOrigin] = createSignal({ x: 0, y: 0 });
   const [scale, setScale] = createSignal(3);
+
+  const elementPosition = createMemo(() => {
+    return { x: rect().left, y: rect().top };
+  });
 
   const style = createMemo(() => {
     const move = `translate(${translate().x}px, ${translate().y}px)`;
@@ -50,7 +59,10 @@ export function createRegionMovement() {
     event.preventDefault();
     event.stopPropagation();
 
-    const mousePosition = { x: event.clientX, y: event.clientY };
+    const mousePosition = v.subtract(
+      { x: event.clientX, y: event.clientY },
+      elementPosition()
+    );
 
     const prevScale = scale();
     const newScale = getScale(event);
@@ -96,7 +108,7 @@ export function createRegionMovement() {
 
   // prettier-ignore
   return {
-    setRef,
+    rect, setRect,
     active,
     current, origin,
     translate, scale, style,
