@@ -12,17 +12,17 @@ interface StoreData {
 export function createFileStore() {
   const [store, setStore] = createStore<StoreData>(getDefaultStore());
 
-  const [image] = createResource(
+  const [data] = createResource(
     () => store.blob,
     async (blob) => {
       if (blob.size === 0) return;
       const url = URL.createObjectURL(blob);
       const image = await createImageSource(url);
-      return image;
+      return { url, image };
     }
   );
 
-  const api = { image };
+  const api = { data };
 
   return [store, api, setStore] as const;
 }

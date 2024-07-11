@@ -1,5 +1,5 @@
 import { styled } from "@macaron-css/solid";
-import { createMemo, createSignal, Show } from "solid-js";
+import { createSignal, Show } from "solid-js";
 import { useAppStore } from "../store";
 import { DrawingBoard } from "./DrawingBoard";
 
@@ -14,23 +14,14 @@ const Container = styled("div", {
 });
 
 export function Editor() {
-  const [store] = useAppStore().file;
-  const url = createMemo(() => URL.createObjectURL(store.blob));
-
-  // image reference is pointing at the same img element,
-  // but we must retrigger each time the image is loaded
-  const [imageRef, setImageRef] = createSignal<HTMLImageElement | undefined>(
-    undefined,
-    { equals: false }
-  );
+  const [ref, setRef] = createSignal<HTMLImageElement>();
+  const [_, api] = useAppStore().file;
 
   return (
     <Container>
-      <Show when={store.blob.size > 0}>
-        <ImageBackground src={url()} onLoadRef={setImageRef} />
-      </Show>
-      <Show when={imageRef()}>
-        <DrawingBoard imageRef={imageRef()!} />
+      <Show when={api.data()}>
+        <ImageBackground src={api.data()!.url} setRef={setRef} />
+        <DrawingBoard image={api.data()!.image} background={ref()!} />
       </Show>
     </Container>
   );
@@ -38,12 +29,7 @@ export function Editor() {
 
 function ImageBackground(props: {
   src: string;
-  onLoadRef: (ref: HTMLImageElement) => void;
+  setRef: (ref: HTMLImageElement) => void;
 }) {
-  function onLoad(e: Event) {
-    const image = e.target as HTMLImageElement;
-    props.onLoadRef(image);
-  }
-
-  return <img src={props.src} alt="Uploaded image" onLoad={onLoad} />;
+  return <img ref={props.setRef} src={props.src} alt="Uploaded image" />;
 }
