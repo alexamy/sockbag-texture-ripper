@@ -15,9 +15,19 @@ const Canvas = styled("svg", {
   },
 });
 
-export function DrawingBoard(props: { imageRef: HTMLImageElement }) {
+export function DrawingBoard(props: {
+  image: HTMLImageElement;
+  background: HTMLImageElement;
+}) {
   const [store, api, setStore] = useAppStore().editor;
   const region = useRegionContext();
+
+  const dimensions = createMemo(() => {
+    return {
+      width: props.image.naturalWidth,
+      height: props.image.naturalHeight,
+    };
+  });
 
   function updatePoint(i: number, delta: { dx: number; dy: number }) {
     setStore("points", i, (point) => ({
@@ -27,7 +37,7 @@ export function DrawingBoard(props: { imageRef: HTMLImageElement }) {
   }
 
   return (
-    <DrawingCanvas imageRef={props.imageRef}>
+    <DrawingCanvas dimensions={dimensions()} image={props.background}>
       <For each={api.quadPoints()}>{(quad) => <Quad points={quad} />}</For>
       <Quad points={api.currentQuad()} />
 
@@ -49,30 +59,26 @@ export function DrawingBoard(props: { imageRef: HTMLImageElement }) {
 // TODO move current point to DrawingCanvas
 
 function DrawingCanvas(props: {
-  imageRef: HTMLImageElement;
   children: JSX.Element;
+  dimensions: { width: number; height: number };
+  image: HTMLImageElement;
 }) {
   const region = useRegionContext();
-  const [_, { setCurrent, addPoint, deleteLastPoint }] = useAppStore().editor;
+  const [_2, { setCurrent, addPoint, deleteLastPoint }] = useAppStore().editor;
 
   // style
-  const dimensions = createMemo(() => {
-    const rect = props.imageRef.getBoundingClientRect();
-    return { width: rect.width, height: rect.height };
-  });
-
   const style = createMemo(() => ({
-    width: `${dimensions().width}px`,
-    height: `${dimensions().height}px`,
+    width: `${props.dimensions.width}px`,
+    height: `${props.dimensions.height}px`,
   }));
 
   const viewBox = createMemo(() =>
-    [0, 0, dimensions().width, dimensions().height].join(" ")
+    [0, 0, props.dimensions.width, props.dimensions.height].join(" ")
   );
 
   // handlers
   function onMouseMove(e: MouseEvent) {
-    const rect = props.imageRef.getBoundingClientRect();
+    const rect = props.image?.getBoundingClientRect();
     const x = (e.clientX - rect.left) / region.scale();
     const y = (e.clientY - rect.top) / region.scale();
     setCurrent({ x, y });

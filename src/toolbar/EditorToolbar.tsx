@@ -29,8 +29,8 @@ export function EditorToolbar() {
   const [_1, api] = useAppStore().file;
   const [_2, { reset }] = useAppStore().editor;
 
-  const width = () => api.image()?.naturalWidth;
-  const height = () => api.image()?.naturalHeight;
+  const width = () => api.data()?.image.naturalWidth;
+  const height = () => api.data()?.image.naturalHeight;
 
   // TODO remove
   const move = useRegionContext();

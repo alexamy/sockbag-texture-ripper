@@ -44,7 +44,7 @@ export function createComputedState(stores: {
 
   const [isProjecting, startTransition] = useTransition();
   const [data, { refetch: reproject }] = createResource(async () => {
-    const image = fileApi.image();
+    const image = fileApi.data()?.image;
     const quads = editorApi.quadPoints();
     if (!image) return defaultData;
 
@@ -59,7 +59,7 @@ export function createComputedState(stores: {
 
   createEffect(
     on(
-      () => [fileApi.image(), editorApi.quadPoints()] as const,
+      () => [fileApi.data(), editorApi.quadPoints()] as const,
       debounce(() => startTransition(() => reproject()), 200)
     )
   );
