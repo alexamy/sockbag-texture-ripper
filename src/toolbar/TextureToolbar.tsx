@@ -2,6 +2,7 @@ import { useAppStore } from "@/store";
 import { PackDimensions, PackEntry } from "@/store/computed";
 import { Button } from "@/styles";
 import { styled } from "@macaron-css/solid";
+import { Show } from "solid-js";
 
 const Toolbar = styled("div", {
   base: {
@@ -21,8 +22,14 @@ const GapInputElement = styled("input", {
   },
 });
 
+const Warning = styled("div", {
+  base: {
+    fontStyle: "italic",
+  },
+});
+
 export function TextureToolbar() {
-  const [data] = useAppStore().computed;
+  const [data, isLoading] = useAppStore().computed;
 
   return (
     <Toolbar>
@@ -36,6 +43,9 @@ export function TextureToolbar() {
       >
         Download
       </Button>
+      <Show when={isLoading()}>
+        <Warning>Projecting...</Warning>
+      </Show>
     </Toolbar>
   );
 }
