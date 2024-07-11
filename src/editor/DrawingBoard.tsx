@@ -78,7 +78,7 @@ function DrawingCanvas(props: {
 
   // handlers
   function onMouseMove(e: MouseEvent) {
-    const rect = props.image?.getBoundingClientRect();
+    const rect = props.image?.getBoundingClientRect() ?? { left: 0, top: 0 };
     const x = (e.clientX - rect.left) / region.scale();
     const y = (e.clientY - rect.top) / region.scale();
     setCurrent({ x, y });

@@ -15,7 +15,7 @@ const Container = styled("div", {
 
 export function Editor() {
   const [ref, setRef] = createSignal<HTMLImageElement>();
-  const [store, api] = useAppStore().file;
+  const [_, api] = useAppStore().file;
 
   return (
     <Container>
