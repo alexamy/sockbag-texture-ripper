@@ -61,8 +61,8 @@ const Footer = styled("div", {
     justifyContent: "flex-end",
     position: "absolute",
     bottom: 0,
-    left: 0,
-    width: "100%",
+    right: 0,
+    width: "fit-content",
     padding: "10px",
   },
 });
