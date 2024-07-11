@@ -15,6 +15,10 @@ export function createRegionMovement() {
   const [origin, setOrigin] = createSignal({ x: 0, y: 0 });
   const [scale, setScale] = createSignal(3);
 
+  const elementPosition = createMemo(() => {
+    return { x: rect().left, y: rect().top };
+  });
+
   const style = createMemo(() => {
     const move = `translate(${translate().x}px, ${translate().y}px)`;
     const zoom = `scale(${scale()})`;
@@ -55,7 +59,10 @@ export function createRegionMovement() {
     event.preventDefault();
     event.stopPropagation();
 
-    const mousePosition = { x: event.clientX, y: event.clientY };
+    const mousePosition = v.subtract(
+      { x: event.clientX, y: event.clientY },
+      elementPosition()
+    );
 
     const prevScale = scale();
     const newScale = getScale(event);
